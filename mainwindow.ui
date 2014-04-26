@@ -22,7 +22,11 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="MapArea" name="mapView"/>
+     <widget class="MapArea" name="mapView">
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -152,6 +156,8 @@
    <header location="global">maparea.h</header>
    <slots>
     <slot>onUpdate(MapPtr)</slot>
+    <slot>onChangeLeftTile(int)</slot>
+    <slot>onChangeRightTile(int)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -219,6 +225,38 @@
     <hint type="destinationlabel">
      <x>171</x>
      <y>412</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tilesGraphicsView</sender>
+   <signal>sigChangeLeftTile(int)</signal>
+   <receiver>mapView</receiver>
+   <slot>onChangeLeftTile(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>327</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>525</x>
+     <y>246</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tilesGraphicsView</sender>
+   <signal>sigChangeRightTile(int)</signal>
+   <receiver>mapView</receiver>
+   <slot>onChangeRightTile(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>327</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>525</x>
+     <y>246</y>
     </hint>
    </hints>
   </connection>

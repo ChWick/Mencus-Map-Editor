@@ -28,6 +28,7 @@ public:
     Map(const QString &sFileName);
 
     const grid2d<unsigned int> &getTiles() const {return mTiles;}
+    grid2d<unsigned int> &getTiles() {return mTiles;}
 };
 
 typedef std::shared_ptr<Map> MapPtr;
