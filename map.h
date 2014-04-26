@@ -6,11 +6,22 @@
 #include <qlist.h>
 #include "grid2d.h"
 #include "memory"
+#include <QPointF>
 
 struct EndangeredTile {
     unsigned int mTileType;
     unsigned int mPosX;
     unsigned int mPosY;
+};
+
+enum EntityTypes {
+    ENTITY_ENEMY,
+};
+
+struct Entity {
+    QString mId;
+    EntityTypes mPrimaryType;
+    QPointF mPos;
 };
 
 class Map
@@ -24,11 +35,15 @@ private:
     int mInvert;
     grid2d<unsigned int> mTiles;
     QList<EndangeredTile> mEndangeredTiles;
+    QList<Entity> mEntities;
 public:
     Map(const QString &sFileName);
 
     const grid2d<unsigned int> &getTiles() const {return mTiles;}
     grid2d<unsigned int> &getTiles() {return mTiles;}
+
+    const QList<Entity> &getEntities() const {return mEntities;}
+    QList<Entity> &getEntities() {return mEntities;}
 };
 
 typedef std::shared_ptr<Map> MapPtr;

@@ -5,10 +5,13 @@
 #include <QScrollBar>
 #include <QMouseEvent>
 #include <QTransform>
+#include <QDragEnterEvent>
+#include <QMimeData>
 
 MapArea::MapArea(QWidget *parent) :
     QGraphicsView(parent)
 {
+    setAcceptDrops(true);
     mLeftPressed = mRightPressed = false;
     this->setScene(&mScene);
 }
@@ -33,6 +36,17 @@ void MapArea::onUpdate(MapPtr map) {
 
     update();
     show();
+}
+void MapArea::dragEnterEvent(QDragEnterEvent *e) {
+    if (e->mimeData()->hasFormat("object"))
+         e->acceptProposedAction();
+}
+void MapArea::dragMoveEvent(QDragMoveEvent *e) {
+    if (e->mimeData()->hasFormat("object"))
+        e->acceptProposedAction();
+}
+void MapArea::dropEvent(QDropEvent *event) {
+
 }
 
 void MapArea::mouseReleaseEvent ( QMouseEvent * e ) {

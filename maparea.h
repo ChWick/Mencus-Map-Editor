@@ -1,7 +1,6 @@
 #ifndef MAPAREA_H
 #define MAPAREA_H
 
-#include <QScrollArea>
 #include <map.h>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -21,6 +20,10 @@ private:
     grid2d<QGraphicsPixmapItem*> mTiles;
 public:
     explicit MapArea(QWidget *parent = 0);
+
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
+    void dropEvent(QDropEvent *event);
 
 protected:
     void mouseReleaseEvent ( QMouseEvent *);

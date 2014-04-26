@@ -58,6 +58,14 @@ Map::Map(const QString &sFileName)
                                                xml.attributes().value("y").toUInt()
                                            });
             }
+            else if (xml.name() == "enemy") {
+                mEntities.push_back({
+                                        xml.attributes().value("id").toString(),
+                                        ENTITY_ENEMY,
+                                        QPointF(xml.attributes().value("x").toFloat(),
+                                        xml.attributes().value("y").toFloat())
+                                    });
+            }
         }
     }
     /* Error handling. */

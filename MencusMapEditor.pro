@@ -19,13 +19,17 @@ SOURCES += main.cpp\
     map.cpp \
     maparea.cpp \
     tilesgraphicsview.cpp \
-    tilepreviewgraphicsview.cpp
+    tilepreviewgraphicsview.cpp \
+    entitieslistwidget.cpp \
+    objectsgraphicsview.cpp
 
 HEADERS  += mainwindow.h \
     map.h \
     grid2d.h \
     maparea.h \
     tilesgraphicsview.h \
-    tilepreviewgraphicsview.h
+    tilepreviewgraphicsview.h \
+    entitieslistwidget.h \
+    objectsgraphicsview.h
 
 FORMS    += mainwindow.ui

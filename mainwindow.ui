@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>777</width>
-    <height>477</height>
+    <width>875</width>
+    <height>555</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>777</width>
+     <width>875</width>
      <height>25</height>
     </rect>
    </property>
@@ -49,23 +49,58 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QDockWidget" name="nodeTreeWidget_2">
+  <widget class="QDockWidget" name="entitiesDockWidget">
    <property name="windowTitle">
     <string>Entities</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>1</number>
+    <number>2</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents">
+   <widget class="QWidget" name="entitiesDockWidgetLayout">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QTreeWidget" name="nodeTreeWidget">
-       <column>
-        <property name="text">
-         <string notr="true">1</string>
-        </property>
-       </column>
-      </widget>
+      <widget class="EntitiesListWidget" name="entitiesListWidget"/>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="entitiesToolButtonsLayout">
+       <item>
+        <widget class="QToolButton" name="toolButton">
+         <property name="text">
+          <string>Add</string>
+         </property>
+         <property name="popupMode">
+          <enum>QToolButton::DelayedPopup</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="text">
+          <string>Delete</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="entitiesEditButton">
+         <property name="text">
+          <string>Edit</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -84,6 +119,9 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="tilesSelectedLayout">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinimumSize</enum>
+       </property>
        <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
@@ -147,6 +185,25 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QDockWidget" name="objectsDockWidget">
+   <property name="windowTitle">
+    <string>Objects</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="objectDockWidgetLayout">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="ObjectsGraphicsView" name="objectsGraphicsView">
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -176,6 +233,21 @@
    <slots>
     <slot>onChangeTile(int)</slot>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>EntitiesListWidget</class>
+   <extends>QListWidget</extends>
+   <header>entitieslistwidget.h</header>
+   <slots>
+    <slot>onUpdate(MapPtr)</slot>
+    <slot>onItemChanged(QListWidgetItem*)</slot>
+    <slot>onEditSelectedItem()</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>ObjectsGraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header>objectsgraphicsview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -257,6 +329,54 @@
     <hint type="destinationlabel">
      <x>525</x>
      <y>246</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>sigUpdateMap(MapPtr)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onUpdate(MapPtr)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>437</x>
+     <y>277</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>155</x>
+     <y>168</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>entitiesListWidget</sender>
+   <signal>itemChanged(QListWidgetItem*)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onItemChanged(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>155</x>
+     <y>168</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>155</x>
+     <y>168</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>entitiesEditButton</sender>
+   <signal>pressed()</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onEditSelectedItem()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>259</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>155</x>
+     <y>168</y>
     </hint>
    </hints>
   </connection>
