@@ -20,7 +20,7 @@ public:
 protected:
     void mousePressEvent(QMouseEvent *);
 private:
-    void addObject(const QPointF &pos, const QSizeF &size, const QString &filename, EntityTypes primaryType);
+    void addObject(const QPointF &pos, const QSizeF &size, EntityTypes primaryType, int secondaryType);
     Entity *getObjectEntryAtLocalMousePos(const QPoint &pos);
 signals:
 

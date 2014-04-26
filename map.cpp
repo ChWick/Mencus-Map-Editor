@@ -2,6 +2,17 @@
 #include <QXmlStreamReader>
 #include <QMessageBox>
 
+
+QString getEntityPicturePath(EntityTypes primaryType, unsigned int mSecondaryType) {
+    switch (primaryType) {
+    case ENTITY_PLAYER:
+        return "gfx/objects/mencus.png";
+    case ENTITY_ENEMY:
+        return QString("gfx/objects/enemy_%1.png").arg(mSecondaryType);
+    }
+    return "";
+}
+
 Map::Map(const QString &sFileName)
  : mFile(sFileName) {
     if (!mFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -62,8 +73,11 @@ Map::Map(const QString &sFileName)
                 mEntities.push_back({
                                         xml.attributes().value("id").toString(),
                                         ENTITY_ENEMY,
-                                        QPointF(xml.attributes().value("x").toFloat(),
-                                        xml.attributes().value("y").toFloat())
+                                        xml.attributes().value("type").toInt(),
+                                        mapToGui(QPointF(xml.attributes().value("x").toFloat(),
+                                        xml.attributes().value("y").toFloat())),
+                                        QSize(),
+                                        NULL
                                     });
             }
         }
@@ -80,4 +94,14 @@ Map::Map(const QString &sFileName)
     xml.clear();
 
     mFile.close();
+}
+
+QPointF Map::guiToMap(const QPointF &pos) const {
+    QPointF out(pos);
+    return out;
+}
+QPointF Map::mapToGui(const QPointF &pos) const {
+    QPointF out(pos);
+    out.setY(mSizeY - out.y());
+    return out;
 }

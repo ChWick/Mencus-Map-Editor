@@ -35,6 +35,11 @@ void MapArea::onUpdate(MapPtr map) {
         }
     }
 
+    for (Entity &ent : mMap->getEntities()) {
+        QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(ent.getEntityPicturePath()));
+        pItem->setPos(ent.mPos * 64);
+    }
+
     update();
     show();
 }
@@ -49,26 +54,25 @@ void MapArea::dragMoveEvent(QDragMoveEvent *e) {
 void MapArea::dropEvent(QDropEvent *event) {
     QByteArray data(event->mimeData()->data("object"));
     QDataStream stream(&data, QIODevice::ReadOnly);
-    int entityType;
+    int entityType, secondaryType;
     QString id;
     QSizeF size;
     stream >> id;
     stream >> entityType;
+    stream >> secondaryType;
     stream >> size;
-    QString pixmap;
-    stream >> pixmap;
 
 
-    QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(pixmap));
+    QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(getEntityPicturePath(static_cast<EntityTypes>(entityType), secondaryType)));
     pItem->setPos(event->posF());
     // add object to map
     Entity ent({
                    id,
                    static_cast<EntityTypes>(entityType),
+                   secondaryType,
                    event->posF(),
                    size,
-                   pItem,
-                   pixmap
+                   pItem
                });
     emit sigObjectAdded(&ent);
 
@@ -129,4 +133,5 @@ QPoint MapArea::getTilePosFromRelativeMousePos(const QPoint &pos) {
 
 void MapArea::onEntityDeleted(Entity*ent) {
     delete ent->mGraphicsItem;
+    mScene.update();
 }

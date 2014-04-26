@@ -18,17 +18,22 @@ struct EndangeredTile {
 };
 
 enum EntityTypes {
+    ENTITY_PLAYER,
     ENTITY_ENEMY,
 };
+
+QString getEntityPicturePath(EntityTypes primaryType, unsigned int mSecondaryType);
 
 struct Entity {
     QString mId;
     EntityTypes mPrimaryType;
+    unsigned int mSecondaryType;
     QPointF mPos;
     QSizeF mSize;
 
     QGraphicsPixmapItem *mGraphicsItem;
-    QString mPixmap;
+
+    QString getEntityPicturePath() const {return ::getEntityPicturePath(mPrimaryType, mSecondaryType);}
 };
 
 class Map
@@ -51,6 +56,10 @@ public:
 
     const QList<Entity> &getEntities() const {return mEntities;}
     QList<Entity> &getEntities() {return mEntities;}
+
+    QPointF guiToMap(const QPointF &pos) const;
+    QPointF mapToGui(const QPointF &pos) const;
+
 };
 
 typedef std::shared_ptr<Map> MapPtr;

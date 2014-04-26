@@ -9,7 +9,7 @@ ObjectsGraphicsView::ObjectsGraphicsView(QWidget *parent) :
 {
     setScene(&mScene);
 
-    addObject(QPointF(0, 0), QSizeF(64, 128), "mencus.png", ENTITY_ENEMY);
+    addObject(QPointF(0, 0), QSizeF(64, 128), ENTITY_PLAYER, 0);
 }
 void ObjectsGraphicsView::mousePressEvent(QMouseEvent *e) {
     if (e->button() != Qt::LeftButton) {return;}
@@ -22,7 +22,7 @@ void ObjectsGraphicsView::mousePressEvent(QMouseEvent *e) {
 
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    stream << oe->mId << static_cast<int>(oe->mPrimaryType) << oe->mSize << oe->mPixmap;
+    stream << oe->mId << static_cast<int>(oe->mPrimaryType) << oe->mSecondaryType << oe->mSize;
     mimeData->setData("object", data);
     drag->setMimeData(mimeData);
     drag->setPixmap(oe->mGraphicsItem->pixmap());
@@ -30,16 +30,16 @@ void ObjectsGraphicsView::mousePressEvent(QMouseEvent *e) {
     drag->exec();
 }
 
-void ObjectsGraphicsView::addObject(const QPointF &pos, const QSizeF &size, const QString &filename, EntityTypes primaryType) {
-    QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(QString("gfx/objects/%1").arg(filename)));
+void ObjectsGraphicsView::addObject(const QPointF &pos, const QSizeF &size, EntityTypes primaryType, int secondaryType) {
+    QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(getEntityPicturePath(primaryType, secondaryType)));
     pItem->setPos(pos);
     Entity oe = {
-        filename,
+        "New entity",
         primaryType,
+        secondaryType,
         pos,
         size,
-        pItem,
-        QString("gfx/objects/%1").arg(filename)
+        pItem
     };
     mObjects.push_back(oe);
 }
