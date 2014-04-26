@@ -7,10 +7,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    showMaximized();
 
     QMenu *pFileMenu = ui->menuBar->addMenu("File");
     pFileMenu->addAction("Open map", this, SLOT(onOpenMap()));
     pFileMenu->addAction("Exit", this, SLOT(close()));
+
+    ui->tilesGraphicsView->init();
 }
 
 MainWindow::~MainWindow()

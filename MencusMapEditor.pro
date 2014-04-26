@@ -17,11 +17,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     map.cpp \
-    maparea.cpp
+    maparea.cpp \
+    tilesgraphicsview.cpp \
+    tilepreviewgraphicsview.cpp
 
 HEADERS  += mainwindow.h \
     map.h \
     grid2d.h \
-    maparea.h
+    maparea.h \
+    tilesgraphicsview.h \
+    tilepreviewgraphicsview.h
 
 FORMS    += mainwindow.ui
