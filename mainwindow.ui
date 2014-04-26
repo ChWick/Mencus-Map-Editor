@@ -74,7 +74,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="entitiesDeleteButton">
          <property name="text">
           <string>Delete</string>
          </property>
@@ -212,9 +212,12 @@
    <extends>QGraphicsView</extends>
    <header location="global">maparea.h</header>
    <slots>
+    <signal>sigObjectAdded(Entity*)</signal>
     <slot>onUpdate(MapPtr)</slot>
     <slot>onChangeLeftTile(int)</slot>
     <slot>onChangeRightTile(int)</slot>
+    <slot>onObjectAdded(Entity*)</slot>
+    <slot>onEntityDeleted(Entity*)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -239,9 +242,13 @@
    <extends>QListWidget</extends>
    <header>entitieslistwidget.h</header>
    <slots>
+    <signal>sigEntityDeleted(Entity*)</signal>
     <slot>onUpdate(MapPtr)</slot>
     <slot>onItemChanged(QListWidgetItem*)</slot>
     <slot>onEditSelectedItem()</slot>
+    <slot>onObjectAdded(Entity*)</slot>
+    <slot>onDeleteSelection()</slot>
+    <slot>onEntityDeleted(Entity*)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -366,7 +373,7 @@
   </connection>
   <connection>
    <sender>entitiesEditButton</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>entitiesListWidget</receiver>
    <slot>onEditSelectedItem()</slot>
    <hints>
@@ -377,6 +384,86 @@
     <hint type="destinationlabel">
      <x>155</x>
      <y>168</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mapView</sender>
+   <signal>sigObjectAdded(Entity*)</signal>
+   <receiver>mapView</receiver>
+   <slot>onObjectAdded(Entity*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>469</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>469</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mapView</sender>
+   <signal>sigObjectAdded(Entity*)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onObjectAdded(Entity*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>469</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>750</x>
+     <y>280</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>entitiesDeleteButton</sender>
+   <signal>clicked()</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onDeleteSelection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>685</x>
+     <y>509</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>730</x>
+     <y>280</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>entitiesListWidget</sender>
+   <signal>sigEntityDeleted(Entity*)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onEntityDeleted(Entity*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>730</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>730</x>
+     <y>280</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>entitiesListWidget</sender>
+   <signal>sigEntityDeleted(Entity*)</signal>
+   <receiver>mapView</receiver>
+   <slot>onEntityDeleted(Entity*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>730</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>430</x>
+     <y>285</y>
     </hint>
    </hints>
   </connection>

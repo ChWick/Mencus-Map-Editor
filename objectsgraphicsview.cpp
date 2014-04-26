@@ -15,35 +15,37 @@ void ObjectsGraphicsView::mousePressEvent(QMouseEvent *e) {
     if (e->button() != Qt::LeftButton) {return;}
 
     // get ObjectEntry
-    ObjectEntry *oe = getObjectEntryAtLocalMousePos(e->pos());
+    Entity *oe = getObjectEntryAtLocalMousePos(e->pos());
     if (!oe) {return;}
     QDrag *drag = new QDrag(this);
     QMimeData *mimeData = new QMimeData;
 
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    stream << oe->mPrimaryType << oe->mPixmap;
+    stream << oe->mId << static_cast<int>(oe->mPrimaryType) << oe->mSize << oe->mPixmap;
     mimeData->setData("object", data);
     drag->setMimeData(mimeData);
-    drag->setPixmap(oe->mItem->pixmap());
-
+    drag->setPixmap(oe->mGraphicsItem->pixmap());
+    drag->setHotSpot(QPoint(0, 0));
     drag->exec();
 }
 
 void ObjectsGraphicsView::addObject(const QPointF &pos, const QSizeF &size, const QString &filename, EntityTypes primaryType) {
     QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(QString("gfx/objects/%1").arg(filename)));
     pItem->setPos(pos);
-    ObjectEntry oe = {
-        pItem,
-        size,
+    Entity oe = {
+        filename,
         primaryType,
+        pos,
+        size,
+        pItem,
         QString("gfx/objects/%1").arg(filename)
     };
     mObjects.push_back(oe);
 }
-ObjectEntry *ObjectsGraphicsView::getObjectEntryAtLocalMousePos(const QPoint &pos) {
-    for (ObjectEntry &oe : mObjects) {
-        if (QRectF(oe.mItem->pos(), oe.mSize).contains(pos.x(), pos.y())) {
+Entity *ObjectsGraphicsView::getObjectEntryAtLocalMousePos(const QPoint &pos) {
+    for (Entity &oe : mObjects) {
+        if (QRectF(oe.mPos, oe.mSize).contains(pos.x(), pos.y())) {
             return &oe;
         }
     }

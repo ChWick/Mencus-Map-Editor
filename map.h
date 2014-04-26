@@ -7,6 +7,9 @@
 #include "grid2d.h"
 #include "memory"
 #include <QPointF>
+#include <QSizeF>
+
+class QGraphicsPixmapItem;
 
 struct EndangeredTile {
     unsigned int mTileType;
@@ -22,6 +25,10 @@ struct Entity {
     QString mId;
     EntityTypes mPrimaryType;
     QPointF mPos;
+    QSizeF mSize;
+
+    QGraphicsPixmapItem *mGraphicsItem;
+    QString mPixmap;
 };
 
 class Map

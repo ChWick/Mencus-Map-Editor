@@ -7,6 +7,7 @@
 #include <QTransform>
 #include <QDragEnterEvent>
 #include <QMimeData>
+#include <QDataStream>
 
 MapArea::MapArea(QWidget *parent) :
     QGraphicsView(parent)
@@ -46,7 +47,34 @@ void MapArea::dragMoveEvent(QDragMoveEvent *e) {
         e->acceptProposedAction();
 }
 void MapArea::dropEvent(QDropEvent *event) {
+    QByteArray data(event->mimeData()->data("object"));
+    QDataStream stream(&data, QIODevice::ReadOnly);
+    int entityType;
+    QString id;
+    QSizeF size;
+    stream >> id;
+    stream >> entityType;
+    stream >> size;
+    QString pixmap;
+    stream >> pixmap;
 
+
+    QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(pixmap));
+    pItem->setPos(event->posF());
+    // add object to map
+    Entity ent({
+                   id,
+                   static_cast<EntityTypes>(entityType),
+                   event->posF(),
+                   size,
+                   pItem,
+                   pixmap
+               });
+    emit sigObjectAdded(&ent);
+
+    event->acceptProposedAction();
+}
+void MapArea::onObjectAdded(Entity *ent) {
 }
 
 void MapArea::mouseReleaseEvent ( QMouseEvent * e ) {
@@ -97,4 +125,8 @@ void MapArea::placeTileAt(const QPoint &tilePos) {
 QPoint MapArea::getTilePosFromRelativeMousePos(const QPoint &pos) {
     return QPoint((pos.x() + horizontalScrollBar()->value()) / 64,
                     (pos.y() + verticalScrollBar()->value()) / 64);
+}
+
+void MapArea::onEntityDeleted(Entity*ent) {
+    delete ent->mGraphicsItem;
 }

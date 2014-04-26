@@ -13,10 +13,13 @@ public:
     explicit EntitiesListWidget(QWidget *parent = 0);
 
 signals:
-
+    void sigEntityDeleted(Entity*);
 public slots:
     void onUpdate(MapPtr);
     void onEditSelectedItem();
+    void onObjectAdded(Entity*);
+    void onDeleteSelection();
+    void onEntityDeleted(Entity*);
 
 private slots:
     void onItemChanged(QListWidgetItem *);

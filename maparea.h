@@ -33,11 +33,13 @@ private:
     QPoint getTilePosFromRelativeMousePos(const QPoint &);
     void placeTileAt(const QPoint &tilePos);
 signals:
-
+    void sigObjectAdded(Entity*);
 public slots:
+    void onObjectAdded(Entity*);
     void onUpdate(MapPtr);
     void onChangeLeftTile(int t) {mLeftTile = t;}
     void onChangeRightTile(int t) {mRightTile = t;}
+    void onEntityDeleted(Entity*);
 };
 
 #endif // MAPAREA_H
