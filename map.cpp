@@ -41,7 +41,12 @@ Map::Map(const QString &sFileName)
                 QStringList splitted = row.split(" ", QString::SplitBehavior::SkipEmptyParts);
                 assert(splitted.size() == (int)mSizeX);
                 for (unsigned int x = 0; x < mSizeX; x++) {
-                    mTiles(x, iCurrentRow) = splitted[x].toUInt();
+                    if (mInvert) {
+                        mTiles(x, iCurrentRow) = splitted[x].toUInt();
+                    }
+                    else {
+                        mTiles(x, mSizeY - iCurrentRow - 1) = splitted[x].toUInt();
+                    }
                 }
                 iCurrentRow++;
             }

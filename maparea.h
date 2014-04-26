@@ -3,10 +3,14 @@
 
 #include <QScrollArea>
 #include <map.h>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 
-class MapArea : public QScrollArea
+class MapArea : public QGraphicsView
 {
     Q_OBJECT
+private:
+    QGraphicsScene mScene;
 public:
     explicit MapArea(QWidget *parent = 0);
 

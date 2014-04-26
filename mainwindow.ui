@@ -22,26 +22,7 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="MapArea" name="mapViewer">
-      <property name="widgetResizable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>592</width>
-         <height>397</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="mapViewerLayout">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-       </layout>
-      </widget>
-     </widget>
+     <widget class="MapArea" name="mapView"/>
     </item>
    </layout>
   </widget>
@@ -87,9 +68,8 @@
  <customwidgets>
   <customwidget>
    <class>MapArea</class>
-   <extends>QScrollArea</extends>
-   <header>maparea.h</header>
-   <container>1</container>
+   <extends>QGraphicsView</extends>
+   <header location="global">maparea.h</header>
    <slots>
     <slot>onUpdate(MapPtr)</slot>
    </slots>
@@ -100,7 +80,7 @@
   <connection>
    <sender>MainWindow</sender>
    <signal>sigUpdateMap(MapPtr)</signal>
-   <receiver>mapViewer</receiver>
+   <receiver>mapView</receiver>
    <slot>onUpdate(MapPtr)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -108,7 +88,7 @@
      <y>238</y>
     </hint>
     <hint type="destinationlabel">
-     <x>470</x>
+     <x>525</x>
      <y>246</y>
     </hint>
    </hints>
