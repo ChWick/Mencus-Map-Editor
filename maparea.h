@@ -6,6 +6,7 @@
 #include <QGraphicsView>
 #include "grid2d.h"
 #include <QGraphicsPixmapItem>
+#include "toolsdefinition.h"
 
 class MapArea : public QGraphicsView
 {
@@ -18,6 +19,7 @@ private:
     int mLeftTile;
     int mRightTile;
     grid2d<QGraphicsPixmapItem*> mTiles;
+    Tools mTool;
 public:
     explicit MapArea(QWidget *parent = 0);
 
@@ -31,15 +33,19 @@ protected:
     void mouseMoveEvent ( QMouseEvent *);
 private:
     QPoint getTilePosFromRelativeMousePos(const QPoint &);
+    Entity *getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset);
+    void setPositionFromLocalPos(const QPointF &localPos, Entity *entity);
     void placeTileAt(const QPoint &tilePos);
 signals:
     void sigObjectAdded(Entity*);
+    void sigEntityDeleted(Entity*);
 public slots:
     void onObjectAdded(Entity*);
     void onUpdate(MapPtr);
     void onChangeLeftTile(int t) {mLeftTile = t;}
     void onChangeRightTile(int t) {mRightTile = t;}
     void onEntityDeleted(Entity*);
+    void onToolChanged(Tools tool) {mTool = tool; mLeftPressed = mRightPressed = false;}
 };
 
 #endif // MAPAREA_H

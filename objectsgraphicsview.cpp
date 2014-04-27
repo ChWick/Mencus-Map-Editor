@@ -15,7 +15,7 @@ void ObjectsGraphicsView::mousePressEvent(QMouseEvent *e) {
     if (e->button() != Qt::LeftButton) {return;}
 
     // get ObjectEntry
-    QPoint offset;
+    QPointF offset;
     Entity *oe = getObjectEntryAtLocalMousePos(e->pos(), offset);
     if (!oe) {return;}
     QDrag *drag = new QDrag(this);
@@ -27,7 +27,7 @@ void ObjectsGraphicsView::mousePressEvent(QMouseEvent *e) {
     mimeData->setData("object", data);
     drag->setMimeData(mimeData);
     drag->setPixmap(oe->mGraphicsItem->pixmap());
-    drag->setHotSpot(offset);
+    drag->setHotSpot(offset.toPoint());
     drag->exec();
 }
 
@@ -44,10 +44,10 @@ void ObjectsGraphicsView::addObject(const QPointF &pos, const QSizeF &size, Enti
     };
     mObjects.push_back(oe);
 }
-Entity *ObjectsGraphicsView::getObjectEntryAtLocalMousePos(const QPoint &pos, QPoint &offset) {
+Entity *ObjectsGraphicsView::getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset) {
     for (Entity &oe : mObjects) {
         if (QRectF(oe.mPos, oe.mSize).contains(pos.x(), pos.y())) {
-            offset = pos - oe.mPos.toPoint();
+            offset = pos - oe.mPos;
             return &oe;
         }
     }

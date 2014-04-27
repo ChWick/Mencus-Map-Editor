@@ -21,7 +21,7 @@ protected:
     void mousePressEvent(QMouseEvent *);
 private:
     void addObject(const QPointF &pos, const QSizeF &size, EntityTypes primaryType, int secondaryType);
-    Entity *getObjectEntryAtLocalMousePos(const QPoint &pos, QPoint &offset);
+    Entity *getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset);
 signals:
 
 public slots:

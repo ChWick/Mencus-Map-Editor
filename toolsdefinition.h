@@ -1,0 +1,9 @@
+#ifndef TOOLSDEFINITION_H
+#define TOOLSDEFINITION_H
+
+enum Tools {
+    TOOL_PLACE_TILE,
+    TOOL_MOVE_OBJECT,
+};
+
+#endif // TOOLSDEFINITION_H

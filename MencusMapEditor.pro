@@ -30,6 +30,7 @@ HEADERS  += mainwindow.h \
     tilesgraphicsview.h \
     tilepreviewgraphicsview.h \
     entitieslistwidget.h \
-    objectsgraphicsview.h
+    objectsgraphicsview.h \
+    toolsdefinition.h
 
 FORMS    += mainwindow.ui

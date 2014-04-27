@@ -12,6 +12,20 @@ QString getEntityPicturePath(EntityTypes primaryType, unsigned int mSecondaryTyp
     }
     return "";
 }
+QSizeF getEntitySize(EntityTypes primaryType, unsigned int secondaryType) {
+    switch (primaryType) {
+    case ENTITY_PLAYER:
+        return QSizeF(64, 128);
+    case ENTITY_ENEMY:
+        switch (secondaryType) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+            return QSizeF(64, 128);
+        }
+    }
+}
 
 Map::Map(const QString &sFileName)
  : mFile(sFileName) {
@@ -76,7 +90,7 @@ Map::Map(const QString &sFileName)
                                         xml.attributes().value("type").toInt(),
                                         mapToGui(QPointF(xml.attributes().value("x").toFloat(),
                                         xml.attributes().value("y").toFloat())),
-                                        QSize(),
+                                        getEntitySize(ENTITY_ENEMY, 0),
                                         NULL
                                     });
             }

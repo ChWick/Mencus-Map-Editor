@@ -213,11 +213,13 @@
    <header location="global">maparea.h</header>
    <slots>
     <signal>sigObjectAdded(Entity*)</signal>
+    <signal>sigEntityDeleted(Entity*)</signal>
     <slot>onUpdate(MapPtr)</slot>
     <slot>onChangeLeftTile(int)</slot>
     <slot>onChangeRightTile(int)</slot>
     <slot>onObjectAdded(Entity*)</slot>
     <slot>onEntityDeleted(Entity*)</slot>
+    <slot>onToolChanged(Tools)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -464,6 +466,38 @@
     <hint type="destinationlabel">
      <x>430</x>
      <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mapView</sender>
+   <signal>sigEntityDeleted(Entity*)</signal>
+   <receiver>mapView</receiver>
+   <slot>onEntityDeleted(Entity*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>430</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>430</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mapView</sender>
+   <signal>sigEntityDeleted(Entity*)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onEntityDeleted(Entity*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>430</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>730</x>
+     <y>280</y>
     </hint>
    </hints>
   </connection>

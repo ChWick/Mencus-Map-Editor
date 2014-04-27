@@ -8,10 +8,12 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QDataStream>
+#include <QDrag>
 
 MapArea::MapArea(QWidget *parent) :
     QGraphicsView(parent)
 {
+    mTool = TOOL_MOVE_OBJECT;
     setAcceptDrops(true);
     mLeftPressed = mRightPressed = false;
     this->setScene(&mScene);
@@ -44,39 +46,52 @@ void MapArea::onUpdate(MapPtr map) {
     show();
 }
 void MapArea::dragEnterEvent(QDragEnterEvent *e) {
-    if (e->mimeData()->hasFormat("object"))
+    if (e->mimeData()->hasFormat("object") || e->mimeData()->hasFormat("object/move"))
          e->acceptProposedAction();
 }
 void MapArea::dragMoveEvent(QDragMoveEvent *e) {
-    if (e->mimeData()->hasFormat("object"))
+    if (e->mimeData()->hasFormat("object") || e->mimeData()->hasFormat("object/move"))
         e->acceptProposedAction();
 }
 void MapArea::dropEvent(QDropEvent *event) {
-    QByteArray data(event->mimeData()->data("object"));
-    QDataStream stream(&data, QIODevice::ReadOnly);
-    int entityType, secondaryType;
-    QString id;
-    QSizeF size;
-    QPoint hotspot;
-    stream >> id;
-    stream >> entityType;
-    stream >> secondaryType;
-    stream >> size;
-    stream >> hotspot;
+    if (event->mimeData()->hasFormat("object/move")) {
+        QByteArray data(event->mimeData()->data("object/move"));
+        QDataStream stream(&data, QIODevice::ReadOnly);
+        QPointF offset;
+        Entity *oe;
+        stream.readRawData(reinterpret_cast<char*>(&oe), sizeof(Entity*));
+        stream >> offset;
+
+        oe->mGraphicsItem->setOpacity(1);
+        setPositionFromLocalPos(event->posF() - offset, oe);
+    }
+    else {
+        QByteArray data(event->mimeData()->data("object"));
+        QDataStream stream(&data, QIODevice::ReadOnly);
+        int entityType, secondaryType;
+        QString id;
+        QSizeF size;
+        QPointF hotspot;
+        stream >> id;
+        stream >> entityType;
+        stream >> secondaryType;
+        stream >> size;
+        stream >> hotspot;
 
 
-    QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(getEntityPicturePath(static_cast<EntityTypes>(entityType), secondaryType)));
-    pItem->setPos(event->posF() - hotspot);
-    // add object to map
-    Entity ent({
-                   id,
-                   static_cast<EntityTypes>(entityType),
-                   secondaryType,
-                   event->posF() - hotspot,
-                   size,
-                   pItem
-               });
-    emit sigObjectAdded(&ent);
+        QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(getEntityPicturePath(static_cast<EntityTypes>(entityType), secondaryType)));
+        pItem->setPos(event->posF() - hotspot);
+        // add object to map
+        Entity ent({
+                       id,
+                       static_cast<EntityTypes>(entityType),
+                       secondaryType,
+                       event->posF() - hotspot,
+                       size,
+                       pItem
+                   });
+        emit sigObjectAdded(&ent);
+    }
 
     event->acceptProposedAction();
 }
@@ -102,13 +117,48 @@ void MapArea::mousePressEvent ( QMouseEvent * e ) {
         mRightPressed = true;
     }
 
-    placeTileAt(getTilePosFromRelativeMousePos(e->pos()));
+    if (mTool == TOOL_PLACE_TILE) {
+        placeTileAt(getTilePosFromRelativeMousePos(e->pos()));
+    }
+    else if (mTool == TOOL_MOVE_OBJECT) {
+        // drag event
+
+        // get ObjectEntry
+        QPointF offset;
+        Entity *oe = getObjectEntryAtLocalMousePos(e->pos(), offset);
+        if (!oe) {return;}
+        QDrag *drag = new QDrag(this);
+        QMimeData *mimeData = new QMimeData;
+
+        QByteArray data;
+        QDataStream stream(&data, QIODevice::WriteOnly);
+        stream.writeRawData(reinterpret_cast<char*>(&oe), sizeof(Entity*));
+        stream << offset;
+        mimeData->setData("object/move", data);
+        drag->setMimeData(mimeData);
+        drag->setPixmap(oe->mGraphicsItem->pixmap());
+        drag->setHotSpot(offset.toPoint());
+
+        oe->mGraphicsItem->setOpacity(0.5);
+        mScene.update();
+
+        if (Qt::IgnoreAction == drag->exec()) {
+            oe->mGraphicsItem->setOpacity(1);
+        }
+    }
 }
 void MapArea::mouseMoveEvent ( QMouseEvent * e) {
     if (!mMap) {return;}
     if (!mLeftPressed && !mRightPressed) {return;}
 
-    placeTileAt(getTilePosFromRelativeMousePos(e->pos()));
+    if (mTool == TOOL_PLACE_TILE) {
+        placeTileAt(getTilePosFromRelativeMousePos(e->pos()));
+    }
+}
+
+void MapArea::setPositionFromLocalPos(const QPointF &localPos, Entity *entity) {
+    entity->mGraphicsItem->setPos(localPos);
+    entity->mPos = localPos;
 }
 
 void MapArea::placeTileAt(const QPoint &tilePos) {
@@ -126,6 +176,16 @@ void MapArea::placeTileAt(const QPoint &tilePos) {
         mTiles(tilePos.x(), tilePos.y())->setPixmap(QPixmap(QString("gfx/tiles/Tile%1.png").arg(tile, 3, 10, QLatin1Char('0'))));
         mMap->getTiles()(tilePos.x(), tilePos.y()) = tile;
     }
+}
+
+Entity *MapArea::getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset) {
+    for (Entity &oe : mMap->getEntities()) {
+        if (QRectF(oe.mPos, oe.mSize).contains(pos.x(), pos.y())) {
+            offset = pos - oe.mPos;
+            return &oe;
+        }
+    }
+    return nullptr;
 }
 
 QPoint MapArea::getTilePosFromRelativeMousePos(const QPoint &pos) {
