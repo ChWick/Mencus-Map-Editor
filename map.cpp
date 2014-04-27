@@ -3,12 +3,30 @@
 #include <QMessageBox>
 
 
-QString getEntityPicturePath(EntityTypes primaryType, unsigned int mSecondaryType) {
+QString getEntityPicturePath(EntityTypes primaryType, unsigned int secondaryType) {
     switch (primaryType) {
     case ENTITY_PLAYER:
         return "gfx/objects/mencus.png";
     case ENTITY_ENEMY:
-        return QString("gfx/objects/enemy_%1.png").arg(mSecondaryType);
+        return QString("gfx/objects/enemy_%1.png").arg(secondaryType);
+    case ENTITY_OBJECT:
+        switch (secondaryType) {
+        case OBJECT_BOMB:
+            return "gfx/objects/bomb.png";
+        case OBJECT_HEALTH_POTION:
+            return "gfx/objects/health_potion.png";
+        case OBJECT_MANA_POTION:
+            return "gfx/objects/mana_potion.png";
+        case OBJECT_KEY:
+            return "gfx/objects/key.png";
+        case OBJECT_SCRATCH:
+            return "gfx/objects/scratch.png";
+        case OBJECT_TORCH:
+            return "gfx/objects/torch1.png";
+        case OBJECT_FLAG:
+            return "gfx/objects/flag.png";
+        }
+        break;
     }
     return "";
 }
@@ -19,9 +37,29 @@ QSizeF getEntitySize(EntityTypes primaryType, unsigned int secondaryType) {
     case ENTITY_ENEMY:
         switch (secondaryType) {
         case 0:
+            return QSizeF(64, 64);
         case 1:
+            return QSizeF(64, 128);
         case 2:
-        case 3:
+            return QSizeF(128, 256);
+        case 4:
+            return QSizeF(64, 128);
+        }
+    case ENTITY_OBJECT:
+        switch (secondaryType) {
+        case OBJECT_BOMB:
+            return QSizeF(32, 32);
+        case OBJECT_HEALTH_POTION:
+            return QSizeF(32, 32);
+        case OBJECT_MANA_POTION:
+            return QSizeF(32, 32);
+        case OBJECT_KEY:
+            return QSizeF(64, 32);
+        case OBJECT_SCRATCH:
+            return QSizeF(64, 64);
+        case OBJECT_TORCH:
+            return QSizeF(32, 64);
+        case OBJECT_FLAG:
             return QSizeF(64, 128);
         }
     }
@@ -94,6 +132,19 @@ Map::Map(const QString &sFileName)
                                         NULL
                                     });
                 mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
+            }
+            else if (xml.name() == "object") {
+                mEntities.push_back({
+                                        xml.attributes().value("id").toString(),
+                                        ENTITY_OBJECT,
+                                        xml.attributes().value("type").toInt(),
+                                        mapToGui(QPointF(xml.attributes().value("x").toFloat(),
+                                        xml.attributes().value("y").toFloat())) * 64,
+                                        getEntitySize(ENTITY_OBJECT, 0),
+                                        NULL
+                                    });
+                mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
+
             }
         }
     }

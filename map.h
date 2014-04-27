@@ -20,9 +20,20 @@ struct EndangeredTile {
 enum EntityTypes {
     ENTITY_PLAYER,
     ENTITY_ENEMY,
+    ENTITY_OBJECT,
 };
 
-QString getEntityPicturePath(EntityTypes primaryType, unsigned int mSecondaryType);
+enum ObjectTypes {
+    OBJECT_BOMB,
+    OBJECT_HEALTH_POTION,
+    OBJECT_MANA_POTION,
+    OBJECT_KEY,
+    OBJECT_SCRATCH,
+    OBJECT_TORCH,
+    OBJECT_FLAG,
+};
+
+QString getEntityPicturePath(EntityTypes primaryType, unsigned int scondaryType);
 
 struct Entity {
     QString mId;

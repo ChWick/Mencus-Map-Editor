@@ -8,12 +8,12 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QDataStream>
-#include <QDrag>mPos
+#include <QDrag>
 
 MapArea::MapArea(QWidget *parent) :
     QGraphicsView(parent)
 {
-    mTool = TOOL_MOVE_OBJECT;
+    mTool = TOOL_PLACE_TILE;
     mGridSize = 8;
     setAcceptDrops(true);
     mLeftPressed = mRightPressed = false;
