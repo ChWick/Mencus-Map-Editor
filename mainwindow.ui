@@ -257,6 +257,9 @@
    <class>ObjectsGraphicsView</class>
    <extends>QGraphicsView</extends>
    <header>objectsgraphicsview.h</header>
+   <slots>
+    <signal>sigEntityDeleted(Entity*)</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -494,6 +497,38 @@
     <hint type="sourcelabel">
      <x>430</x>
      <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>730</x>
+     <y>280</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>objectsGraphicsView</sender>
+   <signal>sigEntityDeleted(Entity*)</signal>
+   <receiver>mapView</receiver>
+   <slot>onEntityDeleted(Entity*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>430</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>objectsGraphicsView</sender>
+   <signal>sigEntityDeleted(Entity*)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onEntityDeleted(Entity*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>438</y>
     </hint>
     <hint type="destinationlabel">
      <x>730</x>

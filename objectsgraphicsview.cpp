@@ -8,8 +8,32 @@ ObjectsGraphicsView::ObjectsGraphicsView(QWidget *parent) :
     QGraphicsView(parent)
 {
     setScene(&mScene);
+    setAcceptDrops(true);
 
     addObject(QPointF(0, 0), QSizeF(64, 128), ENTITY_PLAYER, 0);
+}
+
+void ObjectsGraphicsView::dragEnterEvent(QDragEnterEvent *e) {
+    if (e->mimeData()->hasFormat("object") || e->mimeData()->hasFormat("object/move"))
+         e->acceptProposedAction();
+}
+void ObjectsGraphicsView::dragMoveEvent(QDragMoveEvent *e) {
+    if (e->mimeData()->hasFormat("object") || e->mimeData()->hasFormat("object/move"))
+        e->acceptProposedAction();
+}
+void ObjectsGraphicsView::dropEvent(QDropEvent *event) {
+    if (event->mimeData()->hasFormat("object/move")) {
+        QByteArray data(event->mimeData()->data("object/move"));
+        QDataStream stream(&data, QIODevice::ReadOnly);
+        QPointF offset;
+        Entity *oe;
+        stream.readRawData(reinterpret_cast<char*>(&oe), sizeof(Entity*));
+        stream >> offset;
+
+        emit sigEntityDeleted(oe);
+    }
+
+    event->acceptProposedAction();
 }
 void ObjectsGraphicsView::mousePressEvent(QMouseEvent *e) {
     if (e->button() != Qt::LeftButton) {return;}
