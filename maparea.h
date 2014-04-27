@@ -20,6 +20,7 @@ private:
     int mRightTile;
     grid2d<QGraphicsPixmapItem*> mTiles;
     Tools mTool;
+    unsigned int mGridSize;
 public:
     explicit MapArea(QWidget *parent = 0);
 
@@ -36,6 +37,7 @@ private:
     Entity *getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset);
     void setPositionFromLocalPos(const QPointF &localPos, Entity *entity);
     void placeTileAt(const QPoint &tilePos);
+    QPoint scrollPos();
 signals:
     void sigObjectAdded(Entity*);
     void sigEntityDeleted(Entity*);

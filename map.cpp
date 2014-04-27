@@ -89,10 +89,11 @@ Map::Map(const QString &sFileName)
                                         ENTITY_ENEMY,
                                         xml.attributes().value("type").toInt(),
                                         mapToGui(QPointF(xml.attributes().value("x").toFloat(),
-                                        xml.attributes().value("y").toFloat())),
+                                        xml.attributes().value("y").toFloat())) * 64,
                                         getEntitySize(ENTITY_ENEMY, 0),
                                         NULL
                                     });
+                mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
             }
         }
     }

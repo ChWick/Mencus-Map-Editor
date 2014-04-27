@@ -8,12 +8,13 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QDataStream>
-#include <QDrag>
+#include <QDrag>mPos
 
 MapArea::MapArea(QWidget *parent) :
     QGraphicsView(parent)
 {
     mTool = TOOL_MOVE_OBJECT;
+    mGridSize = 8;
     setAcceptDrops(true);
     mLeftPressed = mRightPressed = false;
     this->setScene(&mScene);
@@ -39,7 +40,8 @@ void MapArea::onUpdate(MapPtr map) {
 
     for (Entity &ent : mMap->getEntities()) {
         QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(ent.getEntityPicturePath()));
-        pItem->setPos(ent.mPos * 64);
+        pItem->setPos(ent.mPos);
+        ent.mGraphicsItem = pItem;
     }
 
     update();
@@ -157,8 +159,13 @@ void MapArea::mouseMoveEvent ( QMouseEvent * e) {
 }
 
 void MapArea::setPositionFromLocalPos(const QPointF &localPos, Entity *entity) {
-    entity->mGraphicsItem->setPos(localPos);
-    entity->mPos = localPos;
+    QPointF pos(localPos + scrollPos());
+    if (mGridSize > 0) {
+        pos = (pos / mGridSize).toPoint();
+        pos *= mGridSize;
+    }
+    entity->mGraphicsItem->setPos(pos);
+    entity->mPos = pos;
 }
 
 void MapArea::placeTileAt(const QPoint &tilePos) {
@@ -178,10 +185,14 @@ void MapArea::placeTileAt(const QPoint &tilePos) {
     }
 }
 
+QPoint MapArea::scrollPos() {
+    return QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value());
+}
+
 Entity *MapArea::getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset) {
     for (Entity &oe : mMap->getEntities()) {
-        if (QRectF(oe.mPos, oe.mSize).contains(pos.x(), pos.y())) {
-            offset = pos - oe.mPos;
+        if (QRectF(oe.mPos - scrollPos(), oe.mSize).contains(pos.x(), pos.y())) {
+            offset = pos - oe.mPos + scrollPos();
             return &oe;
         }
     }
