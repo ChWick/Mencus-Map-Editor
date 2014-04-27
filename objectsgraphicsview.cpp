@@ -15,18 +15,19 @@ void ObjectsGraphicsView::mousePressEvent(QMouseEvent *e) {
     if (e->button() != Qt::LeftButton) {return;}
 
     // get ObjectEntry
-    Entity *oe = getObjectEntryAtLocalMousePos(e->pos());
+    QPoint offset;
+    Entity *oe = getObjectEntryAtLocalMousePos(e->pos(), offset);
     if (!oe) {return;}
     QDrag *drag = new QDrag(this);
     QMimeData *mimeData = new QMimeData;
 
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    stream << oe->mId << static_cast<int>(oe->mPrimaryType) << oe->mSecondaryType << oe->mSize;
+    stream << oe->mId << static_cast<int>(oe->mPrimaryType) << oe->mSecondaryType << oe->mSize << offset;
     mimeData->setData("object", data);
     drag->setMimeData(mimeData);
     drag->setPixmap(oe->mGraphicsItem->pixmap());
-    drag->setHotSpot(QPoint(0, 0));
+    drag->setHotSpot(offset);
     drag->exec();
 }
 
@@ -43,9 +44,10 @@ void ObjectsGraphicsView::addObject(const QPointF &pos, const QSizeF &size, Enti
     };
     mObjects.push_back(oe);
 }
-Entity *ObjectsGraphicsView::getObjectEntryAtLocalMousePos(const QPoint &pos) {
+Entity *ObjectsGraphicsView::getObjectEntryAtLocalMousePos(const QPoint &pos, QPoint &offset) {
     for (Entity &oe : mObjects) {
         if (QRectF(oe.mPos, oe.mSize).contains(pos.x(), pos.y())) {
+            offset = pos - oe.mPos.toPoint();
             return &oe;
         }
     }

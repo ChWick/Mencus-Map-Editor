@@ -57,20 +57,22 @@ void MapArea::dropEvent(QDropEvent *event) {
     int entityType, secondaryType;
     QString id;
     QSizeF size;
+    QPoint hotspot;
     stream >> id;
     stream >> entityType;
     stream >> secondaryType;
     stream >> size;
+    stream >> hotspot;
 
 
     QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(getEntityPicturePath(static_cast<EntityTypes>(entityType), secondaryType)));
-    pItem->setPos(event->posF());
+    pItem->setPos(event->posF() - hotspot);
     // add object to map
     Entity ent({
                    id,
                    static_cast<EntityTypes>(entityType),
                    secondaryType,
-                   event->posF(),
+                   event->posF() - hotspot,
                    size,
                    pItem
                });
