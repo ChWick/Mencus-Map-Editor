@@ -48,6 +48,8 @@ public slots:
     void onChangeRightTile(int t) {mRightTile = t;}
     void onEntityDeleted(Entity*);
     void onToolChanged(Tools tool) {mTool = tool; mLeftPressed = mRightPressed = false;}
+    void onSelectMove() {onToolChanged(TOOL_MOVE_OBJECT);}
+    void onSelectPlaceTile() {onToolChanged(TOOL_PLACE_TILE);}
 };
 
 #endif // MAPAREA_H
