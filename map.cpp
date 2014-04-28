@@ -44,6 +44,8 @@ QSizeF getEntitySize(EntityTypes primaryType, unsigned int secondaryType) {
             return QSizeF(128, 256);
         case 4:
             return QSizeF(64, 128);
+        default:
+            return QSizeF(0, 0);
         }
     case ENTITY_OBJECT:
         switch (secondaryType) {
@@ -61,6 +63,8 @@ QSizeF getEntitySize(EntityTypes primaryType, unsigned int secondaryType) {
             return QSizeF(32, 64);
         case OBJECT_FLAG:
             return QSizeF(64, 128);
+        default:
+            return QSizeF(0, 0);
         }
     }
 }
@@ -122,29 +126,30 @@ Map::Map(const QString &sFileName)
                                            });
             }
             else if (xml.name() == "enemy") {
+                int type = xml.attributes().value("type").toInt();
                 mEntities.push_back({
                                         xml.attributes().value("id").toString(),
                                         ENTITY_ENEMY,
-                                        xml.attributes().value("type").toInt(),
+                                        type,
                                         mapToGui(QPointF(xml.attributes().value("x").toFloat(),
                                         xml.attributes().value("y").toFloat())) * 64,
-                                        getEntitySize(ENTITY_ENEMY, 0),
+                                        getEntitySize(ENTITY_ENEMY, type),
                                         NULL
                                     });
                 mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
             }
             else if (xml.name() == "object") {
+                int type = xml.attributes().value("type").toInt();
                 mEntities.push_back({
                                         xml.attributes().value("id").toString(),
                                         ENTITY_OBJECT,
-                                        xml.attributes().value("type").toInt(),
+                                        type,
                                         mapToGui(QPointF(xml.attributes().value("x").toFloat(),
                                         xml.attributes().value("y").toFloat())) * 64,
-                                        getEntitySize(ENTITY_OBJECT, 0),
+                                        getEntitySize(ENTITY_OBJECT, type),
                                         NULL
                                     });
                 mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
-
             }
         }
     }

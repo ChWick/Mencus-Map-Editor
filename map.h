@@ -24,7 +24,7 @@ enum EntityTypes {
 };
 
 enum ObjectTypes {
-    OBJECT_BOMB,
+    OBJECT_BOMB = 0,
     OBJECT_HEALTH_POTION,
     OBJECT_MANA_POTION,
     OBJECT_KEY,
