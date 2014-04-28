@@ -151,6 +151,20 @@ Map::Map(const QString &sFileName)
                                     });
                 mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
             }
+            else if (xml.name() == "player") {
+                int type = 0;
+                mEntities.push_back({
+                                        xml.attributes().value("id").toString(),
+                                        ENTITY_PLAYER,
+                                        type,
+                                        mapToGui(QPointF(xml.attributes().value("x").toFloat(),
+                                        xml.attributes().value("y").toFloat())) * 64,
+                                        getEntitySize(ENTITY_PLAYER, type),
+                                        NULL
+                                    });
+                mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
+
+            }
         }
     }
     /* Error handling. */
