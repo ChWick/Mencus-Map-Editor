@@ -10,6 +10,7 @@
 #include <QSizeF>
 
 class QGraphicsPixmapItem;
+class QXmlStreamReader;
 
 struct EndangeredTile {
     unsigned int mTileType;
@@ -70,6 +71,9 @@ public:
 
     QPointF guiToMap(const QPointF &pos) const;
     QPointF mapToGui(const QPointF &pos) const;
+
+private:
+    void readEntity(const QXmlStreamReader &stream, EntityTypes type);
 
 };
 

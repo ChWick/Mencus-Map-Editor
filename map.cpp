@@ -126,44 +126,13 @@ Map::Map(const QString &sFileName)
                                            });
             }
             else if (xml.name() == "enemy") {
-                int type = xml.attributes().value("type").toInt();
-                mEntities.push_back({
-                                        xml.attributes().value("id").toString(),
-                                        ENTITY_ENEMY,
-                                        type,
-                                        mapToGui(QPointF(xml.attributes().value("x").toFloat(),
-                                        xml.attributes().value("y").toFloat())) * 64,
-                                        getEntitySize(ENTITY_ENEMY, type),
-                                        NULL
-                                    });
-                mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
+                readEntity(xml, ENTITY_ENEMY);
             }
             else if (xml.name() == "object") {
-                int type = xml.attributes().value("type").toInt();
-                mEntities.push_back({
-                                        xml.attributes().value("id").toString(),
-                                        ENTITY_OBJECT,
-                                        type,
-                                        mapToGui(QPointF(xml.attributes().value("x").toFloat(),
-                                        xml.attributes().value("y").toFloat())) * 64,
-                                        getEntitySize(ENTITY_OBJECT, type),
-                                        NULL
-                                    });
-                mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
+                readEntity(xml, ENTITY_OBJECT);
             }
             else if (xml.name() == "player") {
-                int type = 0;
-                mEntities.push_back({
-                                        xml.attributes().value("id").toString(),
-                                        ENTITY_PLAYER,
-                                        type,
-                                        mapToGui(QPointF(xml.attributes().value("x").toFloat(),
-                                        xml.attributes().value("y").toFloat())) * 64,
-                                        getEntitySize(ENTITY_PLAYER, type),
-                                        NULL
-                                    });
-                mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
-
+                readEntity(xml, ENTITY_PLAYER);
             }
         }
     }
@@ -189,4 +158,18 @@ QPointF Map::mapToGui(const QPointF &pos) const {
     QPointF out(pos);
     out.setY(mSizeY - out.y());
     return out;
+}
+
+void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
+    int type = xml.attributes().value("type").toInt();
+    mEntities.push_back({
+                            xml.attributes().value("id").toString(),
+                            entType,
+                            type,
+                            mapToGui(QPointF(xml.attributes().value("x").toFloat(),
+                            xml.attributes().value("y").toFloat())) * 64,
+                            getEntitySize(entType, type),
+                            NULL
+                        });
+    mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
 }
