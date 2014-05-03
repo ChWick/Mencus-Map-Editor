@@ -70,7 +70,9 @@ QSizeF getEntitySize(EntityTypes primaryType, unsigned int secondaryType) {
 }
 
 Map::Map(const QString &sFileName)
- : mFile(sFileName) {
+ : mFile(sFileName),
+    mCurrentEventList(&mEvents) {
+
     if (!mFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QMessageBox::critical(NULL,
                              __FUNCTION__,
@@ -134,6 +136,25 @@ Map::Map(const QString &sFileName)
             else if (xml.name() == "player") {
                 readEntity(xml, ENTITY_PLAYER);
             }
+            else if (xml.name() == "event") {
+                Event::Entry entry;
+                mCurrentEventList->push_back(entry);
+                for (auto &attribute : xml.attributes()) {
+                    mCurrentEventList->back().mData[attribute.name().toString()] = attribute.value().toString();
+                }
+            }
+            else if (xml.name() == "page") {
+                for (auto &attribute : xml.attributes()) {
+                    mCurrentEventList->back().mChildData[xml.name().toString()] [attribute.name().toString()] = attribute.value().toString();
+                }
+            }
+        }
+        else if (token == QXmlStreamReader::EndElement) {
+            if (xml.name() == "enemy"
+                || xml.name() == "object"
+                || xml.name() == "player") {
+                mCurrentEventList = &mEvents;
+            }
         }
     }
     /* Error handling. */
@@ -172,4 +193,5 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
                             NULL
                         });
     mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
+    mCurrentEventList = &(mEntities.back().mEvents);
 }

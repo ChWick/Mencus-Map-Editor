@@ -8,9 +8,19 @@
 #include "memory"
 #include <QPointF>
 #include <QSizeF>
+#include <QMap>
 
 class QGraphicsPixmapItem;
 class QXmlStreamReader;
+
+typedef QMap<QString, QString> DATA_PAIRS;
+
+namespace Event {
+    struct Entry {
+        DATA_PAIRS mData;
+        QMap<QString, DATA_PAIRS> mChildData;
+    };
+};
 
 struct EndangeredTile {
     unsigned int mTileType;
@@ -35,7 +45,7 @@ enum ObjectTypes {
 };
 
 QString getEntityPicturePath(EntityTypes primaryType, unsigned int scondaryType);
-
+typedef QList<Event::Entry> EVENT_LIST;
 struct Entity {
     QString mId;
     EntityTypes mPrimaryType;
@@ -46,9 +56,11 @@ struct Entity {
     QGraphicsPixmapItem *mGraphicsItem;
 
     QString getEntityPicturePath() const {return ::getEntityPicturePath(mPrimaryType, mSecondaryType);}
+
+    EVENT_LIST mEvents;
 };
 
-class Map
+class Map : public Entity
 {
 private:
     QFile mFile;
@@ -60,6 +72,8 @@ private:
     grid2d<unsigned int> mTiles;
     QList<EndangeredTile> mEndangeredTiles;
     QList<Entity> mEntities;
+
+    QList<Event::Entry> *mCurrentEventList;
 public:
     Map(const QString &sFileName);
 

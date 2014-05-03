@@ -7,6 +7,10 @@ EntitiesListWidget::EntitiesListWidget(QWidget *parent) :
 }
 void EntitiesListWidget::onUpdate(MapPtr map) {
     mMap = map;
+    QListWidgetItem *pItem = new QListWidgetItem(this);
+    pItem->setText("Map");
+    pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    pItem->setData(Qt::UserRole, QVariant::fromValue(static_cast<void*>(map.get())));
 
     for (Entity &ent : mMap->getEntities()) {
         QListWidgetItem *pItem = new QListWidgetItem(this);
@@ -40,13 +44,14 @@ void EntitiesListWidget::onDeleteSelection() {
     emit sigEntityDeleted(&pEnt);
 }
 void EntitiesListWidget::onEntityDeleted(Entity *ent) {
-    for (int i = 0; i < count(); i++) {
+    // start at 1 since map cant be deleted
+    for (int i = 1; i < count(); i++) {
         if (item(i)->text() == ent->mId) {
             delete item(i);
             break;
         }
     }
-    for (auto it = mMap->getEntities().begin(); it != mMap->getEntities().end(); it++) {
+    for (auto it = mMap->getEntities().begin()++; it != mMap->getEntities().end(); it++) {
         if ((*it).mId == ent->mId) {
             mMap->getEntities().erase(it);
             break;

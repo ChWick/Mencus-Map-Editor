@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     tilesgraphicsview.cpp \
     tilepreviewgraphicsview.cpp \
     entitieslistwidget.cpp \
-    objectsgraphicsview.cpp
+    objectsgraphicsview.cpp \
+    eventslistwidget.cpp
 
 HEADERS  += mainwindow.h \
     map.h \
@@ -31,6 +32,7 @@ HEADERS  += mainwindow.h \
     tilepreviewgraphicsview.h \
     entitieslistwidget.h \
     objectsgraphicsview.h \
-    toolsdefinition.h
+    toolsdefinition.h \
+    eventslistwidget.h
 
 FORMS    += mainwindow.ui
