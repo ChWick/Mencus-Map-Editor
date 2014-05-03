@@ -27,7 +27,6 @@ void EntitiesListWidget::onItemChanged(QListWidgetItem *pItem) {
 }
 
 void EntitiesListWidget::onEditSelectedItem() {
-
 }
 
 void EntitiesListWidget::onObjectAdded(Entity* ent) {

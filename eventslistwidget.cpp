@@ -1,4 +1,5 @@
 #include "eventslistwidget.h"
+#include "editeventdialog.h"
 #include "map.h"
 
 EventsListWidget::EventsListWidget(QWidget *parent) :
@@ -19,7 +20,12 @@ void EventsListWidget::onEntitySelectionChanged(QListWidgetItem *next, QListWidg
 }
 
 void EventsListWidget::onEditCurrent() {
+    if (!m_pCurrentEntity) {return;}
+    if (selectedItems().size() == 0) {return;}
 
+    Event::Entry* event = static_cast<Event::Entry*>(qvariant_cast<void*>(selectedItems().first()->data(Qt::UserRole)));
+    EditEventDialog diag(*event, this);
+    diag.exec();
 }
 
 void EventsListWidget::onAddEvent() {

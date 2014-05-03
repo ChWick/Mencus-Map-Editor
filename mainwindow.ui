@@ -661,6 +661,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>eventsListWidget</sender>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <receiver>eventsListWidget</receiver>
+   <slot>onEditCurrent()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>688</x>
+     <y>366</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>688</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>sigUpdateMap(MapPtr)</signal>
