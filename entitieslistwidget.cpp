@@ -6,6 +6,8 @@ EntitiesListWidget::EntitiesListWidget(QWidget *parent) :
 {
 }
 void EntitiesListWidget::onUpdate(MapPtr map) {
+    clear();
+
     mMap = map;
     QListWidgetItem *pItem = new QListWidgetItem(this);
     pItem->setText("Map");

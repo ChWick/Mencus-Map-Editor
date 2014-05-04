@@ -75,6 +75,7 @@ private:
 
     QList<Event::Entry> *mCurrentEventList;
 public:
+    Map();
     Map(const QString &sFileName);
 
     const grid2d<unsigned int> &getTiles() const {return mTiles;}

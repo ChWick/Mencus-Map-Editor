@@ -27,6 +27,7 @@ signals:
     void sigUpdateMap(MapPtr);
 
 public slots:
+    void onNewMap();
     void onOpenMap();
 };
 

@@ -12,11 +12,13 @@ MainWindow::MainWindow(QWidget *parent) :
     showMaximized();
 
     QMenu *pFileMenu = ui->menuBar->addMenu("File");
+    pFileMenu->addAction("New map", this, SLOT(onNewMap()));
     pFileMenu->addAction("Open map", this, SLOT(onOpenMap()));
     pFileMenu->addAction("Exit", this, SLOT(close()));
 
     QToolBar *mainToolBar = new QToolBar(this);
     this->addToolBar(Qt::TopToolBarArea, mainToolBar);
+    mainToolBar->addAction("New", this, SLOT(onNewMap()));
     mainToolBar->addAction("Open", this, SLOT(onOpenMap()));
 
     QToolBar *brushesToolBar = new QToolBar(this);
@@ -35,11 +37,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     ui->tilesGraphicsView->init();
+
+    onNewMap();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::onNewMap() {
+    mMap = std::shared_ptr<Map>(new Map());
+
+    sigUpdateMap(mMap);
 }
 
 void MainWindow::onOpenMap() {

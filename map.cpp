@@ -69,6 +69,14 @@ QSizeF getEntitySize(EntityTypes primaryType, unsigned int secondaryType) {
     }
 }
 
+Map::Map()
+    : mFile("New map.xml"),
+      mCurrentEventList(&mEvents) {
+    mSizeX = 20;
+    mSizeY = 20;
+    mTiles.resize(mSizeX, mSizeY, 1);
+}
+
 Map::Map(const QString &sFileName)
  : mFile(sFileName),
     mCurrentEventList(&mEvents) {
