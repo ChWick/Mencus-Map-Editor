@@ -204,3 +204,9 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
     mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
     mCurrentEventList = &(mEntities.back().mEvents);
 }
+
+void Map::writeToFile() {
+    mFile.open(QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text);
+
+    mFile.close();
+}

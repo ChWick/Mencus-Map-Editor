@@ -80,6 +80,9 @@ public:
     Map();
     Map(const QString &sFileName);
 
+    void setFilename(const QString &filename) {mFile.setFileName(filename);}
+    void writeToFile();
+
     const grid2d<unsigned int> &getTiles() const {return mTiles;}
     grid2d<unsigned int> &getTiles() {return mTiles;}
 

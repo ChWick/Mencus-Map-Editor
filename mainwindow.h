@@ -18,6 +18,8 @@ public:
     ~MainWindow();
 
 private:
+    void safeMap(const QString &filePath);
+
     Ui::MainWindow *ui;
 
     std::shared_ptr<Map> mMap;
@@ -27,6 +29,7 @@ signals:
     void sigUpdateMap(MapPtr);
 
 public slots:
+    void onSaveAs();
     void onNewMap();
     void onOpenMap();
 };
