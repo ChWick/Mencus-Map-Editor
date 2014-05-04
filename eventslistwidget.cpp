@@ -9,6 +9,7 @@ EventsListWidget::EventsListWidget(QWidget *parent) :
 }
 void EventsListWidget::onEntitySelectionChanged(QListWidgetItem *next, QListWidgetItem *) {
     clear();
+    if (next == NULL) {return;}
 
     Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(next->data(Qt::UserRole)));
     m_pCurrentEntity = pEnt;
