@@ -39,6 +39,7 @@ EditEventDialog::EditEventDialog(Event::Entry &event, QWidget *parent) :
 
 
     addProperty(LAYOUT_EMITTER, "src_id", tr("Source id"), STRING_TYPE, EMITTER_TYPES_MAP["collision"]);
+    addProperty(LAYOUT_EMITTER, "repeat", tr("Repeat"), REPEAT_TYPE, (2 << 15) - 1);
 
 
     addProperty(LAYOUT_CHILD_DATA, "text", tr("Text"), STRING_TYPE, CHILD_DATA_TYPES_MAP["page"]);
@@ -94,6 +95,12 @@ void EditEventDialog::addProperty(LayoutType lt, const QString &id, const QStrin
         }
         pCB->setCurrentText(defaultValue);
 
+        pDataWidget = pCB;
+    }
+    else if (type == REPEAT_TYPE) {
+        QComboBox *pCB = new QComboBox(this);
+        pCB->addItems(QStringList() << "none" << "infinite");
+        pCB->setCurrentText(defaultValue);
         pDataWidget = pCB;
     }
     else if (type == MESSAGE_TYPE) {
@@ -153,6 +160,7 @@ void EditEventDialog::accept() {
         case EVENT_TYPE:
         case MESSAGE_TYPE:
         case BUTTON_TYPE:
+        case REPEAT_TYPE:
             value = dynamic_cast<QComboBox*>(data.mWidget)->currentText();
             break;
         case STRING_TYPE:
@@ -212,6 +220,7 @@ void EditEventDialog::onChildDataSelectionTypeChanged(QListWidgetItem*next, QLis
             if (data.mLayoutType == LAYOUT_CHILD_DATA) {
                 QString value;
                 switch (data.mPropertyType) {
+                case REPEAT_TYPE:
                 case EMITTER_TYPE:
                 case EVENT_TYPE:
                 case MESSAGE_TYPE:
@@ -245,6 +254,7 @@ void EditEventDialog::onChildDataSelectionTypeChanged(QListWidgetItem*next, QLis
                 }
 
                 switch (data.mPropertyType) {
+                case REPEAT_TYPE:
                 case EMITTER_TYPE:
                 case EVENT_TYPE:
                 case MESSAGE_TYPE:
@@ -282,6 +292,7 @@ void EditEventDialog::onDeleteChildData() {
     if (ui->childDataListWidget->currentItem() == nullptr) {return;}
 
     ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(ui->childDataListWidget->currentItem());
+    ui->childDataListWidget->setCurrentItem(nullptr);
     mEvent.mChildData.erase(pItem->getData());
     delete pItem;
 }

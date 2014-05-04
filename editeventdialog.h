@@ -32,6 +32,7 @@ private:
     enum PropertyTypes {
         EVENT_TYPE,
         EMITTER_TYPE,
+        REPEAT_TYPE,
         STRING_TYPE,
         MESSAGE_TYPE,
         BUTTON_TYPE,
