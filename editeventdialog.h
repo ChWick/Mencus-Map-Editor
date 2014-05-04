@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QTableWidget>
 #include <QFormLayout>
+#include <QListWidgetItem>
 #include "map.h"
 #include <QMap>
 
@@ -12,10 +13,22 @@ class EditEventDialog;
 }
 
 
+
 class EditEventDialog : public QDialog
 {
     Q_OBJECT
 private:
+    class ChildDataListWidgetItem : public QListWidgetItem {
+    private:
+        CHILD_DATA_ITERATOR mData;
+    public:
+        ChildDataListWidgetItem(QListWidget *pParent, const QString &text, CHILD_DATA_ITERATOR data)
+            : QListWidgetItem(text, pParent), mData(data) {
+
+        }
+        CHILD_DATA_ITERATOR getData() {return mData;}
+    };
+
     enum PropertyTypes {
         EVENT_TYPE,
         EMITTER_TYPE,

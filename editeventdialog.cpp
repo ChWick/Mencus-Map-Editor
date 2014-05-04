@@ -50,7 +50,11 @@ EditEventDialog::~EditEventDialog()
 }
 
 void EditEventDialog::addProperty(LayoutType lt, const QString &id, const QString &label, PropertyTypes type, unsigned int enabledFlags, bool atBegin) {
-    QString defaultValue = mEvent.mData[id];
+    assert(mEvent.mData.count(id) <= 1);
+    QString defaultValue;
+    if (mEvent.mData.count(id) == 1) {
+        defaultValue = mEvent.mData.find(id).value();
+    }
     QWidget *pDataWidget = NULL;
     QFormLayout *pLayout = NULL;
     switch (lt) {
@@ -145,7 +149,7 @@ void EditEventDialog::accept() {
             break;
         }
 
-        mEvent.mData[data.mID] = value;
+        mEvent.mData.replace(data.mID, value);
     }
 }
 
@@ -165,10 +169,9 @@ void EditEventDialog::onEventTypeChanged(int index) {
     ui->childDataTypesComboBox->clear();
 
     if (flag == EVENT_TYPES_MAP["message"]) {
-        QMapIterator<QString, QMap<QString,QString> > it(mEvent.mChildData);
-        while(it.hasNext()) {
-            it.next();
-            ui->childDataListWidget->addItem(it.key());
+        CHILD_DATA_ITERATOR it = mEvent.mChildData.begin();
+        for (;it != mEvent.mChildData.end(); it++) {
+            ui->childDataListWidget->addItem(new ChildDataListWidgetItem(ui->childDataListWidget, it.key(), it));
         }
 
         ui->childDataTypesComboBox->addItem("page");
@@ -191,11 +194,14 @@ void EditEventDialog::onEmitterTypeChanged(int index) {
 void EditEventDialog::onAddChildData() {
     if (ui->childDataTypesComboBox->currentIndex() < 0) {return;}
 
-    ui->childDataListWidget->addItem(ui->childDataTypesComboBox->currentText());
+    CHILD_DATA_ITERATOR it = mEvent.mChildData.insert(mEvent.mChildData.end(), ui->childDataTypesComboBox->currentText(), DATA_PAIRS());
+    ui->childDataListWidget->addItem(new ChildDataListWidgetItem(ui->childDataListWidget, it.key(), it));
 }
 
 void EditEventDialog::onDeleteChildData() {
     if (ui->childDataListWidget->currentItem() == nullptr) {return;}
 
-    delete ui->childDataListWidget->currentItem();
+    ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(ui->childDataListWidget->currentItem());
+    mEvent.mChildData.erase(pItem->getData());
+    delete pItem;
 }

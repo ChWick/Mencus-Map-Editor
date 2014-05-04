@@ -15,7 +15,7 @@ void EventsListWidget::onEntitySelectionChanged(QListWidgetItem *next, QListWidg
     m_pCurrentEntity = pEnt;
     for (auto &evt : pEnt->mEvents) {
         QListWidgetItem *pItem = new QListWidgetItem(this);
-        pItem->setText(evt.mData["type"]);
+        pItem->setText(evt.mData.find("type").value());
         pItem->setData(Qt::UserRole, QVariant::fromValue(static_cast<void*>(&evt)));
     }
 }
@@ -33,7 +33,7 @@ void EventsListWidget::onAddEvent() {
     if (!m_pCurrentEntity) {return;}
     m_pCurrentEntity->mEvents.push_back(Event::Entry());
     QListWidgetItem *pItem = new QListWidgetItem(this);
-    m_pCurrentEntity->mEvents.back().mData["type"] = "new event";
+    m_pCurrentEntity->mEvents.back().mData.insert("type", "new event");
     pItem->setText("new event");
     pItem->setData(Qt::UserRole, QVariant::fromValue(static_cast<void*>(&m_pCurrentEntity->mEvents.back())));
 }

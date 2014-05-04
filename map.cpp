@@ -148,12 +148,13 @@ Map::Map(const QString &sFileName)
                 Event::Entry entry;
                 mCurrentEventList->push_back(entry);
                 for (auto &attribute : xml.attributes()) {
-                    mCurrentEventList->back().mData[attribute.name().toString()] = attribute.value().toString();
+                    mCurrentEventList->back().mData.insert(attribute.name().toString(), attribute.value().toString());
                 }
             }
             else if (xml.name() == "page") {
+                auto it = mCurrentEventList->back().mChildData.insert(xml.name().toString(), DATA_PAIRS());
                 for (auto &attribute : xml.attributes()) {
-                    mCurrentEventList->back().mChildData[xml.name().toString()] [attribute.name().toString()] = attribute.value().toString();
+                    (*it).insert(attribute.name().toString(), attribute.value().toString());
                 }
             }
         }

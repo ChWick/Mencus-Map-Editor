@@ -13,12 +13,14 @@
 class QGraphicsPixmapItem;
 class QXmlStreamReader;
 
-typedef QMap<QString, QString> DATA_PAIRS;
+typedef QMultiMap<QString, QString> DATA_PAIRS;
+typedef QMultiMap<QString, DATA_PAIRS> CHILD_DATA_PAIRS;
+typedef CHILD_DATA_PAIRS::iterator CHILD_DATA_ITERATOR;
 
 namespace Event {
     struct Entry {
         DATA_PAIRS mData;
-        QMap<QString, DATA_PAIRS> mChildData;
+        CHILD_DATA_PAIRS mChildData;
     };
 };
 
