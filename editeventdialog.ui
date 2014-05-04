@@ -83,6 +83,9 @@
           </item>
          </layout>
         </item>
+        <item>
+         <layout class="QFormLayout" name="childDataLayout"/>
+        </item>
        </layout>
       </widget>
      </item>
@@ -166,9 +169,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>childDataListWidget</sender>
+   <signal>currentItemChanged(QListWidgetItem*,QListWidgetItem*)</signal>
+   <receiver>EditEventDialog</receiver>
+   <slot>onChildDataSelectionTypeChanged(QListWidgetItem*,QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>463</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>227</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onAddChildData()</slot>
   <slot>onDeleteChildData()</slot>
+  <slot>onChildDataSelectionTypeChanged(QListWidgetItem*,QListWidgetItem*)</slot>
  </slots>
 </ui>

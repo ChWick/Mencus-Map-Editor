@@ -7,6 +7,7 @@
 
 QMap<QString, unsigned int> EVENT_TYPES_MAP;
 QMap<QString, unsigned int> EMITTER_TYPES_MAP;
+QMap<QString, unsigned int> CHILD_DATA_TYPES_MAP;
 
 EditEventDialog::EditEventDialog(Event::Entry &event, QWidget *parent) :
     QDialog(parent),
@@ -20,12 +21,14 @@ EditEventDialog::EditEventDialog(Event::Entry &event, QWidget *parent) :
     EMITTER_TYPES_MAP["create"] = 2048;
     EMITTER_TYPES_MAP["message_page_chagned"] = 4096;
 
+    CHILD_DATA_TYPES_MAP["page"] = 1;
+
     ui->setupUi(this);
 
 
 
 
-    addProperty(LAYOUT_EVENT, "id", tr("Id"), STRING_TYPE, 0xFFFFFF);
+    addProperty(LAYOUT_EVENT, "id", tr("Id"), STRING_TYPE, (2 << 15) - 1);
 
     addProperty(LAYOUT_EVENT, "title", tr("Title"), STRING_TYPE, EVENT_TYPES_MAP["message"]);
 
@@ -38,10 +41,11 @@ EditEventDialog::EditEventDialog(Event::Entry &event, QWidget *parent) :
     addProperty(LAYOUT_EMITTER, "src_id", tr("Source id"), STRING_TYPE, EMITTER_TYPES_MAP["collision"]);
 
 
+    addProperty(LAYOUT_CHILD_DATA, "text", tr("Text"), STRING_TYPE, CHILD_DATA_TYPES_MAP["page"]);
 
     // types are last for enable/disable fields
-    addProperty(LAYOUT_EVENT, "type", tr("Type"), EVENT_TYPE, 0xFFFFFF, true);
-    addProperty(LAYOUT_EMITTER, "emitter", tr("Type"), EMITTER_TYPE, 0xFFFFFF, true);
+    addProperty(LAYOUT_EVENT, "type", tr("Type"), EVENT_TYPE, (2 << 15) - 1, true, true);
+    addProperty(LAYOUT_EMITTER, "emitter", tr("Type"), EMITTER_TYPE, (2 << 15) - 1, true, true);
 }
 
 EditEventDialog::~EditEventDialog()
@@ -49,7 +53,7 @@ EditEventDialog::~EditEventDialog()
     delete ui;
 }
 
-void EditEventDialog::addProperty(LayoutType lt, const QString &id, const QString &label, PropertyTypes type, unsigned int enabledFlags, bool atBegin) {
+void EditEventDialog::addProperty(LayoutType lt, const QString &id, const QString &label, PropertyTypes type, unsigned int enabledFlags, bool atBegin, bool initVisible) {
     assert(mEvent.mData.count(id) <= 1);
     QString defaultValue;
     if (mEvent.mData.count(id) == 1) {
@@ -63,6 +67,9 @@ void EditEventDialog::addProperty(LayoutType lt, const QString &id, const QStrin
         break;
     case LAYOUT_EVENT:
         pLayout = dynamic_cast<QFormLayout*>(ui->eventGroupBox->layout());
+        break;
+    case LAYOUT_CHILD_DATA:
+        pLayout = ui->childDataLayout;
         break;
     }
     if (type == EMITTER_TYPE) {
@@ -119,6 +126,8 @@ void EditEventDialog::addProperty(LayoutType lt, const QString &id, const QStrin
     else {
         pLayout->addRow(pLabel, pDataWidget);
     }
+    pLabel->setVisible(initVisible);
+    pDataWidget->setVisible(initVisible);
 
     mDataFields.append({
                            type,
@@ -132,7 +141,12 @@ void EditEventDialog::addProperty(LayoutType lt, const QString &id, const QStrin
 void EditEventDialog::accept() {
     QDialog::accept();
 
+    ui->childDataListWidget->setCurrentItem(NULL);
+
     for (const auto &data : mDataFields) {
+        if (data.mLayoutType == LAYOUT_EMITTER) {
+            continue;
+        }
         QString value;
         switch (data.mPropertyType) {
         case EMITTER_TYPE:
@@ -189,6 +203,72 @@ void EditEventDialog::onEmitterTypeChanged(int index) {
         }
     }
 
+}
+
+void EditEventDialog::onChildDataSelectionTypeChanged(QListWidgetItem*next, QListWidgetItem*previous) {
+    if (previous) {
+        ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(previous);
+        for (const auto &data : mDataFields) {
+            if (data.mLayoutType == LAYOUT_CHILD_DATA) {
+                QString value;
+                switch (data.mPropertyType) {
+                case EMITTER_TYPE:
+                case EVENT_TYPE:
+                case MESSAGE_TYPE:
+                case BUTTON_TYPE:
+                    value = dynamic_cast<QComboBox*>(data.mWidget)->currentText();
+                    break;
+                case STRING_TYPE:
+                    value = dynamic_cast<QLineEdit*>(data.mWidget)->text();
+                    break;
+                case BOOL_TYPE:
+                    value = (dynamic_cast<QCheckBox*>(data.mWidget)->isChecked()) ? "true" : "false";
+                    break;
+                }
+
+                pItem->getData()->replace(data.mID, value);
+            }
+        }
+    }
+    if (next) {
+        ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(next);
+        unsigned int flag = CHILD_DATA_TYPES_MAP[pItem->text()];
+
+        for (const auto &data : mDataFields) {
+            if (data.mLayoutType == LAYOUT_CHILD_DATA) {
+                data.mWidget->setVisible((flag & data.mEnabledFlags) > 0);
+                data.mLabel->setVisible((flag & data.mEnabledFlags) > 0);
+
+                QString value;
+                if (pItem->getData()->count(data.mID) > 0) {
+                    value = *(pItem->getData()->find(data.mID));
+                }
+
+                switch (data.mPropertyType) {
+                case EMITTER_TYPE:
+                case EVENT_TYPE:
+                case MESSAGE_TYPE:
+                case BUTTON_TYPE:
+                    dynamic_cast<QComboBox*>(data.mWidget)->setCurrentText(value);
+                    break;
+                case STRING_TYPE:
+                    dynamic_cast<QLineEdit*>(data.mWidget)->setText(value);
+                    break;
+                case BOOL_TYPE:
+                    dynamic_cast<QCheckBox*>(data.mWidget)->setChecked(value.toLower() == "true");
+                    break;
+                }
+            }
+        }
+    }
+    else {
+        for (const auto &data : mDataFields) {
+            if (data.mLayoutType == LAYOUT_CHILD_DATA) {
+                data.mWidget->setVisible(false);
+                data.mLabel->setVisible(false);
+            }
+        }
+    }
 }
 
 void EditEventDialog::onAddChildData() {

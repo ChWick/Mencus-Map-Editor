@@ -40,6 +40,7 @@ private:
     enum LayoutType {
         LAYOUT_EVENT,
         LAYOUT_EMITTER,
+        LAYOUT_CHILD_DATA,
     };
     struct DataField {
         PropertyTypes mPropertyType;
@@ -60,7 +61,7 @@ public:
 private:
     Ui::EditEventDialog *ui;
 
-    void addProperty(LayoutType lt, const QString &id, const QString &label, PropertyTypes type, unsigned int enabledFlags, bool atBegin = false);
+    void addProperty(LayoutType lt, const QString &id, const QString &label, PropertyTypes type, unsigned int enabledFlags, bool atBegin = false, bool initVisible = false);
 
 public slots:
     void accept();
@@ -69,6 +70,7 @@ public slots:
 private slots:
     void onEventTypeChanged(int);
     void onEmitterTypeChanged(int);
+    void onChildDataSelectionTypeChanged(QListWidgetItem*,QListWidgetItem*);
 };
 
 #endif // EDITEVENTDIALOG_H
