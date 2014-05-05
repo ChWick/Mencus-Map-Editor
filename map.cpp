@@ -1,5 +1,6 @@
 #include "map.h"
 #include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 #include <QMessageBox>
 
 
@@ -207,6 +208,56 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
 
 void Map::writeToFile() {
     mFile.open(QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text);
+
+    QXmlStreamWriter xmlWriter(&mFile);
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.writeStartDocument();
+
+    xmlWriter.writeStartElement("map");
+    xmlWriter.writeAttribute("difficulty", mDifficulty);
+    xmlWriter.writeAttribute("background", mBackground);
+    xmlWriter.writeAttribute("sizex", QString("%1").arg(mSizeX));
+    xmlWriter.writeAttribute("sizey", QString("%1").arg(mSizeY));
+
+    xmlWriter.writeStartElement("tiles");
+    xmlWriter.writeAttribute("invert", "0");
+
+    for (int r = mSizeY - 1; r >= 0; --r) {
+        xmlWriter.writeStartElement("row");
+        QString tiles;
+        for (unsigned int c = 0; c < mSizeX; c++) {
+            tiles += QString("%1 ").arg(mTiles(c, r));
+        }
+        xmlWriter.writeAttribute("tiles", tiles);
+        xmlWriter.writeEndElement();
+    }
+
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("plater");
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("switches");
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("endangeredTiles");
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("links");
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("enemies");
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("objects");
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("camera");
+    xmlWriter.writeEndElement();
+
+    // End of map
+    xmlWriter.writeEndElement();
+    xmlWriter.writeEndDocument();
 
     mFile.close();
 }
