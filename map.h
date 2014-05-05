@@ -12,6 +12,7 @@
 
 class QGraphicsPixmapItem;
 class QXmlStreamReader;
+class QXmlStreamWriter;
 
 typedef QMultiMap<QString, QString> DATA_PAIRS;
 typedef QMultiMap<QString, DATA_PAIRS> CHILD_DATA_PAIRS;
@@ -30,10 +31,25 @@ struct EndangeredTile {
     unsigned int mPosY;
 };
 
+enum OutputTypes {
+    OT_MINIMAL,
+    OT_FULL,
+};
+
 enum EntityTypes {
-    ENTITY_PLAYER,
-    ENTITY_ENEMY,
-    ENTITY_OBJECT,
+    ENTITY_PLAYER       = 1,
+    ENTITY_ENEMY        = 2,
+    ENTITY_OBJECT       = 4,
+};
+
+enum EntityOutput {
+    ENT_OUT_ID          = 1,
+    ENT_OUT_TYPE        = 2,
+    ENT_OUT_POSITION    = 4,
+
+    ENT_OUT_PLAYER      = 4,
+    ENT_OUT_FULL        = 2047,
+
 };
 
 enum ObjectTypes {
@@ -57,9 +73,10 @@ struct Entity {
 
     QGraphicsPixmapItem *mGraphicsItem;
 
-    QString getEntityPicturePath() const {return ::getEntityPicturePath(mPrimaryType, mSecondaryType);}
-
     EVENT_LIST mEvents;
+
+
+    QString getEntityPicturePath() const {return ::getEntityPicturePath(mPrimaryType, mSecondaryType);}
 };
 
 class Map : public Entity
@@ -81,7 +98,7 @@ public:
     Map(const QString &sFileName);
 
     void setFilename(const QString &filename) {mFile.setFileName(filename);}
-    void writeToFile();
+    void writeToFile(OutputTypes outputType);
 
     const grid2d<unsigned int> &getTiles() const {return mTiles;}
     grid2d<unsigned int> &getTiles() {return mTiles;}
@@ -94,6 +111,10 @@ public:
 
 private:
     void readEntity(const QXmlStreamReader &stream, EntityTypes type);
+    void writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes outputType) const;
+    void writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, EntityOutput entityOutput, OutputTypes outputType) const;
+    void writeEventList(QXmlStreamWriter &stream, const EVENT_LIST &event, OutputTypes outputType) const;
+    void writeEvent(QXmlStreamWriter &stream, const Event::Entry &event, OutputTypes outputTypes) const;
 
 };
 

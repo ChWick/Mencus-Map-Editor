@@ -206,7 +206,78 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
     mCurrentEventList = &(mEntities.back().mEvents);
 }
 
-void Map::writeToFile() {
+void Map::writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes outputType) const {
+    switch (type) {
+    case ENTITY_PLAYER:
+        // player is written directly
+        for (const Entity &entity : mEntities) {
+            if (entity.mPrimaryType == type)
+                writeEntity(stream, type, entity, ENT_OUT_PLAYER, outputType);
+        }
+        return;
+    case ENTITY_ENEMY:
+        stream.writeStartElement("enemies");
+        break;
+    case ENTITY_OBJECT:
+        stream.writeStartElement("objects");
+    }
+
+    for (const Entity &entity : mEntities) {
+        if (entity.mPrimaryType == type)
+            writeEntity(stream, type, entity, ENT_OUT_FULL, outputType);
+    }
+
+    stream.writeEndElement();
+}
+void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, EntityOutput entityOutput, OutputTypes outputType) const {
+    switch (type) {
+    case ENTITY_PLAYER:
+        stream.writeStartElement("player");
+        break;
+    case ENTITY_ENEMY:
+        stream.writeStartElement("enemy");
+        stream.writeAttribute("type", QString("%1").arg(entity.mSecondaryType));
+        stream.writeAttribute("id", entity.mId);
+        break;
+    case ENTITY_OBJECT:
+        stream.writeStartElement("object");
+        stream.writeAttribute("id", entity.mId);
+        break;
+    }
+
+    if (outputType & ENT_OUT_TYPE) {stream.writeAttribute("type", QString("%1").arg(entity.mSecondaryType));}
+    if (outputType & ENT_OUT_ID) {stream.writeAttribute("id", entity.mId);}
+    if (outputType & ENT_OUT_POSITION) {
+        stream.writeAttribute("x", QString("%1").arg(entity.mPos.x()));
+        stream.writeAttribute("y", QString("%1").arg(entity.mPos.y()));
+    }
+
+    writeEventList(stream, entity.mEvents, outputType);
+
+    stream.writeEndElement();
+}
+
+void Map::writeEventList(QXmlStreamWriter &stream, const EVENT_LIST &eventList, OutputTypes outputType) const {
+    if (eventList.size() > 0) {
+        stream.writeStartElement("events");
+
+        for (const Event::Entry &event : eventList) {
+            writeEvent(stream, event, outputType);
+        }
+
+        stream.writeEndElement();
+    }
+}
+
+void Map::writeEvent(QXmlStreamWriter &stream, const Event::Entry &event, OutputTypes outputTypes) const {
+    stream.writeStartElement("event");
+
+    //stream.writeAttribute("type", event.mData);
+
+    stream.writeEndElement();
+}
+
+void Map::writeToFile(OutputTypes outputType) {
     mFile.open(QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text);
 
     QXmlStreamWriter xmlWriter(&mFile);
@@ -234,8 +305,7 @@ void Map::writeToFile() {
 
     xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("plater");
-    xmlWriter.writeEndElement();
+    writeEntities(xmlWriter, ENTITY_PLAYER, outputType);
 
     xmlWriter.writeStartElement("switches");
     xmlWriter.writeEndElement();
@@ -246,11 +316,8 @@ void Map::writeToFile() {
     xmlWriter.writeStartElement("links");
     xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("enemies");
-    xmlWriter.writeEndElement();
-
-    xmlWriter.writeStartElement("objects");
-    xmlWriter.writeEndElement();
+    writeEntities(xmlWriter, ENTITY_ENEMY, outputType);
+    writeEntities(xmlWriter, ENTITY_OBJECT, outputType);
 
     xmlWriter.writeStartElement("camera");
     xmlWriter.writeEndElement();
