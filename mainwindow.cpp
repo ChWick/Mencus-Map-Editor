@@ -68,6 +68,9 @@ void MainWindow::onOpenMap() {
 
 void MainWindow::onSaveAs() {
     QString mapName = QFileDialog::getSaveFileName(this, tr("Map map"), "", tr("Maps (*.xml)"));
+    if (!mapName.endsWith(".xml")) {
+        mapName += ".xml";
+    }
 
     safeMap(mapName);
 }

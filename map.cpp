@@ -84,7 +84,7 @@ Map::Map(const QString &sFileName)
     if (!mFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QMessageBox::critical(NULL,
                              __FUNCTION__,
-                             "Couldn't open amp",
+                             "Couldn't open map",
                              QMessageBox::Ok);
             return;
     }
