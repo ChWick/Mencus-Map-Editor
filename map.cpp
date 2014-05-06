@@ -273,6 +273,23 @@ void Map::writeEvent(QXmlStreamWriter &stream, const Event::Entry &event, Output
     stream.writeStartElement("event");
 
     //stream.writeAttribute("type", event.mData);
+    if (outputTypes == OT_FULL) {
+        for (DATA_PAIRS::const_iterator it = event.mData.constBegin(); it != event.mData.constEnd(); it++) {
+            stream.writeAttribute(it.key(), it.value());
+        }
+        if (event.mChildData.size() > 0) {
+            for (CHILD_DATA_PAIRS::const_iterator it = event.mChildData.constBegin(); it != event.mChildData.constEnd(); it++) {
+                stream.writeStartElement(it.key());
+                for (DATA_PAIRS::const_iterator cit = it.value().constBegin(); cit != it.value().constEnd(); cit++) {
+                    stream.writeAttribute(cit.key(), cit.value());
+                }
+                stream.writeEndElement();
+            }
+        }
+    }
+    else {
+
+    }
 
     stream.writeEndElement();
 }
