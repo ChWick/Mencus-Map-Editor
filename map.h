@@ -79,6 +79,23 @@ struct Entity {
     QString getEntityPicturePath() const {return ::getEntityPicturePath(mPrimaryType, mSecondaryType);}
 };
 
+enum LinkDirection {
+    FIRST_TO_SECOND,
+    SECOND_TO_FIRST,
+    BOTH,
+};
+
+struct LinkEntry {
+    QString mId;
+    unsigned int mFirstX;
+    unsigned int mFirstY;
+    unsigned int mSecondX;
+    unsigned int mSecondY;
+    LinkDirection mLinkDirection;
+};
+
+typedef QList<LinkEntry> link_entry_list;
+
 class Map : public Entity
 {
 private:
@@ -93,6 +110,7 @@ private:
     QList<Entity> mEntities;
 
     QList<Event::Entry> *mCurrentEventList;
+    link_entry_list mLinksList;
 public:
     Map();
     Map(const QString &sFileName);
@@ -105,6 +123,9 @@ public:
 
     const QList<Entity> &getEntities() const {return mEntities;}
     QList<Entity> &getEntities() {return mEntities;}
+
+    const QList<LinkEntry> &getLinksList() const {return mLinksList;}
+    QList<LinkEntry> &getLinksList() {return mLinksList;}
 
     QPointF guiToMap(const QPointF &pos) const;
     QPointF mapToGui(const QPointF &pos) const;

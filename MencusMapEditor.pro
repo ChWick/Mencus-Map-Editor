@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     entitieslistwidget.cpp \
     objectsgraphicsview.cpp \
     eventslistwidget.cpp \
-    editeventdialog.cpp
+    editeventdialog.cpp \
+    linkslistwidget.cpp
 
 HEADERS  += mainwindow.h \
     map.h \
@@ -35,7 +36,8 @@ HEADERS  += mainwindow.h \
     objectsgraphicsview.h \
     toolsdefinition.h \
     eventslistwidget.h \
-    editeventdialog.h
+    editeventdialog.h \
+    linkslistwidget.h
 
 FORMS    += mainwindow.ui \
     editeventdialog.ui
