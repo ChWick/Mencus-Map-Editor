@@ -37,6 +37,9 @@ void MapArea::onUpdate(MapPtr map) {
             mTiles(x, y) = pItem;
         }
     }
+    for (unsigned int x = 0; x < map->getTiles().getSizeX(); x++) {
+        mScene.addText(QString("%1").arg(x))->setPos(x * 64, 0);
+    }
 
     for (Entity &ent : mMap->getEntities()) {
         QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(ent.getEntityPicturePath()));
