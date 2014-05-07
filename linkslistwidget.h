@@ -30,6 +30,10 @@ public slots:
     void onUpdate(MapPtr);
     void onAddLink();
     void onDeleteLink();
+
+private slots:
+    void onItemChanged(QListWidgetItem *);
+    void onCurrentItemChanged(QListWidgetItem *, QListWidgetItem*);
 };
 
 #endif // LINKSLISTWIDGET_H
