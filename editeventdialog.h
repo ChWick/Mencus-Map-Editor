@@ -7,6 +7,7 @@
 #include <QListWidgetItem>
 #include "map.h"
 #include <QMap>
+#include "eventdatamask.h"
 
 namespace Ui {
 class EditEventDialog;
@@ -29,31 +30,15 @@ private:
         CHILD_DATA_ITERATOR getData() {return mData;}
     };
 
-    enum PropertyTypes {
-        EVENT_TYPE,
-        EMITTER_TYPE,
-        REPEAT_TYPE,
-        STRING_TYPE,
-        MESSAGE_TYPE,
-        BUTTON_TYPE,
-        BOOL_TYPE,
-    };
-    enum LayoutType {
-        LAYOUT_EVENT,
-        LAYOUT_EMITTER,
-        LAYOUT_CHILD_DATA,
-    };
     struct DataField {
-        PropertyTypes mPropertyType;
-        LayoutType mLayoutType;
-        QString mID;
+        const EventData::EventAttribute *mEventAttribute;
         QWidget *mLabel;
         QWidget *mWidget;
-        unsigned int mEnabledFlags;
     };
 
 private:
     Event::Entry &mEvent;
+    Event::Entry mEditingEvent;
     QVector<DataField> mDataFields;
 public:
     explicit EditEventDialog(Event::Entry &event, QWidget *parent = 0);
@@ -62,15 +47,16 @@ public:
 private:
     Ui::EditEventDialog *ui;
 
-    void addProperty(LayoutType lt, const QString &id, const QString &label, PropertyTypes type, unsigned int enabledFlags, bool atBegin = false, bool initVisible = false);
+    void addProperty(const EventData::EventAttribute &attribute);
+    const DataField *getDataFieldByDataWidget(QWidget *pDataWidget);
 
 public slots:
     void accept();
     void onAddChildData();
     void onDeleteChildData();
 private slots:
-    void onEventTypeChanged(int);
-    void onEmitterTypeChanged(int);
+    void onUpdateVisibility();
+    void onComboBoxValueChanged(const QString &);
     void onChildDataSelectionTypeChanged(QListWidgetItem*,QListWidgetItem*);
 };
 
