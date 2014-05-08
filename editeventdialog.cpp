@@ -52,16 +52,18 @@ void EditEventDialog::addProperty(const EventAttribute &attribute) {
     }
     if (attribute.mPropertyType == SELECT_TYPE) {
         QComboBox *pCB = new QComboBox(this);
-        QObject::connect(pCB, SIGNAL(currentIndexChanged(QString)), this, SLOT(onComboBoxValueChanged(QString)));
-
         pCB->addItems(attribute.mAllowedValues);
         pCB->setCurrentText(defaultValue);
+
+        QObject::connect(pCB, SIGNAL(currentIndexChanged(QString)), this, SLOT(onComboBoxValueChanged(QString)));
+        mEditingEvent.mData.replace(attribute.mID, defaultValue);
 
         pDataWidget = pCB;
     }
     else if (attribute.mPropertyType == STRING_TYPE) {
         QLineEdit *pLineEdit = new QLineEdit(this);
         pLineEdit->setText(defaultValue);
+        QObject::connect(pLineEdit, SIGNAL(textChanged(QString)), this, SLOT(onLineEditValueChanged(QString)));
 
         pDataWidget = pLineEdit;
     }
@@ -69,6 +71,8 @@ void EditEventDialog::addProperty(const EventAttribute &attribute) {
         QCheckBox *pCB = new QCheckBox(this);
         pCB->setChecked(defaultValue.toLower() == "true");
         pDataWidget = pCB;
+
+        QObject::connect(pCB, SIGNAL(toggled(bool)), this, SLOT(onCheckBoxValueChanged(bool)));
     }
     QLabel *pLabel = new QLabel(attribute.mLabel);
     bool atBegin = false;
@@ -112,10 +116,50 @@ void EditEventDialog::onComboBoxValueChanged(const QString &value) {
         mEditingEvent.mData.replace(field->mEventAttribute->mID, value);
     }
     else if (field->mEventAttribute->mLayoutType == LAYOUT_CHILD_DATA) {
-        //mEditingEvent.mChildData.replace(field.mEventAttribute->mID, value);
+        if (ui->childDataListWidget->currentItem()) {
+            ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(ui->childDataListWidget->currentItem());
+            pItem->getData()->replace(field->mEventAttribute->mID, value);
+        }
     }
 
     onUpdateVisibility();
+}
+
+void EditEventDialog::onLineEditValueChanged(const QString &value) {
+    QLineEdit *pLE = dynamic_cast<QLineEdit*>(sender());
+    const DataField *field(getDataFieldByDataWidget(pLE));
+    if (!field) {return;}
+
+    if (field->mEventAttribute->mLayoutType == LAYOUT_EVENT || field->mEventAttribute->mLayoutType == LAYOUT_EMITTER) {
+        mEditingEvent.mData.replace(field->mEventAttribute->mID, value);
+    }
+    else if (field->mEventAttribute->mLayoutType == LAYOUT_CHILD_DATA) {
+        if (ui->childDataListWidget->currentItem()) {
+            ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(ui->childDataListWidget->currentItem());
+            pItem->getData()->replace(field->mEventAttribute->mID, value);
+        }
+    }
+
+    //onUpdateVisibility();
+}
+
+void EditEventDialog::onCheckBoxValueChanged(bool value) {
+    QCheckBox *pCB = dynamic_cast<QCheckBox*>(sender());
+    const DataField *field(getDataFieldByDataWidget(pCB));
+    if (!field) {return;}
+
+    if (field->mEventAttribute->mLayoutType == LAYOUT_EVENT || field->mEventAttribute->mLayoutType == LAYOUT_EMITTER) {
+        mEditingEvent.mData.replace(field->mEventAttribute->mID, value ? "true" : "false");
+    }
+    else if (field->mEventAttribute->mLayoutType == LAYOUT_CHILD_DATA) {
+        if (ui->childDataListWidget->currentItem()) {
+            ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(ui->childDataListWidget->currentItem());
+            pItem->getData()->replace(field->mEventAttribute->mID, value ? "true" : "false");
+        }
+    }
+
+    //onUpdateVisibility();
+
 }
 
 void EditEventDialog::onUpdateVisibility() {
@@ -151,33 +195,7 @@ void EditEventDialog::onUpdateVisibility() {
     }
 }
 
-void EditEventDialog::onChildDataSelectionTypeChanged(QListWidgetItem*next, QListWidgetItem*previous) {
-    if (previous) {
-        ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(previous);
-        for (const auto &data : mDataFields) {
-            if (data.mEventAttribute->mLayoutType == LAYOUT_CHILD_DATA) {
-                QString value;
-                switch (data.mEventAttribute->mPropertyType) {
-                case SELECT_TYPE:
-                case REPEAT_TYPE:
-                case EMITTER_TYPE:
-                case EVENT_TYPE:
-                case MESSAGE_TYPE:
-                case BUTTON_TYPE:
-                    value = dynamic_cast<QComboBox*>(data.mWidget)->currentText();
-                    break;
-                case STRING_TYPE:
-                    value = dynamic_cast<QLineEdit*>(data.mWidget)->text();
-                    break;
-                case BOOL_TYPE:
-                    value = (dynamic_cast<QCheckBox*>(data.mWidget)->isChecked()) ? "true" : "false";
-                    break;
-                }
-
-                pItem->getData()->replace(data.mEventAttribute->mID, value);
-            }
-        }
-    }
+void EditEventDialog::onChildDataSelectionTypeChanged(QListWidgetItem*next, QListWidgetItem*) {
     if (next) {
         ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(next);
 

@@ -57,6 +57,8 @@ public slots:
 private slots:
     void onUpdateVisibility();
     void onComboBoxValueChanged(const QString &);
+    void onLineEditValueChanged(const QString &);
+    void onCheckBoxValueChanged(bool);
     void onChildDataSelectionTypeChanged(QListWidgetItem*,QListWidgetItem*);
 };
 
