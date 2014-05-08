@@ -14,7 +14,7 @@ class QGraphicsPixmapItem;
 class QXmlStreamReader;
 class QXmlStreamWriter;
 
-typedef QMultiMap<QString, QString> DATA_PAIRS;
+typedef QMap<QString, QString> DATA_PAIRS;
 typedef QMultiMap<QString, DATA_PAIRS> CHILD_DATA_PAIRS;
 typedef CHILD_DATA_PAIRS::iterator CHILD_DATA_ITERATOR;
 

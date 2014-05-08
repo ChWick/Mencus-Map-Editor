@@ -56,7 +56,7 @@ void EditEventDialog::addProperty(const EventAttribute &attribute) {
         pCB->setCurrentText(defaultValue);
 
         QObject::connect(pCB, SIGNAL(currentIndexChanged(QString)), this, SLOT(onComboBoxValueChanged(QString)));
-        mEditingEvent.mData.replace(attribute.mID, defaultValue);
+        mEditingEvent.mData[attribute.mID] = defaultValue;
 
         pDataWidget = pCB;
     }
@@ -113,12 +113,12 @@ void EditEventDialog::onComboBoxValueChanged(const QString &value) {
     if (!field) {return;}
 
     if (field->mEventAttribute->mLayoutType == LAYOUT_EVENT || field->mEventAttribute->mLayoutType == LAYOUT_EMITTER) {
-        mEditingEvent.mData.replace(field->mEventAttribute->mID, value);
+        mEditingEvent.mData[field->mEventAttribute->mID] = value;
     }
     else if (field->mEventAttribute->mLayoutType == LAYOUT_CHILD_DATA) {
         if (ui->childDataListWidget->currentItem()) {
             ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(ui->childDataListWidget->currentItem());
-            pItem->getData()->replace(field->mEventAttribute->mID, value);
+            (*pItem->getData())[field->mEventAttribute->mID] = value;
         }
     }
 
@@ -131,12 +131,12 @@ void EditEventDialog::onLineEditValueChanged(const QString &value) {
     if (!field) {return;}
 
     if (field->mEventAttribute->mLayoutType == LAYOUT_EVENT || field->mEventAttribute->mLayoutType == LAYOUT_EMITTER) {
-        mEditingEvent.mData.replace(field->mEventAttribute->mID, value);
+        mEditingEvent.mData[field->mEventAttribute->mID] = value;
     }
     else if (field->mEventAttribute->mLayoutType == LAYOUT_CHILD_DATA) {
         if (ui->childDataListWidget->currentItem()) {
             ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(ui->childDataListWidget->currentItem());
-            pItem->getData()->replace(field->mEventAttribute->mID, value);
+            (*pItem->getData())[field->mEventAttribute->mID] = value;
         }
     }
 
@@ -149,12 +149,12 @@ void EditEventDialog::onCheckBoxValueChanged(bool value) {
     if (!field) {return;}
 
     if (field->mEventAttribute->mLayoutType == LAYOUT_EVENT || field->mEventAttribute->mLayoutType == LAYOUT_EMITTER) {
-        mEditingEvent.mData.replace(field->mEventAttribute->mID, value ? "true" : "false");
+        mEditingEvent.mData[field->mEventAttribute->mID] = value ? "true" : "false";
     }
     else if (field->mEventAttribute->mLayoutType == LAYOUT_CHILD_DATA) {
         if (ui->childDataListWidget->currentItem()) {
             ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(ui->childDataListWidget->currentItem());
-            pItem->getData()->replace(field->mEventAttribute->mID, value ? "true" : "false");
+            (*pItem->getData())[field->mEventAttribute->mID] = value ? "true" : "false";
         }
     }
 

@@ -39,7 +39,7 @@ struct EventAttribute {
 
     virtual bool isActive(const Event::Entry &ent) const {
         for (ATTRIBUTE_MAP::const_iterator it = mAttributeConditions.cbegin(); it != mAttributeConditions.cend(); it++) {
-            if (ent.mData.find(it.key(), it.value()) == ent.mData.end()) {
+            if (ent.mData[it.key()] == it.value()) {
                 return false;
             }
         }
