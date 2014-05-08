@@ -2,6 +2,7 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 #include <QMessageBox>
+#include "eventdatamask.h"
 
 
 QString getEntityPicturePath(EntityTypes primaryType, unsigned int secondaryType) {
@@ -288,7 +289,22 @@ void Map::writeEvent(QXmlStreamWriter &stream, const Event::Entry &event, Output
         }
     }
     else {
+        for (DATA_PAIRS::const_iterator it = event.mData.constBegin(); it != event.mData.constEnd(); it++) {
+            if (EventData::EventDataMask::singleton().eventAttributes()[it.key()].isActive(event)) {
+                stream.writeAttribute(it.key(), it.value());
+            }
+        }
+        for (CHILD_DATA_PAIRS::const_iterator it = event.mChildData.constBegin(); it != event.mChildData.constEnd(); it++) {
+            if (EventData::EventDataMask::singleton().childEventTypes()[it.key()].isActive(event) == false) {continue;}
 
+            stream.writeStartElement(it.key());
+            for (DATA_PAIRS::const_iterator cit = it.value().constBegin(); cit != it.value().constEnd(); cit++) {
+                if (EventData::EventDataMask::singleton().childEventAttributes()[cit.key()].isActive(event, it.key())) {
+                    stream.writeAttribute(cit.key(), cit.value());
+                }
+            }
+            stream.writeEndElement();
+        }
     }
 
     stream.writeEndElement();
@@ -338,6 +354,8 @@ void Map::writeToFile(OutputTypes outputType) {
 
     xmlWriter.writeStartElement("camera");
     xmlWriter.writeEndElement();
+
+    writeEventList(xmlWriter, mEvents, outputType);
 
     // End of map
     xmlWriter.writeEndElement();

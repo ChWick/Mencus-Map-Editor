@@ -50,7 +50,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::safeMap(const QString &filePath) {
     mMap->setFilename(filePath);
-    mMap->writeToFile(OT_FULL);
+    mMap->writeToFile(OT_MINIMAL);
 }
 
 void MainWindow::onNewMap() {
