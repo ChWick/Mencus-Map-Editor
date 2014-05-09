@@ -25,11 +25,13 @@ public:
     explicit LinksListWidget(QWidget *parent = 0);
 
 signals:
+    void sigLinkValueCanged(QListWidgetItem*);
 
 public slots:
     void onUpdate(MapPtr);
     void onAddLink();
     void onDeleteLink();
+    void onLinkValueChanged();
 
 private slots:
     void onItemChanged(QListWidgetItem *);

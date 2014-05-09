@@ -9,6 +9,7 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsTextItem>
 #include "toolsdefinition.h"
+#include <QListWidgetItem>
 
 class MapArea : public QGraphicsView
 {
@@ -24,6 +25,7 @@ private:
     Tools mTool;
     unsigned int mGridSize;
     QList<QGraphicsTextItem*> mLineNumbers;
+    QVector<QGraphicsPixmapItem*> mLinkTiles;
 public:
     explicit MapArea(QWidget *parent = 0);
     ~MapArea();
@@ -55,6 +57,8 @@ public slots:
     void onSelectMove() {onToolChanged(TOOL_MOVE_OBJECT);}
     void onSelectPlaceTile() {onToolChanged(TOOL_PLACE_TILE);}
     void onUpdateLineNumbers();
+    void onCurrentLinkSelectionChanged(QListWidgetItem*,QListWidgetItem*);
+    void onCurrentLinkValueChanged(QListWidgetItem*);
 };
 
 #endif // MAPAREA_H

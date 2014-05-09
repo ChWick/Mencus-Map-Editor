@@ -54,3 +54,15 @@ void LinksListWidget::onCurrentItemChanged(QListWidgetItem *next, QListWidgetIte
     parentWidget()->findChild<QSpinBox*>("linkSecondPosY")->setValue(lwi->getEntry().mSecondY);
     parentWidget()->findChild<QComboBox*>("linkDirectionComboBox")->setCurrentIndex(lwi->getEntry().mLinkDirection);
 }
+void LinksListWidget::onLinkValueChanged() {
+    if (!currentItem()) {return;}
+    LinksListWidgetItem *lwi = dynamic_cast<LinksListWidgetItem*>(currentItem());
+    lwi->getEntry().mFirstX = parentWidget()->findChild<QSpinBox*>("linkFirstPosX")->value();
+    lwi->getEntry().mFirstY = parentWidget()->findChild<QSpinBox*>("linkFirstPosY")->value();
+    lwi->getEntry().mSecondX = parentWidget()->findChild<QSpinBox*>("linkSecondPosX")->value();
+    lwi->getEntry().mSecondY = parentWidget()->findChild<QSpinBox*>("linkSecondPosY")->value();
+
+    lwi->getEntry().mLinkDirection = static_cast<LinkDirection>(parentWidget()->findChild<QComboBox*>("linkDirectionComboBox")->currentIndex());
+
+    emit sigLinkValueCanged(currentItem());
+}

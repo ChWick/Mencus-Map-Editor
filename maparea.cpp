@@ -9,6 +9,7 @@
 #include <QMimeData>
 #include <QDataStream>
 #include <QDrag>
+#include "linkslistwidget.h"
 
 MapArea::MapArea(QWidget *parent) :
     QGraphicsView(parent)
@@ -249,5 +250,40 @@ void MapArea::onUpdateLineNumbers() {
         text->setDefaultTextColor(Qt::white);
         mLineNumbers.push_back(text);
     }
+    mScene.update();
+}
+
+void MapArea::onCurrentLinkSelectionChanged(QListWidgetItem *next, QListWidgetItem *) {
+    for (auto *p : mLinkTiles) {
+        delete p;
+    }
+    if (!next) {mLinkTiles.resize(0);}
+    mLinkTiles.resize(2);
+
+    LinksListWidgetItem *pItem = dynamic_cast<LinksListWidgetItem*>(next);
+    const LinkEntry &entry = pItem->getEntry();
+
+    mLinkTiles[0] = mScene.addPixmap(QPixmap(QString("gfx/tiles/Tile%1.png").arg(0, 3, 10, QLatin1Char('0'))));
+    mLinkTiles[0]->setPos(entry.mFirstX * 64, (mMap->getTiles().getSizeY() - entry.mFirstY - 1) * 64);
+    mLinkTiles[0]->setOpacity(0.6);
+
+    mLinkTiles[1] = mScene.addPixmap(QPixmap(QString("gfx/tiles/Tile%1.png").arg(0, 3, 10, QLatin1Char('0'))));
+    mLinkTiles[1]->setPos(entry.mSecondX * 64, (mMap->getTiles().getSizeY() - entry.mSecondY - 1) * 64);
+    mLinkTiles[1]->setOpacity(0.6);
+}
+
+void MapArea::onCurrentLinkValueChanged(QListWidgetItem *item) {
+    if (!item) {
+        for (auto *p : mLinkTiles) {
+            delete p;
+        }
+        mLinkTiles.resize(0);
+    }
+
+    LinksListWidgetItem *pItem = dynamic_cast<LinksListWidgetItem*>(item);
+    const LinkEntry &entry = pItem->getEntry();
+
+    mLinkTiles[0]->setPos(entry.mFirstX * 64, (mMap->getTiles().getSizeY() - entry.mFirstY - 1) * 64);
+    mLinkTiles[1]->setPos(entry.mSecondX * 64, (mMap->getTiles().getSizeY() - entry.mSecondY - 1) * 64);
     mScene.update();
 }

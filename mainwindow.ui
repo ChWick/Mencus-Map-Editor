@@ -36,7 +36,7 @@
      <x>0</x>
      <y>0</y>
      <width>1107</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -400,6 +400,8 @@
     <slot>onObjectAdded(Entity*)</slot>
     <slot>onEntityDeleted(Entity*)</slot>
     <slot>onToolChanged(Tools)</slot>
+    <slot>onCurrentLinkSelectionChanged(QListWidgetItem*,QListWidgetItem*)</slot>
+    <slot>onCurrentLinkValueChanged(QListWidgetItem*)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -457,9 +459,11 @@
    <extends>QListWidget</extends>
    <header>linkslistwidget.h</header>
    <slots>
+    <signal>sigLinkValueCanged(QListWidgetItem*)</signal>
     <slot>onAddLink()</slot>
     <slot>onDeleteLink()</slot>
     <slot>onUpdate(MapPtr)</slot>
+    <slot>onLinkValueChanged()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -830,6 +834,118 @@
     <hint type="destinationlabel">
      <x>916</x>
      <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>linksListWidget</sender>
+   <signal>currentItemChanged(QListWidgetItem*,QListWidgetItem*)</signal>
+   <receiver>mapView</receiver>
+   <slot>onCurrentLinkSelectionChanged(QListWidgetItem*,QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>917</x>
+     <y>551</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>515</x>
+     <y>376</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>linkFirstPosX</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>linksListWidget</receiver>
+   <slot>onLinkValueChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>899</x>
+     <y>635</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>917</x>
+     <y>551</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>linkFirstPosY</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>linksListWidget</receiver>
+   <slot>onLinkValueChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1032</x>
+     <y>635</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>917</x>
+     <y>551</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>linkSecondPosX</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>linksListWidget</receiver>
+   <slot>onLinkValueChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>899</x>
+     <y>670</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>917</x>
+     <y>551</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>linkSecondPosY</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>linksListWidget</receiver>
+   <slot>onLinkValueChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1032</x>
+     <y>670</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>917</x>
+     <y>551</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>linkDirectionComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>linksListWidget</receiver>
+   <slot>onLinkValueChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>965</x>
+     <y>704</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>917</x>
+     <y>551</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>linksListWidget</sender>
+   <signal>sigLinkValueCanged(QListWidgetItem*)</signal>
+   <receiver>mapView</receiver>
+   <slot>onCurrentLinkValueChanged(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>917</x>
+     <y>551</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>515</x>
+     <y>376</y>
     </hint>
    </hints>
   </connection>
