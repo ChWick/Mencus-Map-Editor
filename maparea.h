@@ -2,10 +2,12 @@
 #define MAPAREA_H
 
 #include <map.h>
+#include <QList>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include "grid2d.h"
 #include <QGraphicsPixmapItem>
+#include <QGraphicsTextItem>
 #include "toolsdefinition.h"
 
 class MapArea : public QGraphicsView
@@ -21,8 +23,10 @@ private:
     grid2d<QGraphicsPixmapItem*> mTiles;
     Tools mTool;
     unsigned int mGridSize;
+    QList<QGraphicsTextItem*> mLineNumbers;
 public:
     explicit MapArea(QWidget *parent = 0);
+    ~MapArea();
 
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
@@ -50,6 +54,7 @@ public slots:
     void onToolChanged(Tools tool) {mTool = tool; mLeftPressed = mRightPressed = false;}
     void onSelectMove() {onToolChanged(TOOL_MOVE_OBJECT);}
     void onSelectPlaceTile() {onToolChanged(TOOL_PLACE_TILE);}
+    void onUpdateLineNumbers();
 };
 
 #endif // MAPAREA_H

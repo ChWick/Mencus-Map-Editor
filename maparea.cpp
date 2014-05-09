@@ -18,7 +18,22 @@ MapArea::MapArea(QWidget *parent) :
     setAcceptDrops(true);
     mLeftPressed = mRightPressed = false;
     this->setScene(&mScene);
+
+    QObject::connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onUpdateLineNumbers()));
+    QObject::connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onUpdateLineNumbers()));
 }
+
+MapArea::~MapArea() {
+    // disconnect, elsewise these functions will be casted again, that leads to an crash due to an deleted mScene
+    QObject::disconnect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onUpdateLineNumbers()));
+    QObject::disconnect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onUpdateLineNumbers()));
+
+    for (QGraphicsTextItem *ln : mLineNumbers) {
+        delete ln;
+    }
+    mLineNumbers.clear();
+}
+
 void MapArea::onUpdate(MapPtr map) {
     mMap = map;
     this->setScene(&mScene);
@@ -37,15 +52,14 @@ void MapArea::onUpdate(MapPtr map) {
             mTiles(x, y) = pItem;
         }
     }
-    for (unsigned int x = 0; x < map->getTiles().getSizeX(); x++) {
-        mScene.addText(QString("%1").arg(x))->setPos(x * 64, 0);
-    }
 
     for (Entity &ent : mMap->getEntities()) {
         QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(ent.getEntityPicturePath()));
         pItem->setPos(ent.mPos);
         ent.mGraphicsItem = pItem;
     }
+
+    onUpdateLineNumbers();
 
     update();
     show();
@@ -209,5 +223,31 @@ QPoint MapArea::getTilePosFromRelativeMousePos(const QPoint &pos) {
 
 void MapArea::onEntityDeleted(Entity*ent) {
     delete ent->mGraphicsItem;
+    mScene.update();
+}
+
+void MapArea::onUpdateLineNumbers() {
+    for (QGraphicsTextItem *ln : mLineNumbers) {
+        delete ln;
+    }
+    mLineNumbers.clear();
+
+    int startX = static_cast<int>(horizontalScrollBar()->value()) / 64;
+    int startY = static_cast<int>(verticalScrollBar()->value()) / 64;
+
+    int countX = width() / 64;
+    int countY = height() / 64;
+    for (unsigned int x = 0; x < countX + 1; x++) {
+        QGraphicsTextItem *text = mScene.addText(QString("%1").arg(x + startX));
+        text->setPos(x * 64 + static_cast<int>(horizontalScrollBar()->value() / 64) * 64, verticalScrollBar()->value());
+        text->setDefaultTextColor(Qt::white);
+        mLineNumbers.push_back(text);
+    }
+    for (unsigned int y = 0; y < countY + 1; y++) {
+        QGraphicsTextItem *text = mScene.addText(QString("%1").arg(mMap->getTiles().getSizeY() - y - startY - 1));
+        text->setPos(horizontalScrollBar()->value(), y * 64 + static_cast<int>(verticalScrollBar()->value() / 64) * 64);
+        text->setDefaultTextColor(Qt::white);
+        mLineNumbers.push_back(text);
+    }
     mScene.update();
 }
