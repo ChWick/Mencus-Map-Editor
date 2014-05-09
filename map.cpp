@@ -218,8 +218,8 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
                                 getEntitySize(entType, type),
                                 NULL
                             });
+        mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
     }
-    mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
     mCurrentEventList = &(mEntities.back().mEvents);
 }
 
@@ -259,30 +259,38 @@ void Map::writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes 
     stream.writeEndElement();
 }
 void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, int entityOutput, OutputTypes outputType) const {
+    if (outputType == OT_FULL) {
+        entityOutput = ENT_OUT_FULL;
+    }
+    float additionalPosOffset = 0;
     switch (type) {
     case ENTITY_PLAYER:
         stream.writeStartElement("player");
+        additionalPosOffset = entity.mSize.height() / 64;
         break;
     case ENTITY_ENEMY:
         stream.writeStartElement("enemy");
         stream.writeAttribute("type", QString("%1").arg(entity.mSecondaryType));
-        stream.writeAttribute("id", entity.mId);
+        additionalPosOffset = entity.mSize.height() / 64;
         break;
     case ENTITY_OBJECT:
         stream.writeStartElement("object");
-        stream.writeAttribute("id", entity.mId);
+        additionalPosOffset = entity.mSize.height() / 64;
+        break;
+    case ENTITY_REGION:
+        stream.writeStartElement("region");
         break;
     }
 
-    if (outputType & ENT_OUT_TYPE) {stream.writeAttribute("type", QString("%1").arg(entity.mSecondaryType));}
-    if (outputType & ENT_OUT_ID) {stream.writeAttribute("id", entity.mId);}
-    if (outputType & ENT_OUT_POSITION) {
-        stream.writeAttribute("x", QString("%1").arg(entity.mPos.x()));
-        stream.writeAttribute("y", QString("%1").arg(entity.mPos.y()));
+    if (entityOutput & ENT_OUT_TYPE) {stream.writeAttribute("type", QString("%1").arg(entity.mSecondaryType));}
+    if (entityOutput & ENT_OUT_ID) {stream.writeAttribute("id", entity.mId);}
+    if (entityOutput & ENT_OUT_POSITION) {
+        stream.writeAttribute("x", QString("%1").arg(entity.mPos.x() / 64));
+        stream.writeAttribute("y", QString("%1").arg(mTiles.getSizeY() - entity.mPos.y() / 64 - additionalPosOffset));
     }
-    if (outputType & ENT_OUT_SIZE) {
-        stream.writeAttribute("sizex", QString("%1").arg(entity.mSize.width()));
-        stream.writeAttribute("sizey", QString("%1").arg(entity.mSize.height()));
+    if (entityOutput & ENT_OUT_SIZE) {
+        stream.writeAttribute("sizex", QString("%1").arg(entity.mSize.width() / 64));
+        stream.writeAttribute("sizey", QString("%1").arg(entity.mSize.height() / 64));
     }
 
     writeEventList(stream, entity.mEvents, outputType);
@@ -386,6 +394,8 @@ void Map::writeToFile(OutputTypes outputType) {
 
     xmlWriter.writeStartElement("camera");
     xmlWriter.writeEndElement();
+
+    writeEntities(xmlWriter, ENTITY_REGION, outputType);
 
     writeEventList(xmlWriter, mEvents, outputType);
 
