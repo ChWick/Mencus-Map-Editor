@@ -24,6 +24,8 @@ private:
 
     std::shared_ptr<Map> mMap;
 
+    void exportAsZip(const QString &filename);
+
 signals:
     void sigLoadMap(std::shared_ptr<Map>);
     void sigUpdateMap(MapPtr);
@@ -32,6 +34,7 @@ public slots:
     void onSaveAs();
     void onNewMap();
     void onOpenMap();
+    void onPlay();
 };
 
 #endif // MAINWINDOW_H

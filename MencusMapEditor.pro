@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT+=testlib
 
 QMAKE_CXXFLAGS += -std=c++11
 
@@ -12,6 +13,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = MencusMapEditor
 TEMPLATE = app
+
+LIBS += -lquazip -lz
+INCLUDEPATH += /usr/local/quazip/include
 
 
 SOURCES += main.cpp\

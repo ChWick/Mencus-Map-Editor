@@ -363,7 +363,14 @@ void Map::writeEvent(QXmlStreamWriter &stream, const Event::Entry &event, Output
 void Map::writeToFile(OutputTypes outputType) {
     mFile.open(QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text);
 
-    QXmlStreamWriter xmlWriter(&mFile);
+    mFile.write(writeToString(outputType).toUtf8());
+
+    mFile.close();
+}
+
+QString Map::writeToString(OutputTypes outputType) {
+    QString s;
+    QXmlStreamWriter xmlWriter(&s);
     xmlWriter.setAutoFormatting(true);
     xmlWriter.writeStartDocument();
 
@@ -413,5 +420,5 @@ void Map::writeToFile(OutputTypes outputType) {
     xmlWriter.writeEndElement();
     xmlWriter.writeEndDocument();
 
-    mFile.close();
+    return s;
 }

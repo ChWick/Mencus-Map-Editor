@@ -3,6 +3,13 @@
 #include <qfiledialog.h>
 #include <QToolBar>
 #include <QActionGroup>
+#include <QProcess>
+#include <QMessageBox>
+#include <quazip/quazip.h>
+#include <quazip/quazipfile.h>
+#include <QTextStream>
+#include <QByteArray>
+#include <QDataStream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mainToolBar->addAction("New", this, SLOT(onNewMap()));
     mainToolBar->addAction("Open", this, SLOT(onOpenMap()));
     mainToolBar->addAction("Safe", this, SLOT(onSaveAs()));
+    mainToolBar->addAction("Play", this, SLOT(onPlay()));
 
     QToolBar *brushesToolBar = new QToolBar(this);
     this->addToolBar(Qt::TopToolBarArea, brushesToolBar);
@@ -52,6 +60,26 @@ void MainWindow::safeMap(const QString &filePath) {
     mMap->setFilename(filePath);
     mMap->writeToFile(OT_MINIMAL);
 }
+void MainWindow::exportAsZip(const QString &filename) {
+    QFile toremove(filename);
+    toremove.remove();
+
+    QuaZip zip(filename);
+    zip.open(QuaZip::mdAdd);
+    QuaZipFile mapFile(&zip);
+    QuaZipNewInfo info("tmp.xml");
+    info.setPermissions(QFile::WriteOwner | QFile::ReadOwner);
+    if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Truncate, info)) {
+        qWarning("Map zip pack could not open a file");
+    }
+    if (!mapFile.isOpen()) {
+        qWarning("Map zip pack could not open");
+
+    }
+    mapFile.write(mMap->writeToString(OT_MINIMAL).toUtf8());
+    mapFile.close();
+    zip.close();
+}
 
 void MainWindow::onNewMap() {
     mMap = std::shared_ptr<Map>(new Map());
@@ -73,4 +101,18 @@ void MainWindow::onSaveAs() {
     }
 
     safeMap(mapName);
+}
+
+void MainWindow::onPlay() {
+    exportAsZip(QDir::currentPath() + QDir::separator() + "run/tmp.zip");
+
+    QProcess process;
+    process.setWorkingDirectory(QDir::currentPath() + QDir::separator() + "run");
+    QString file = QDir::homePath() + QDir::separator() + "Documents/Projects/Mencus/build_linux/bin/Game";
+    if (!process.startDetached(file)) {
+        QMessageBox::critical(this,
+                              tr("Menucs run..."),
+                              tr("An error has occured during the starting process of mencus game. Error message %1:").arg(process.errorString()),
+                              QMessageBox::Ok);
+    }
 }
