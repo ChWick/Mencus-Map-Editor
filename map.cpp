@@ -219,6 +219,7 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
                                 NULL
                             });
         mEntities.back().mHP = xml.attributes().value("hp").toFloat();
+        mEntities.back().mDirection = xml.attributes().value("direction").toInt();
         mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
     }
     mCurrentEventList = &(mEntities.back().mEvents);
@@ -246,11 +247,11 @@ void Map::writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes 
         return;
     case ENTITY_ENEMY:
         stream.writeStartElement("enemies");
-        entityOutput = ENT_OUT_OBJECT;
+        entityOutput = ENT_OUT_ENEMY;
         break;
     case ENTITY_OBJECT:
         stream.writeStartElement("objects");
-        entityOutput = ENT_OUT_ENEMY;
+        entityOutput = ENT_OUT_OBJECT;
         break;
     }
 
@@ -297,6 +298,9 @@ void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &
     }
     if (entityOutput & ENT_OUT_HP) {
         stream.writeAttribute("hp", QString("%1").arg(entity.mHP));
+    }
+    if (entityOutput & ENT_OUT_DIRECTION) {
+        stream.writeAttribute("direction", QString("%1").arg(entity.mDirection));
     }
 
     writeEventList(stream, entity.mEvents, outputType);

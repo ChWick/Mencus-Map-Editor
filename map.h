@@ -49,11 +49,12 @@ enum EntityOutput {
     ENT_OUT_POSITION    = 4,
     ENT_OUT_SIZE        = 8,
     ENT_OUT_HP          = 16,
+    ENT_OUT_DIRECTION   = 32,
 
-    ENT_OUT_PLAYER      = 4 + ENT_OUT_HP,
+    ENT_OUT_PLAYER      = 4 + ENT_OUT_HP + ENT_OUT_DIRECTION,
     ENT_OUT_REGION      = ENT_OUT_ID | ENT_OUT_POSITION | ENT_OUT_SIZE,
     ENT_OUT_OBJECT      = ENT_OUT_ID | ENT_OUT_TYPE | ENT_OUT_POSITION,
-    ENT_OUT_ENEMY       = ENT_OUT_OBJECT | ENT_OUT_HP,
+    ENT_OUT_ENEMY       = ENT_OUT_OBJECT | ENT_OUT_HP | ENT_OUT_DIRECTION,
     ENT_OUT_FULL        = 2047,
 
 };
@@ -82,6 +83,7 @@ struct Entity {
     // additional attributes
     EVENT_LIST mEvents;
     float mHP;
+    int mDirection;
 
 
     QString getEntityPicturePath() const {return ::getEntityPicturePath(mPrimaryType, mSecondaryType);}
