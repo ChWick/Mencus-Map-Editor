@@ -218,6 +218,7 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
                                 getEntitySize(entType, type),
                                 NULL
                             });
+        mEntities.back().mHP = xml.attributes().value("hp").toFloat();
         mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
     }
     mCurrentEventList = &(mEntities.back().mEvents);
@@ -245,15 +246,17 @@ void Map::writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes 
         return;
     case ENTITY_ENEMY:
         stream.writeStartElement("enemies");
+        entityOutput = ENT_OUT_OBJECT;
         break;
     case ENTITY_OBJECT:
         stream.writeStartElement("objects");
+        entityOutput = ENT_OUT_ENEMY;
         break;
     }
 
     for (const Entity &entity : mEntities) {
         if (entity.mPrimaryType == type)
-            writeEntity(stream, type, entity, ENT_OUT_OBJECT, outputType);
+            writeEntity(stream, type, entity, entityOutput, outputType);
     }
 
     stream.writeEndElement();
@@ -291,6 +294,9 @@ void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &
     if (entityOutput & ENT_OUT_SIZE) {
         stream.writeAttribute("sizex", QString("%1").arg(entity.mSize.width() / 64));
         stream.writeAttribute("sizey", QString("%1").arg(entity.mSize.height() / 64));
+    }
+    if (entityOutput & ENT_OUT_HP) {
+        stream.writeAttribute("hp", QString("%1").arg(entity.mHP));
     }
 
     writeEventList(stream, entity.mEvents, outputType);
