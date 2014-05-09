@@ -59,6 +59,7 @@ private slots:
     void onComboBoxValueChanged(const QString &);
     void onLineEditValueChanged(const QString &);
     void onCheckBoxValueChanged(bool);
+    void onSpinBoxValueChanged(int);
     void onChildDataSelectionTypeChanged(QListWidgetItem*,QListWidgetItem*);
 };
 

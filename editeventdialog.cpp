@@ -4,6 +4,7 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QCheckBox>
+#include <QSpinBox>
 
 using namespace EventData;
 EditEventDialog::EditEventDialog(Event::Entry &event, QWidget *parent) :
@@ -73,6 +74,13 @@ void EditEventDialog::addProperty(const EventAttribute &attribute) {
         pDataWidget = pCB;
 
         QObject::connect(pCB, SIGNAL(toggled(bool)), this, SLOT(onCheckBoxValueChanged(bool)));
+    }
+    else if (attribute.mPropertyType == POSITION_TYPE) {
+        QSpinBox *pSB = new QSpinBox(this);
+        pSB->setValue(defaultValue.toInt());
+        pDataWidget = pSB;
+
+        QObject::connect(pSB, SIGNAL(valueChanged(int)), this, SLOT(onSpinBoxValueChanged(int)));
     }
     QLabel *pLabel = new QLabel(attribute.mLabel);
     bool atBegin = false;
@@ -162,6 +170,22 @@ void EditEventDialog::onCheckBoxValueChanged(bool value) {
 
 }
 
+void EditEventDialog::onSpinBoxValueChanged(int value) {
+    QSpinBox *pSB = dynamic_cast<QSpinBox*>(sender());
+    const DataField *field(getDataFieldByDataWidget(pSB));
+    if (!field) {return;}
+
+    if (field->mEventAttribute->mLayoutType == LAYOUT_EVENT || field->mEventAttribute->mLayoutType == LAYOUT_EMITTER) {
+        mEditingEvent.mData[field->mEventAttribute->mID] = QString("%1").arg(value);
+    }
+    else if (field->mEventAttribute->mLayoutType == LAYOUT_CHILD_DATA) {
+        if (ui->childDataListWidget->currentItem()) {
+            ChildDataListWidgetItem *pItem = dynamic_cast<ChildDataListWidgetItem*>(ui->childDataListWidget->currentItem());
+            (*pItem->getData())[field->mEventAttribute->mID] = QString("%1").arg(value);
+        }
+    }
+}
+
 void EditEventDialog::onUpdateVisibility() {
     QListWidgetItem *pSelectedChildItem = ui->childDataListWidget->currentItem();
     for (const auto &data : mDataFields) {
@@ -224,6 +248,9 @@ void EditEventDialog::onChildDataSelectionTypeChanged(QListWidgetItem*next, QLis
                     break;
                 case BOOL_TYPE:
                     dynamic_cast<QCheckBox*>(data.mWidget)->setChecked(value.toLower() == "true");
+                    break;
+                case POSITION_TYPE:
+                    dynamic_cast<QSpinBox*>(data.mWidget)->setValue(value.toInt());
                     break;
                 }
             }

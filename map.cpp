@@ -159,6 +159,9 @@ Map::Map(const QString &sFileName)
                     (*it).insert(attribute.name().toString(), attribute.value().toString());
                 }
             }
+            else if (xml.name() == "region") {
+                readEntity(xml, ENTITY_REGION);
+            }
         }
         else if (token == QXmlStreamReader::EndElement) {
             if (xml.name() == "enemy"
@@ -193,27 +196,51 @@ QPointF Map::mapToGui(const QPointF &pos) const {
 }
 
 void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
-    int type = xml.attributes().value("type").toInt();
-    mEntities.push_back({
-                            xml.attributes().value("id").toString(),
-                            entType,
-                            type,
-                            mapToGui(QPointF(xml.attributes().value("x").toFloat(),
-                            xml.attributes().value("y").toFloat())) * 64,
-                            getEntitySize(entType, type),
-                            NULL
-                        });
+    if (entType == ENTITY_REGION) {
+        mEntities.push_back({
+                                xml.attributes().value("id").toString(),
+                                entType,
+                                0,
+                                mapToGui(QPointF(xml.attributes().value("x").toFloat(),
+                                xml.attributes().value("y").toFloat())) * 64,
+                                QSizeF(xml.attributes().value("sizex").toFloat(), xml.attributes().value("sizey").toFloat()) * 64,
+                                NULL
+                            });
+    }
+    else {
+        int type = xml.attributes().value("type").toInt();
+        mEntities.push_back({
+                                xml.attributes().value("id").toString(),
+                                entType,
+                                type,
+                                mapToGui(QPointF(xml.attributes().value("x").toFloat(),
+                                xml.attributes().value("y").toFloat())) * 64,
+                                getEntitySize(entType, type),
+                                NULL
+                            });
+    }
     mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
     mCurrentEventList = &(mEntities.back().mEvents);
 }
 
 void Map::writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes outputType) const {
+    int entityOutput = ENT_OUT_FULL;
     switch (type) {
     case ENTITY_PLAYER:
-        // player is written directly
+    case ENTITY_REGION:
+        // written directly
+        switch (type) {
+        case ENTITY_PLAYER:
+            entityOutput = ENT_OUT_PLAYER;
+            break;
+        case ENTITY_REGION:
+            entityOutput = ENT_OUT_REGION;
+            break;
+        }
+
         for (const Entity &entity : mEntities) {
             if (entity.mPrimaryType == type)
-                writeEntity(stream, type, entity, ENT_OUT_PLAYER, outputType);
+                writeEntity(stream, type, entity, entityOutput, outputType);
         }
         return;
     case ENTITY_ENEMY:
@@ -221,16 +248,17 @@ void Map::writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes 
         break;
     case ENTITY_OBJECT:
         stream.writeStartElement("objects");
+        break;
     }
 
     for (const Entity &entity : mEntities) {
         if (entity.mPrimaryType == type)
-            writeEntity(stream, type, entity, ENT_OUT_FULL, outputType);
+            writeEntity(stream, type, entity, ENT_OUT_OBJECT, outputType);
     }
 
     stream.writeEndElement();
 }
-void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, EntityOutput entityOutput, OutputTypes outputType) const {
+void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, int entityOutput, OutputTypes outputType) const {
     switch (type) {
     case ENTITY_PLAYER:
         stream.writeStartElement("player");
@@ -251,6 +279,10 @@ void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &
     if (outputType & ENT_OUT_POSITION) {
         stream.writeAttribute("x", QString("%1").arg(entity.mPos.x()));
         stream.writeAttribute("y", QString("%1").arg(entity.mPos.y()));
+    }
+    if (outputType & ENT_OUT_SIZE) {
+        stream.writeAttribute("sizex", QString("%1").arg(entity.mSize.width()));
+        stream.writeAttribute("sizey", QString("%1").arg(entity.mSize.height()));
     }
 
     writeEventList(stream, entity.mEvents, outputType);

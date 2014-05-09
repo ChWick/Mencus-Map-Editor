@@ -3,6 +3,8 @@
 
 #include <QString>
 #include <QStringList>
+#include <QVector>
+#include <QPair>
 #include "map.h"
 
 namespace EventData {
@@ -16,6 +18,7 @@ enum PropertyTypes {
     BUTTON_TYPE,
     BOOL_TYPE,
     SELECT_TYPE,
+    POSITION_TYPE,
 };
 enum LayoutType {
     LAYOUT_EVENT,
@@ -23,27 +26,87 @@ enum LayoutType {
     LAYOUT_CHILD_DATA,
 };
 
+enum BoolOperation {
+    OP_AND,
+    OP_OR,
+};
+enum EqualsCondition {
+    EQUAL,
+    NOT_EQUAL,
+};
+
+struct AttributeCheckBase {
+    virtual bool isActive(const Event::Entry &ent) const = 0;
+};
+
+struct AttributeCondition : public AttributeCheckBase {
+    AttributeCondition(const QString &key, const QString &value, EqualsCondition cond = EQUAL)
+        : mKey(key), mValue(value), mCondition(cond) {
+
+    }
+
+    QString mKey;
+    QString mValue;
+    EqualsCondition mCondition;
+
+    virtual bool isActive(const Event::Entry &ent) const  {
+        if (ent.mData.contains(mKey) == false) {return mCondition == NOT_EQUAL;}
+        if (mCondition == EQUAL) {
+            return ent.mData[mKey] == mValue;
+        }
+        return ent.mData[mKey] != mValue;
+    }
+};
+
+struct AttributeOperation : public AttributeCheckBase {
+    BoolOperation mOperation;
+    std::shared_ptr<AttributeCheckBase> mFirst;
+    std::shared_ptr<AttributeCheckBase> mSecond;
+
+
+    virtual bool isActive(const Event::Entry &ent) const  {
+        if (mOperation == OP_AND) {
+            return mFirst->isActive(ent) && mSecond->isActive(ent);
+        }
+        else {
+            return mFirst->isActive(ent) || mSecond->isActive(ent);
+        }
+    }
+};
+
 typedef QMap<QString, QString> ATTRIBUTE_MAP;
+typedef QPair<QString, QString> CONDITION_PAIR;
+typedef QVector<CONDITION_PAIR> CONDITION_LIST;
 struct EventAttribute {
     QString mID;
     QString mLabel;
     PropertyTypes mPropertyType;
     LayoutType mLayoutType;
-    ATTRIBUTE_MAP mAttributeConditions;
     QStringList mAllowedValues;
+    std::shared_ptr<AttributeCheckBase> mAttributeConditions;
 
-    EventAttribute &addAttributeCondition(const QString &key, const QString &value) {
-        mAttributeConditions[key] = value;
-        return *this;
+    void addAttributeCondition(const QString &key, const QString &value) {
+        mAttributeConditions = std::shared_ptr<AttributeCheckBase>(new AttributeCondition(key, value));
+    }
+    void setAttributeConditionList(const CONDITION_LIST &pairs, BoolOperation op = OP_AND) {
+        int index = 0;
+        std::shared_ptr<AttributeCheckBase> *condition = &mAttributeConditions;
+
+        while (index < pairs.size() - 1) {
+            AttributeOperation *pOp = new AttributeOperation();
+            pOp->mOperation = op;
+            pOp->mFirst = std::shared_ptr<AttributeCheckBase>(new AttributeCondition(pairs[index].first, pairs[index].second));
+            *condition = std::shared_ptr<AttributeCheckBase>(pOp);
+            condition = &pOp->mSecond;
+
+            index++;
+        }
+        *condition = std::shared_ptr<AttributeCheckBase>(new AttributeCondition(pairs[index].first, pairs[index].second));
     }
 
     virtual bool isActive(const Event::Entry &ent) const {
-        for (ATTRIBUTE_MAP::const_iterator it = mAttributeConditions.cbegin(); it != mAttributeConditions.cend(); it++) {
-            if (ent.mData.contains(it.key()) == false) {return false;}
-            if (ent.mData[it.key()] != it.value()) {
-                return false;
-            }
-        }
+        if (mAttributeConditions) {return mAttributeConditions->isActive(ent);}
+
         return true;
     }
 };

@@ -40,14 +40,18 @@ enum EntityTypes {
     ENTITY_PLAYER       = 1,
     ENTITY_ENEMY        = 2,
     ENTITY_OBJECT       = 4,
+    ENTITY_REGION       = 8,
 };
 
 enum EntityOutput {
     ENT_OUT_ID          = 1,
     ENT_OUT_TYPE        = 2,
     ENT_OUT_POSITION    = 4,
+    ENT_OUT_SIZE        = 8,
 
     ENT_OUT_PLAYER      = 4,
+    ENT_OUT_REGION      = ENT_OUT_ID | ENT_OUT_POSITION | ENT_OUT_SIZE,
+    ENT_OUT_OBJECT      = ENT_OUT_ID | ENT_OUT_TYPE | ENT_OUT_POSITION,
     ENT_OUT_FULL        = 2047,
 
 };
@@ -133,7 +137,7 @@ public:
 private:
     void readEntity(const QXmlStreamReader &stream, EntityTypes type);
     void writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes outputType) const;
-    void writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, EntityOutput entityOutput, OutputTypes outputType) const;
+    void writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, int entityOutput, OutputTypes outputType) const;
     void writeEventList(QXmlStreamWriter &stream, const EVENT_LIST &event, OutputTypes outputType) const;
     void writeEvent(QXmlStreamWriter &stream, const Event::Entry &event, OutputTypes outputTypes) const;
 

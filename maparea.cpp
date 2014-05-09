@@ -39,6 +39,7 @@ void MapArea::onUpdate(MapPtr map) {
     mMap = map;
     this->setScene(&mScene);
 
+    mLineNumbers.clear();
     mScene.clear();
     mScene.setSceneRect(QRect(0, 0, map->getTiles().getSizeX() * 64, map->getTiles().getSizeY() * 64));
     mTiles.resize(map->getTiles().getSizeX(), map->getTiles().getSizeY());
