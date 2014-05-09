@@ -14,7 +14,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = MencusMapEditor
 TEMPLATE = app
 
-LIBS += -lquazip -lz
+LIBS += -L/usr/local/quazip/lib -lquazip -lz
 INCLUDEPATH += /usr/local/quazip/include
 
 
@@ -29,7 +29,9 @@ SOURCES += main.cpp\
     eventslistwidget.cpp \
     editeventdialog.cpp \
     linkslistwidget.cpp \
-    eventdatamask.cpp
+    eventdatamask.cpp \
+    edittextdialog.cpp \
+    languageresources.cpp
 
 HEADERS  += mainwindow.h \
     map.h \
@@ -43,7 +45,10 @@ HEADERS  += mainwindow.h \
     eventslistwidget.h \
     editeventdialog.h \
     linkslistwidget.h \
-    eventdatamask.h
+    eventdatamask.h \
+    edittextdialog.h \
+    languageresources.h
 
 FORMS    += mainwindow.ui \
-    editeventdialog.ui
+    editeventdialog.ui \
+    edittextdialog.ui

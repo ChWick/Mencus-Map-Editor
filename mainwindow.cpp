@@ -10,6 +10,7 @@
 #include <QTextStream>
 #include <QByteArray>
 #include <QDataStream>
+#include "edittextdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
     pFileMenu->addAction(tr("&Open map"), this, SLOT(onOpenMap()));
     pFileMenu->addAction(tr("Save &as"), this, SLOT(onSaveAs()));
     pFileMenu->addAction(tr("E&xit"), this, SLOT(close()));
+
+    QMenu *pEditMenu = ui->menuBar->addMenu(tr("&Edit"));
+    pEditMenu->addAction(tr("Edit &texts"), this, SLOT(onEditTexts()));
 
     QToolBar *mainToolBar = new QToolBar(this);
     this->addToolBar(Qt::TopToolBarArea, mainToolBar);
@@ -115,4 +119,9 @@ void MainWindow::onPlay() {
                               tr("An error has occured during the starting process of mencus game. Error message %1:").arg(process.errorString()),
                               QMessageBox::Ok);
     }
+}
+
+void MainWindow::onEditTexts() {
+    EditTextDialog dialog(mMap->getLanguageResources(), this);
+    dialog.exec();
 }

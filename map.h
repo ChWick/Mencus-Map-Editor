@@ -9,6 +9,7 @@
 #include <QPointF>
 #include <QSizeF>
 #include <QMap>
+#include "languageresources.h"
 
 class QGraphicsPixmapItem;
 class QXmlStreamReader;
@@ -121,6 +122,7 @@ private:
 
     QList<Event::Entry> *mCurrentEventList;
     link_entry_list mLinksList;
+    language::LanguageResources mLanguageResources;
 public:
     Map();
     Map(const QString &sFileName);
@@ -140,6 +142,8 @@ public:
 
     QPointF guiToMap(const QPointF &pos) const;
     QPointF mapToGui(const QPointF &pos) const;
+
+    language::LanguageResources &getLanguageResources() {return mLanguageResources;}
 
 private:
     void readEntity(const QXmlStreamReader &stream, EntityTypes type);
