@@ -82,11 +82,9 @@ void EditTextDialog::onTextIdChanged(QListWidgetItem*item) {
     else {
         if (item->data(Qt::UserRole).isValid()) {
             for (language::Resources &res : mEditedResources.getLanguageMap()) {
-                language::string_data_map::iterator it = res.mStringData.find(text);
-                if (it != res.mStringData.end()) {
-                    res.mStringData[qvariant_cast<QString>(item->data(Qt::UserRole))] = it.value();
-                    res.mStringData.erase(it);
-                }
+                language::StringData &s = res.getStringDataById(qvariant_cast<QString>(item->data(Qt::UserRole)));
+
+                s.mId = text;
             }
         }
         item->setData(Qt::UserRole, text);
@@ -113,7 +111,7 @@ void EditTextDialog::onTextChanged() {
     if (pLanguageSelect->currentIndex() == -1) {return;}
 
     QString languageCode = qvariant_cast<QString>(pLanguageSelect->currentData());
-    mEditedResources.getLanguageMap()[languageCode].mStringData[ui->textsListWidget->currentItem()->text()] = pText->toPlainText();
+    mEditedResources.getResourceByLanguageId(languageCode).getStringDataById(ui->textsListWidget->currentItem()->text()).mString = pText->toPlainText();
 
     if (pOtherLanguageSelect->currentText() == pLanguageSelect->currentText()) {
         QObject::disconnect(pOtherText, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
@@ -125,11 +123,11 @@ void EditTextDialog::onTextChanged() {
 void EditTextDialog::onCurrentTextIdSelectionChanged(QListWidgetItem*cur,QListWidgetItem*) {
     if (ui->languageSelect1ComboBox->currentIndex() != -1) {
         QString languageCode = qvariant_cast<QString>(ui->languageSelect1ComboBox->currentData());
-        ui->plainTextEdit->setPlainText(mEditedResources.getLanguageMap()[languageCode].mStringData[cur->text()]);
+        ui->plainTextEdit->setPlainText(mEditedResources.getResourceByLanguageId(languageCode).getStringDataById(cur->text()).mString);
     }
     if (ui->languageSelect2ComboBox->currentIndex() != -1) {
         QString languageCode = qvariant_cast<QString>(ui->languageSelect2ComboBox->currentData());
-        ui->plainTextEdit_2->setPlainText(mEditedResources.getLanguageMap()[languageCode].mStringData[cur->text()]);
+        ui->plainTextEdit_2->setPlainText(mEditedResources.getResourceByLanguageId(languageCode).getStringDataById(cur->text()).mString);
     }
 }
 
@@ -147,6 +145,6 @@ void EditTextDialog::onLanguageChanged(QString) {
 
 
     QString languageCode = qvariant_cast<QString>(pCB->currentData());
-    pText->setPlainText(mEditedResources.getLanguageMap()[languageCode].mStringData[ui->textsListWidget->currentItem()->text()]);
+    pText->setPlainText(mEditedResources.getResourceByLanguageId(languageCode).getStringDataById(ui->textsListWidget->currentItem()->text()).mString);
 
 }
