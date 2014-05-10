@@ -121,6 +121,11 @@ void EditTextDialog::onTextChanged() {
 }
 
 void EditTextDialog::onCurrentTextIdSelectionChanged(QListWidgetItem*cur,QListWidgetItem*) {
+    if (cur == nullptr) {
+        ui->plainTextEdit->setPlainText("");
+        ui->plainTextEdit_2->setPlainText("");
+        return;
+    }
     if (ui->languageSelect1ComboBox->currentIndex() != -1) {
         QString languageCode = qvariant_cast<QString>(ui->languageSelect1ComboBox->currentData());
         ui->plainTextEdit->setPlainText(mEditedResources.getResourceByLanguageId(languageCode).getStringDataById(cur->text()).mString);

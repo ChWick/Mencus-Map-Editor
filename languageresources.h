@@ -42,6 +42,9 @@ private:
 public:
     LanguageResources();
 
+    void loadFromFileSystem(const QString &rootDirectory);
+    void writeToFileSystem(const QString &rootDirectory);
+
     Resources &getResourceByLanguageId(const QString &str) {
         for (Resources &r : mLanguageMap) {
             if (str == r.mLanguageId) {
@@ -61,6 +64,8 @@ public:
     const language_map &getLanguageMap() const {return mLanguageMap;}
     const QStringList &getStringIds() const {return mStringIds;}
     const QMap<QString, QString> getLanguageIds() const {return mLanguageIds;}
+private:
+    QString writeToString(const QString &id);
 };
 
 };

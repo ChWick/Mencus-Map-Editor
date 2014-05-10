@@ -183,6 +183,8 @@ Map::Map(const QString &sFileName)
     xml.clear();
 
     mFile.close();
+
+    mLanguageResources.loadFromFileSystem(mFile.fileName().left(mFile.fileName().lastIndexOf("/")));
 }
 
 QPointF Map::guiToMap(const QPointF &pos) const {
@@ -366,6 +368,8 @@ void Map::writeToFile(OutputTypes outputType) {
     mFile.write(writeToString(outputType).toUtf8());
 
     mFile.close();
+
+    mLanguageResources.writeToFileSystem(mFile.fileName().left(mFile.fileName().lastIndexOf("/")));
 }
 
 QString Map::writeToString(OutputTypes outputType) {
