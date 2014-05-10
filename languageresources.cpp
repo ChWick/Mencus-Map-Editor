@@ -3,6 +3,7 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 #include <QDir>
+#include <quazip/quazipdir.h>
 
 using namespace language;
 
@@ -71,6 +72,29 @@ void LanguageResources::writeToFileSystem(const QString &rootDirectory) {
         }
         file.write(writeToString(id).toUtf8());
         file.close();
+    }
+}
+
+void LanguageResources::writeToZipFile(QuaZip &zip) {
+    for (QString id : mLanguageIds.keys()) {
+        QString filename = "res/values";
+        if (id != "en") {
+            // default language
+            filename += "-" + id;
+        }
+        filename += "/strings.xml";
+
+        QuaZipFile mapFile(&zip);
+        QuaZipNewInfo info(filename);
+        info.setPermissions(QFile::WriteOwner | QFile::ReadOwner);
+        if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Truncate, info)) {
+            qWarning("Map zip pack could not open a file");
+        }
+        if (!mapFile.isOpen()) {
+            qWarning("Map zip pack could not open");
+        }
+        mapFile.write(writeToString(id).toUtf8());
+        mapFile.close();
     }
 }
 

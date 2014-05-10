@@ -4,6 +4,8 @@
 #include <QString>
 #include <QStringList>
 #include <QMap>
+#include "quazip/quazip.h"
+#include "quazip/quazipfile.h"
 
 namespace language {
 
@@ -44,6 +46,7 @@ public:
 
     void loadFromFileSystem(const QString &rootDirectory);
     void writeToFileSystem(const QString &rootDirectory);
+    void writeToZipFile(QuaZip &zip);
 
     Resources &getResourceByLanguageId(const QString &str) {
         for (Resources &r : mLanguageMap) {

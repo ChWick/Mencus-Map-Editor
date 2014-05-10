@@ -372,6 +372,22 @@ void Map::writeToFile(OutputTypes outputType) {
     mLanguageResources.writeToFileSystem(mFile.fileName().left(mFile.fileName().lastIndexOf("/")));
 }
 
+void Map::writeToZip(QuaZip &zip) {
+    QuaZipFile mapFile(&zip);
+    QuaZipNewInfo info(mFile.fileName().right(mFile.fileName().length() - mFile.fileName().lastIndexOf("/")));
+    info.setPermissions(QFile::WriteOwner | QFile::ReadOwner);
+    if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Truncate, info)) {
+        qWarning("Map zip pack could not open a file");
+    }
+    if (!mapFile.isOpen()) {
+        qWarning("Map zip pack could not open");
+    }
+    mapFile.write(writeToString(OT_MINIMAL).toUtf8());
+    mapFile.close();
+
+    mLanguageResources.writeToZipFile(zip);
+}
+
 QString Map::writeToString(OutputTypes outputType) {
     QString s;
     QXmlStreamWriter xmlWriter(&s);

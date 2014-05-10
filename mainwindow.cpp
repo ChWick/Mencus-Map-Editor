@@ -70,18 +70,7 @@ void MainWindow::exportAsZip(const QString &filename) {
 
     QuaZip zip(filename);
     zip.open(QuaZip::mdAdd);
-    QuaZipFile mapFile(&zip);
-    QuaZipNewInfo info("tmp.xml");
-    info.setPermissions(QFile::WriteOwner | QFile::ReadOwner);
-    if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Truncate, info)) {
-        qWarning("Map zip pack could not open a file");
-    }
-    if (!mapFile.isOpen()) {
-        qWarning("Map zip pack could not open");
-
-    }
-    mapFile.write(mMap->writeToString(OT_MINIMAL).toUtf8());
-    mapFile.close();
+    mMap->writeToZip(zip);
     zip.close();
 }
 
@@ -108,6 +97,8 @@ void MainWindow::onSaveAs() {
 }
 
 void MainWindow::onPlay() {
+    QDir dir(QDir::currentPath());
+    dir.mkpath("run");
     exportAsZip(QDir::currentPath() + QDir::separator() + "run/tmp.zip");
 
     QProcess process;

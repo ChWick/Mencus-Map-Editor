@@ -10,6 +10,8 @@
 #include <QSizeF>
 #include <QMap>
 #include "languageresources.h"
+#include "quazip/quazip.h"
+#include "quazip/quazipfile.h"
 
 class QGraphicsPixmapItem;
 class QXmlStreamReader;
@@ -129,6 +131,7 @@ public:
 
     void setFilename(const QString &filename) {mFile.setFileName(filename);}
     void writeToFile(OutputTypes outputType);
+    void writeToZip(QuaZip &zip);
     QString writeToString(OutputTypes outputType);
 
     const grid2d<unsigned int> &getTiles() const {return mTiles;}
