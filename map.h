@@ -83,7 +83,37 @@ struct Entity {
 
     QGraphicsPixmapItem *mGraphicsItem;
 
+    Entity(QString id, EntityTypes primType, unsigned int secType, const QPointF &pos, const QSizeF &size)
+        : mId(id), mPrimaryType(primType), mSecondaryType(secType), mPos(pos), mSize(size),
+    mEntityOutputFlags(0), mEvents(EVENT_LIST()), mHP(-1), mDirection(1) {
+
+        switch (primType) {
+        case ENTITY_PLAYER:
+            mEntityOutputFlags = ENT_OUT_PLAYER;
+            break;
+        case ENTITY_REGION:
+            mEntityOutputFlags = ENT_OUT_REGION;
+            break;
+        case ENTITY_OBJECT:
+            mEntityOutputFlags = ENT_OUT_PLAYER;
+            break;
+        case ENTITY_ENEMY:
+            mEntityOutputFlags = ENT_OUT_OBJECT;
+            break;
+        }
+    }
+    Entity() {
+
+    }
+
+    /*Entity(const Entity &e)
+        : mId(e.mId), mPrimaryType(e.mPrimaryType), mSecondaryType(e.mSecondaryType), mPos(e.mPos), mSize(e.mSize),
+    mEntityOutputFlags(e.mEntityOutputFlags), {
+
+    }*/
+
     // additional attributes
+    int mEntityOutputFlags;
     EVENT_LIST mEvents;
     float mHP;
     int mDirection;
@@ -130,6 +160,12 @@ public:
     Map(const QString &sFileName);
 
     void setFilename(const QString &filename) {mFile.setFileName(filename);}
+    QString getMapName() const {
+        QString s(mFile.fileName());
+        s = s.left(s.lastIndexOf("."));
+        s = s.right(s.length() - s.lastIndexOf("/"));
+        return s;
+    }
     void writeToFile(OutputTypes outputType);
     void writeToZip(QuaZip &zip);
     QString writeToString(OutputTypes outputType);
@@ -151,7 +187,7 @@ public:
 private:
     void readEntity(const QXmlStreamReader &stream, EntityTypes type);
     void writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes outputType) const;
-    void writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, int entityOutput, OutputTypes outputType) const;
+    void writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, OutputTypes outputType) const;
     void writeEventList(QXmlStreamWriter &stream, const EVENT_LIST &event, OutputTypes outputType) const;
     void writeEvent(QXmlStreamWriter &stream, const Event::Entry &event, OutputTypes outputTypes) const;
 

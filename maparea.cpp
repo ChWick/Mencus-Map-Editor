@@ -102,14 +102,14 @@ void MapArea::dropEvent(QDropEvent *event) {
 
         QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(getEntityPicturePath(static_cast<EntityTypes>(entityType), secondaryType)));
         // add object to map
-        Entity ent({
+        Entity ent(
                        id,
                        static_cast<EntityTypes>(entityType),
                        secondaryType,
                        event->posF() - hotspot,
-                       size,
-                       pItem
-                   });
+                       size
+                   );
+        ent.mGraphicsItem = pItem;
         setPositionFromLocalPos(event->posF() - hotspot, &ent);
         emit sigObjectAdded(&ent);
     }

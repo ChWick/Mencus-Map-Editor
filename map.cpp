@@ -199,27 +199,25 @@ QPointF Map::mapToGui(const QPointF &pos) const {
 
 void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
     if (entType == ENTITY_REGION) {
-        mEntities.push_back({
+        mEntities.push_back(Entity(
                                 xml.attributes().value("id").toString(),
                                 entType,
                                 0,
                                 mapToGui(QPointF(xml.attributes().value("x").toFloat(),
                                 xml.attributes().value("y").toFloat())) * 64,
-                                QSizeF(xml.attributes().value("sizex").toFloat(), xml.attributes().value("sizey").toFloat()) * 64,
-                                NULL
-                            });
+                                QSizeF(xml.attributes().value("sizex").toFloat(), xml.attributes().value("sizey").toFloat()) * 64
+                            ));
     }
     else {
         int type = xml.attributes().value("type").toInt();
-        mEntities.push_back({
+        mEntities.push_back(Entity(
                                 xml.attributes().value("id").toString(),
                                 entType,
                                 type,
                                 mapToGui(QPointF(xml.attributes().value("x").toFloat(),
                                 xml.attributes().value("y").toFloat())) * 64,
-                                getEntitySize(entType, type),
-                                NULL
-                            });
+                                getEntitySize(entType, type)
+                            ));
         mEntities.back().mHP = xml.attributes().value("hp").toFloat();
         mEntities.back().mDirection = xml.attributes().value("direction").toInt();
         mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
@@ -228,43 +226,32 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
 }
 
 void Map::writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes outputType) const {
-    int entityOutput = ENT_OUT_FULL;
     switch (type) {
     case ENTITY_PLAYER:
     case ENTITY_REGION:
         // written directly
-        switch (type) {
-        case ENTITY_PLAYER:
-            entityOutput = ENT_OUT_PLAYER;
-            break;
-        case ENTITY_REGION:
-            entityOutput = ENT_OUT_REGION;
-            break;
-        }
-
         for (const Entity &entity : mEntities) {
             if (entity.mPrimaryType == type)
-                writeEntity(stream, type, entity, entityOutput, outputType);
+                writeEntity(stream, type, entity, outputType);
         }
         return;
     case ENTITY_ENEMY:
         stream.writeStartElement("enemies");
-        entityOutput = ENT_OUT_ENEMY;
         break;
     case ENTITY_OBJECT:
         stream.writeStartElement("objects");
-        entityOutput = ENT_OUT_OBJECT;
         break;
     }
 
     for (const Entity &entity : mEntities) {
         if (entity.mPrimaryType == type)
-            writeEntity(stream, type, entity, entityOutput, outputType);
+            writeEntity(stream, type, entity, outputType);
     }
 
     stream.writeEndElement();
 }
-void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, int entityOutput, OutputTypes outputType) const {
+void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, OutputTypes outputType) const {
+    int entityOutput = entity.mEntityOutputFlags;
     if (outputType == OT_FULL) {
         entityOutput = ENT_OUT_FULL;
     }

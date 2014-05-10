@@ -36,6 +36,9 @@ public slots:
     void onOpenMap();
     void onPlay();
     void onEditTexts();
+
+private slots:
+    void onProcessOutput();
 };
 
 #endif // MAINWINDOW_H

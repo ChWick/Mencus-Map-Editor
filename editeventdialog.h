@@ -37,6 +37,7 @@ private:
     };
 
 private:
+    Ui::EditEventDialog *ui;
     Event::Entry &mEvent;
     Event::Entry mEditingEvent;
     QVector<DataField> mDataFields;
@@ -45,7 +46,6 @@ public:
     ~EditEventDialog();
 
 private:
-    Ui::EditEventDialog *ui;
 
     void addProperty(const EventData::EventAttribute &attribute);
     const DataField *getDataFieldByDataWidget(QWidget *pDataWidget);

@@ -36,7 +36,7 @@
      <x>0</x>
      <y>0</y>
      <width>1107</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>
@@ -161,6 +161,25 @@
            </widget>
           </item>
          </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_3">
+       <property name="title">
+        <string>Properties</string>
+       </property>
+       <layout class="QFormLayout" name="formLayout_2">
+        <item row="0" column="0">
+         <widget class="QLabel" name="hitpointsLabel">
+          <property name="text">
+           <string>Hitpoints</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="hitpointsLineEdit"/>
         </item>
        </layout>
       </widget>
@@ -384,6 +403,28 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QDockWidget" name="outputDockWidget">
+   <property name="windowTitle">
+    <string>Output</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
+      <widget class="QPlainTextEdit" name="outputText">
+       <property name="undoRedoEnabled">
+        <bool>false</bool>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -433,6 +474,7 @@
     <slot>onObjectAdded(Entity*)</slot>
     <slot>onDeleteSelection()</slot>
     <slot>onEntityDeleted(Entity*)</slot>
+    <slot>onHpChanged(QString)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -946,6 +988,22 @@
     <hint type="destinationlabel">
      <x>515</x>
      <y>376</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>hitpointsLineEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onHpChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>971</x>
+     <y>407</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>937</x>
+     <y>123</y>
     </hint>
    </hints>
   </connection>

@@ -58,14 +58,14 @@ void ObjectsGraphicsView::mousePressEvent(QMouseEvent *e) {
 void ObjectsGraphicsView::addObject(const QPointF &pos, const QSizeF &size, EntityTypes primaryType, int secondaryType) {
     QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(getEntityPicturePath(primaryType, secondaryType)));
     pItem->setPos(pos);
-    Entity oe = {
+    Entity oe(
         "New entity",
         primaryType,
         secondaryType,
         pos,
-        size,
-        pItem
-    };
+        size
+    );
+    oe.mGraphicsItem = pItem;
     mObjects.push_back(oe);
 }
 Entity *ObjectsGraphicsView::getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset) {

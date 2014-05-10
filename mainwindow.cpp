@@ -99,15 +99,29 @@ void MainWindow::onSaveAs() {
 void MainWindow::onPlay() {
     QDir dir(QDir::currentPath());
     dir.mkpath("run");
-    exportAsZip(QDir::currentPath() + QDir::separator() + "run/tmp.zip");
+    //QString zipPath = QDir::currentPath() + QDir::separator() + "run/tmp.zip";
+    QString zipPath = QDir::homePath() + "/Documents/Projects/Mencus/level/user/" + mMap->getMapName() + ".zip";
+    exportAsZip(zipPath);
 
-    QProcess process;
-    process.setWorkingDirectory(QDir::currentPath() + QDir::separator() + "run");
+    QProcess *process = new QProcess(this);
+    QObject::connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(onProcessOutput()));
+    QObject::connect(process, SIGNAL(readyReadStandardError()), this, SLOT(onProcessOutput()));
+    process->setWorkingDirectory(QDir::currentPath() + QDir::separator() + "run");
     QString file = QDir::homePath() + QDir::separator() + "Documents/Projects/Mencus/build_linux/bin/Game";
-    if (!process.startDetached(file)) {
+    process->setWorkingDirectory(QDir::homePath() + QDir::separator() + "Documents/Projects/Mencus/build_linux");
+
+    QFile backup(process->workingDirectory() + "/backup.xml");
+    backup.open(QIODevice::Truncate | QIODevice::Text | QIODevice::WriteOnly);
+    backup.write(QString(
+                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                     "<snapshot version=\"1\" game_state=\"5\" map_name=\"" + mMap->getMapName() + "\"/>").toUtf8());
+    backup.close();
+    process->start(file);
+    process->waitForStarted();
+    if (process->state() == QProcess::NotRunning) {
         QMessageBox::critical(this,
                               tr("Menucs run..."),
-                              tr("An error has occured during the starting process of mencus game. Error message %1:").arg(process.errorString()),
+                              tr("An error has occured during the starting process of mencus game. Error message %1:").arg(process->errorString()),
                               QMessageBox::Ok);
     }
 }
@@ -115,4 +129,9 @@ void MainWindow::onPlay() {
 void MainWindow::onEditTexts() {
     EditTextDialog dialog(mMap->getLanguageResources(), this);
     dialog.exec();
+}
+
+void MainWindow::onProcessOutput() {
+    QProcess *process = dynamic_cast<QProcess*>(sender());
+    ui->outputText->setPlainText(ui->outputText->toPlainText() + "\n" + QString(process->readAll()));
 }

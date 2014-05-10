@@ -4,6 +4,7 @@
 EntitiesListWidget::EntitiesListWidget(QWidget *parent) :
     QListWidget(parent)
 {
+    QObject::connect(this, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this, SLOT(onItemSelectionChanged(QListWidgetItem*,QListWidgetItem*)));
 }
 void EntitiesListWidget::onUpdate(MapPtr map) {
     clear();
@@ -41,8 +42,8 @@ void EntitiesListWidget::onObjectAdded(Entity* ent) {
 void EntitiesListWidget::onDeleteSelection() {
     if (selectedItems().size() == 0) {return;}
     QListWidgetItem *pItem = selectedItems().first();
-    Entity pEnt = *static_cast<Entity*>(qvariant_cast<void*>(pItem->data(Qt::UserRole)));
-    emit sigEntityDeleted(&pEnt);
+    Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(pItem->data(Qt::UserRole)));
+    emit sigEntityDeleted(pEnt);
 }
 void EntitiesListWidget::onEntityDeleted(Entity *ent) {
     // start at 1 since map cant be deleted
@@ -58,4 +59,18 @@ void EntitiesListWidget::onEntityDeleted(Entity *ent) {
             break;
         }
     }
+}
+void EntitiesListWidget::onItemSelectionChanged(QListWidgetItem *next, QListWidgetItem *) {
+    bool bHP = false;
+    if (next) {
+        Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(next->data(Qt::UserRole)));
+        bHP = (pEnt->mEntityOutputFlags & ENT_OUT_HP);
+    }
+    parent()->parent()->findChild<QWidget*>("hitpointsLineEdit")->setEnabled(bHP);
+    parent()->parent()->findChild<QWidget*>("hitpointsLabel")->setEnabled(bHP);
+}
+void EntitiesListWidget::onHpChanged(QString t) {
+    if (currentItem() == nullptr) {return;}
+    Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(currentItem()->data(Qt::UserRole)));
+    pEnt->mHP = t.toFloat();
 }

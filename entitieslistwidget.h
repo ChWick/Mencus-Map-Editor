@@ -20,9 +20,11 @@ public slots:
     void onObjectAdded(Entity*);
     void onDeleteSelection();
     void onEntityDeleted(Entity*);
+    void onHpChanged(QString);
 
 private slots:
     void onItemChanged(QListWidgetItem *);
+    void onItemSelectionChanged(QListWidgetItem *, QListWidgetItem *);
 };
 
 #endif // ENTITIESLISTWIDGET_H
