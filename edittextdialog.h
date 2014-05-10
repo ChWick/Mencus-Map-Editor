@@ -13,6 +13,7 @@ class EditTextDialog : public QDialog
 {
     Q_OBJECT
 private:
+    Ui::EditTextDialog *ui;
     language::LanguageResources &mResources;
     language::LanguageResources mEditedResources;
 public:
@@ -20,7 +21,6 @@ public:
     ~EditTextDialog();
 
 private:
-    Ui::EditTextDialog *ui;
 
     bool makeIdUnique(QString &text) const;
     void updateStringIds();
