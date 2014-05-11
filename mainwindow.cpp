@@ -14,6 +14,7 @@
 #include "editexecutabledialog.h"
 #include <QSettings>
 #include <QScrollBar>
+#include "editmapsizedialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -31,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMenu *pEditMenu = ui->menuBar->addMenu(tr("&Edit"));
     pEditMenu->addAction(tr("Edit &texts"), this, SLOT(onEditTexts()));
     pEditMenu->addAction(tr("Edit exeutable &path"), this, SLOT(onEditExecutablePath()));
+    pEditMenu->addAction(tr("Edit map &size"), this, SLOT(onEditMapSize()));
 
     QToolBar *mainToolBar = new QToolBar(this);
     this->addToolBar(Qt::TopToolBarArea, mainToolBar);
@@ -153,6 +155,14 @@ void MainWindow::onProcessOutput() {
 }
 
 void MainWindow::onEditExecutablePath() {
-    EditExecutableDialog dialog;
+    EditExecutableDialog dialog(this);
     dialog.exec();
+}
+
+void MainWindow::onEditMapSize() {
+    EditMapSizeDialog dialog(mMap, this);
+    dialog.exec();
+    if (dialog.result() == QDialog::Accepted) {
+        sigUpdateMap(mMap);
+    }
 }

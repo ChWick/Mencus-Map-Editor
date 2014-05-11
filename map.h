@@ -184,6 +184,8 @@ public:
 
     language::LanguageResources &getLanguageResources() {return mLanguageResources;}
 
+    void resize(int width, int height);
+
 private:
     void readEntity(const QXmlStreamReader &stream, EntityTypes type);
     void writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes outputType) const;

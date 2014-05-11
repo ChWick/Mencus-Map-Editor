@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     eventdatamask.cpp \
     edittextdialog.cpp \
     languageresources.cpp \
-    editexecutabledialog.cpp
+    editexecutabledialog.cpp \
+    editmapsizedialog.cpp
 
 HEADERS  += mainwindow.h \
     map.h \
@@ -49,9 +50,11 @@ HEADERS  += mainwindow.h \
     eventdatamask.h \
     edittextdialog.h \
     languageresources.h \
-    editexecutabledialog.h
+    editexecutabledialog.h \
+    editmapsizedialog.h
 
 FORMS    += mainwindow.ui \
     editeventdialog.ui \
     edittextdialog.ui \
-    editexecutabledialog.ui
+    editexecutabledialog.ui \
+    editmapsizedialog.ui

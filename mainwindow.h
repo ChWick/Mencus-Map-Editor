@@ -40,6 +40,7 @@ public slots:
 private slots:
     void onProcessOutput();
     void onEditExecutablePath();
+    void onEditMapSize();
 };
 
 #endif // MAINWINDOW_H

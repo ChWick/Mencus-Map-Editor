@@ -429,3 +429,21 @@ QString Map::writeToString(OutputTypes outputType) {
 
     return s;
 }
+
+void Map::resize(int width, int height){
+    grid2d<unsigned int> newGrid;
+    newGrid.resize(width, height, 1);
+
+    for (int x = 0; x < std::min<int>(width, mSizeX); x++) {
+        for (int y = 0; y < std::min<int>(height, mSizeY); y++) {
+            newGrid(x, height - y - 1) = mTiles(x, mSizeY - y - 1);
+        }
+    }
+    mTiles = newGrid;
+
+    for (Entity &ent : mEntities) {
+        ent.mPos.setY(ent.mPos.y() - (mSizeY - height) * 64);
+    }
+    mSizeX = width;
+    mSizeY = height;
+}
