@@ -13,6 +13,7 @@
 #include "edittextdialog.h"
 #include "editexecutabledialog.h"
 #include <QSettings>
+#include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -107,9 +108,9 @@ void MainWindow::onPlay() {
     settings.endGroup();
 
     QDir dir(QDir::currentPath());
-    dir.mkpath("run");
-    //QString zipPath = QDir::currentPath() + QDir::separator() + "run/tmp.zip";
-    QString zipPath = QDir::homePath() + "/Documents/Projects/Mencus/level/user/" + mMap->getMapName() + ".zip";
+    dir.mkpath("tmp");
+    QString zipPath = QDir::currentPath() + "/tmp/" + mMap->getMapName() + ".zip";
+    //QString zipPath = QDir::homePath() + "/Documents/Projects/Mencus/level/user/" + mMap->getMapName() + ".zip";
     exportAsZip(zipPath);
 
     QProcess *process = new QProcess(this);
@@ -124,7 +125,7 @@ void MainWindow::onPlay() {
                      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                      "<snapshot version=\"1\" game_state=\"5\" map_name=\"" + mMap->getMapName() + "\"/>").toUtf8());
     backup.close();
-    process->start(execPath);
+    process->start(execPath, QStringList() << QDir::currentPath() + "/tmp");
     process->waitForStarted();
     if (process->state() == QProcess::NotRunning) {
         QMessageBox::critical(this,
@@ -142,6 +143,7 @@ void MainWindow::onEditTexts() {
 void MainWindow::onProcessOutput() {
     QProcess *process = dynamic_cast<QProcess*>(sender());
     ui->outputText->setPlainText(ui->outputText->toPlainText() + "\n" + QString(process->readAll()));
+    ui->outputText->verticalScrollBar()->setValue(ui->outputText->verticalScrollBar()->maximum());
 }
 
 void MainWindow::onEditExecutablePath() {
