@@ -142,8 +142,14 @@ void MainWindow::onEditTexts() {
 
 void MainWindow::onProcessOutput() {
     QProcess *process = dynamic_cast<QProcess*>(sender());
-    ui->outputText->setPlainText(ui->outputText->toPlainText() + "\n" + QString(process->readAll()));
-    ui->outputText->verticalScrollBar()->setValue(ui->outputText->verticalScrollBar()->maximum());
+    QString out = process->readAllStandardOutput();
+    if (out.size() == 0){
+        out = process->readAllStandardError();
+    }
+    if (out.size() != 0) {
+        ui->outputText->setPlainText(ui->outputText->toPlainText() + "\n" + out);
+        ui->outputText->verticalScrollBar()->setValue(ui->outputText->verticalScrollBar()->maximum());
+    }
 }
 
 void MainWindow::onEditExecutablePath() {
