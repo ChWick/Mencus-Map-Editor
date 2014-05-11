@@ -11,6 +11,8 @@
 #include <QByteArray>
 #include <QDataStream>
 #include "edittextdialog.h"
+#include "editexecutabledialog.h"
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QMenu *pEditMenu = ui->menuBar->addMenu(tr("&Edit"));
     pEditMenu->addAction(tr("Edit &texts"), this, SLOT(onEditTexts()));
+    pEditMenu->addAction(tr("Edit exeutable &path"), this, SLOT(onEditExecutablePath()));
 
     QToolBar *mainToolBar = new QToolBar(this);
     this->addToolBar(Qt::TopToolBarArea, mainToolBar);
@@ -97,6 +100,12 @@ void MainWindow::onSaveAs() {
 }
 
 void MainWindow::onPlay() {
+    QSettings settings("CWDevelopment", "MencusMapEditor");
+    settings.beginGroup("executable");
+    QString execPath = settings.value("executable_path").toString();
+    QString workingDir = settings.value("working_dir").toString();
+    settings.endGroup();
+
     QDir dir(QDir::currentPath());
     dir.mkpath("run");
     //QString zipPath = QDir::currentPath() + QDir::separator() + "run/tmp.zip";
@@ -107,8 +116,7 @@ void MainWindow::onPlay() {
     QObject::connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(onProcessOutput()));
     QObject::connect(process, SIGNAL(readyReadStandardError()), this, SLOT(onProcessOutput()));
     process->setWorkingDirectory(QDir::currentPath() + QDir::separator() + "run");
-    QString file = QDir::homePath() + QDir::separator() + "Documents/Projects/Mencus/build_linux/bin/Game";
-    process->setWorkingDirectory(QDir::homePath() + QDir::separator() + "Documents/Projects/Mencus/build_linux");
+    process->setWorkingDirectory(workingDir);
 
     QFile backup(process->workingDirectory() + "/backup.xml");
     backup.open(QIODevice::Truncate | QIODevice::Text | QIODevice::WriteOnly);
@@ -116,7 +124,7 @@ void MainWindow::onPlay() {
                      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                      "<snapshot version=\"1\" game_state=\"5\" map_name=\"" + mMap->getMapName() + "\"/>").toUtf8());
     backup.close();
-    process->start(file);
+    process->start(execPath);
     process->waitForStarted();
     if (process->state() == QProcess::NotRunning) {
         QMessageBox::critical(this,
@@ -134,4 +142,9 @@ void MainWindow::onEditTexts() {
 void MainWindow::onProcessOutput() {
     QProcess *process = dynamic_cast<QProcess*>(sender());
     ui->outputText->setPlainText(ui->outputText->toPlainText() + "\n" + QString(process->readAll()));
+}
+
+void MainWindow::onEditExecutablePath() {
+    EditExecutableDialog dialog;
+    dialog.exec();
 }
