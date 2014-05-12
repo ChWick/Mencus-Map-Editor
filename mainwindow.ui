@@ -36,7 +36,7 @@
      <x>0</x>
      <y>0</y>
      <width>1107</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -166,20 +166,98 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="groupBox_3">
+      <widget class="QGroupBox" name="entityPropertiesLayout">
        <property name="title">
         <string>Properties</string>
        </property>
        <layout class="QFormLayout" name="formLayout_2">
-        <item row="0" column="0">
+        <item row="2" column="0">
          <widget class="QLabel" name="hitpointsLabel">
           <property name="text">
            <string>Hitpoints</string>
           </property>
          </widget>
         </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="sizeLabel">
+          <property name="text">
+           <string>Size</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <layout class="QHBoxLayout" name="sizeLayout" stretch="0,1,0,1">
+          <item>
+           <widget class="QLabel" name="widthLabel">
+            <property name="text">
+             <string>w</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="widthSpinBox"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="heightLabel">
+            <property name="text">
+             <string>h</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="heightSpinBox"/>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="positionLabel">
+          <property name="text">
+           <string>Position</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="hitpointsLineEdit"/>
+         <layout class="QHBoxLayout" name="positionLayout" stretch="0,1,0,1">
+          <item>
+           <widget class="QLabel" name="xCoordLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>x</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="xCoordSpinBox"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="yCoordLabel">
+            <property name="text">
+             <string>y</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="yCoordSpinBox"/>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="1">
+         <widget class="QDoubleSpinBox" name="hitpointsSpinBox">
+          <property name="accelerated">
+           <bool>true</bool>
+          </property>
+          <property name="decimals">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <double>10000.000000000000000</double>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -474,7 +552,11 @@
     <slot>onObjectAdded(Entity*)</slot>
     <slot>onDeleteSelection()</slot>
     <slot>onEntityDeleted(Entity*)</slot>
-    <slot>onHpChanged(QString)</slot>
+    <slot>onHpChanged(double)</slot>
+    <slot>onXCoordChanged(double)</slot>
+    <slot>onYCoordChanged(double)</slot>
+    <slot>onWidthChanged(double)</slot>
+    <slot>onHeightChanged(double)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -992,18 +1074,82 @@
    </hints>
   </connection>
   <connection>
-   <sender>hitpointsLineEdit</sender>
-   <signal>textChanged(QString)</signal>
+   <sender>hitpointsSpinBox</sender>
+   <signal>valueChanged(double)</signal>
    <receiver>entitiesListWidget</receiver>
-   <slot>onHpChanged(QString)</slot>
+   <slot>onHpChanged(double)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>971</x>
-     <y>407</y>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel">
-     <x>937</x>
-     <y>123</y>
+     <x>936</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>xCoordSpinBox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onXCoordChanged(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>918</x>
+     <y>390</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>936</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>yCoordSpinBox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onYCoordChanged(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1038</x>
+     <y>390</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>936</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>heightSpinBox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onHeightChanged(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1039</x>
+     <y>425</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>936</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widthSpinBox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onWidthChanged(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>921</x>
+     <y>425</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>936</x>
+     <y>122</y>
     </hint>
    </hints>
   </connection>

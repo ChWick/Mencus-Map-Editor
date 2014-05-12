@@ -69,8 +69,32 @@ void EntitiesListWidget::onItemSelectionChanged(QListWidgetItem *next, QListWidg
     parent()->parent()->findChild<QWidget*>("hitpointsLineEdit")->setEnabled(bHP);
     parent()->parent()->findChild<QWidget*>("hitpointsLabel")->setEnabled(bHP);
 }
-void EntitiesListWidget::onHpChanged(QString t) {
+void EntitiesListWidget::onHpChanged(double t) {
     if (currentItem() == nullptr) {return;}
     Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(currentItem()->data(Qt::UserRole)));
-    pEnt->mHP = t.toFloat();
+    pEnt->mHP = t;
+}
+
+void EntitiesListWidget::onXCoordChanged(double d) {
+    if (currentItem() == nullptr) {return;}
+    Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(currentItem()->data(Qt::UserRole)));
+    pEnt->mPos.setX(d);
+}
+
+void EntitiesListWidget::onYCoordChanged(double d) {
+    if (currentItem() == nullptr) {return;}
+    Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(currentItem()->data(Qt::UserRole)));
+    pEnt->mPos.setY(d);
+}
+
+void EntitiesListWidget::onHeightChanged(double d) {
+    if (currentItem() == nullptr) {return;}
+    Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(currentItem()->data(Qt::UserRole)));
+    pEnt->mSize.setHeight(d);
+}
+
+void EntitiesListWidget::onWidthChanged(double d) {
+    if (currentItem() == nullptr) {return;}
+    Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(currentItem()->data(Qt::UserRole)));
+    pEnt->mSize.setWidth(d);
 }
