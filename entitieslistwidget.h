@@ -13,14 +13,14 @@ public:
     explicit EntitiesListWidget(QWidget *parent = 0);
 
 signals:
-    void sigEntityAdded(Entity*);
-    void sigEntityDeleted(Entity*);
+    void sigEntityAdded(EntityPtr);
+    void sigEntityDeleted(EntityPtr);
 public slots:
     void onUpdate(MapPtr);
     void onEditSelectedItem();
-    void onObjectAdded(Entity*);
+    void onObjectAdded(EntityPtr);
     void onDeleteSelection();
-    void onEntityDeleted(Entity*);
+    void onEntityDeleted(EntityPtr);
     void onHpChanged(double);
     void onXCoordChanged(double);
     void onYCoordChanged(double);

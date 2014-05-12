@@ -557,13 +557,13 @@
    <extends>QGraphicsView</extends>
    <header location="global">maparea.h</header>
    <slots>
-    <signal>sigObjectAdded(Entity*)</signal>
-    <signal>sigEntityDeleted(Entity*)</signal>
+    <signal>sigObjectAdded(EntityPtr)</signal>
+    <signal>sigEntityDeleted(EntityPtr)</signal>
     <slot>onUpdate(MapPtr)</slot>
     <slot>onChangeLeftTile(int)</slot>
     <slot>onChangeRightTile(int)</slot>
-    <slot>onObjectAdded(Entity*)</slot>
-    <slot>onEntityDeleted(Entity*)</slot>
+    <slot>onObjectAdded(EntityPtr)</slot>
+    <slot>onEntityDeleted(EntityPtr)</slot>
     <slot>onToolChanged(Tools)</slot>
     <slot>onCurrentLinkSelectionChanged(QListWidgetItem*,QListWidgetItem*)</slot>
     <slot>onCurrentLinkValueChanged(QListWidgetItem*)</slot>
@@ -591,14 +591,14 @@
    <extends>QListWidget</extends>
    <header>entitieslistwidget.h</header>
    <slots>
-    <signal>sigEntityDeleted(Entity*)</signal>
-    <signal>sigEntityAdded(Entity*)</signal>
+    <signal>sigEntityDeleted(EntityPtr)</signal>
+    <signal>sigEntityAdded(EntityPtr)</signal>
     <slot>onUpdate(MapPtr)</slot>
     <slot>onItemChanged(QListWidgetItem*)</slot>
     <slot>onEditSelectedItem()</slot>
-    <slot>onObjectAdded(Entity*)</slot>
+    <slot>onObjectAdded(EntityPtr)</slot>
     <slot>onDeleteSelection()</slot>
-    <slot>onEntityDeleted(Entity*)</slot>
+    <slot>onEntityDeleted(EntityPtr)</slot>
     <slot>onHpChanged(double)</slot>
     <slot>onXCoordChanged(double)</slot>
     <slot>onYCoordChanged(double)</slot>
@@ -612,7 +612,7 @@
    <extends>QGraphicsView</extends>
    <header>objectsgraphicsview.h</header>
    <slots>
-    <signal>sigEntityDeleted(Entity*)</signal>
+    <signal>sigEntityDeleted(EntityPtr)</signal>
    </slots>
   </customwidget>
   <customwidget>
@@ -750,134 +750,6 @@
     <hint type="destinationlabel">
      <x>155</x>
      <y>168</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mapView</sender>
-   <signal>sigObjectAdded(Entity*)</signal>
-   <receiver>mapView</receiver>
-   <slot>onObjectAdded(Entity*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>469</x>
-     <y>285</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>469</x>
-     <y>285</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mapView</sender>
-   <signal>sigObjectAdded(Entity*)</signal>
-   <receiver>entitiesListWidget</receiver>
-   <slot>onObjectAdded(Entity*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>469</x>
-     <y>285</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>750</x>
-     <y>280</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>entitiesListWidget</sender>
-   <signal>sigEntityDeleted(Entity*)</signal>
-   <receiver>entitiesListWidget</receiver>
-   <slot>onEntityDeleted(Entity*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>730</x>
-     <y>280</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>730</x>
-     <y>280</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>entitiesListWidget</sender>
-   <signal>sigEntityDeleted(Entity*)</signal>
-   <receiver>mapView</receiver>
-   <slot>onEntityDeleted(Entity*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>730</x>
-     <y>280</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>430</x>
-     <y>285</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mapView</sender>
-   <signal>sigEntityDeleted(Entity*)</signal>
-   <receiver>mapView</receiver>
-   <slot>onEntityDeleted(Entity*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>430</x>
-     <y>285</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>430</x>
-     <y>285</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mapView</sender>
-   <signal>sigEntityDeleted(Entity*)</signal>
-   <receiver>entitiesListWidget</receiver>
-   <slot>onEntityDeleted(Entity*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>430</x>
-     <y>285</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>730</x>
-     <y>280</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>objectsGraphicsView</sender>
-   <signal>sigEntityDeleted(Entity*)</signal>
-   <receiver>mapView</receiver>
-   <slot>onEntityDeleted(Entity*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>136</x>
-     <y>438</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>430</x>
-     <y>285</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>objectsGraphicsView</sender>
-   <signal>sigEntityDeleted(Entity*)</signal>
-   <receiver>entitiesListWidget</receiver>
-   <slot>onEntityDeleted(Entity*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>136</x>
-     <y>438</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>730</x>
-     <y>280</y>
     </hint>
    </hints>
   </connection>
@@ -1218,10 +1090,106 @@
    </hints>
   </connection>
   <connection>
-   <sender>entitiesListWidget</sender>
-   <signal>sigEntityAdded(Entity*)</signal>
+   <sender>objectsGraphicsView</sender>
+   <signal>sigEntityDeleted(EntityPtr)</signal>
    <receiver>entitiesListWidget</receiver>
-   <slot>onObjectAdded(Entity*)</slot>
+   <slot>onEntityDeleted(EntityPtr)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>421</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>932</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>objectsGraphicsView</sender>
+   <signal>sigEntityDeleted(EntityPtr)</signal>
+   <receiver>mapView</receiver>
+   <slot>onEntityDeleted(EntityPtr)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>421</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>376</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mapView</sender>
+   <signal>sigEntityDeleted(EntityPtr)</signal>
+   <receiver>mapView</receiver>
+   <slot>onEntityDeleted(EntityPtr)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>511</x>
+     <y>376</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>376</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mapView</sender>
+   <signal>sigEntityDeleted(EntityPtr)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onEntityDeleted(EntityPtr)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>511</x>
+     <y>376</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>932</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mapView</sender>
+   <signal>sigObjectAdded(EntityPtr)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onObjectAdded(EntityPtr)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>511</x>
+     <y>376</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>932</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mapView</sender>
+   <signal>sigObjectAdded(EntityPtr)</signal>
+   <receiver>mapView</receiver>
+   <slot>onObjectAdded(EntityPtr)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>511</x>
+     <y>376</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>376</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>entitiesListWidget</sender>
+   <signal>sigEntityAdded(EntityPtr)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onObjectAdded(EntityPtr)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>932</x>
@@ -1235,9 +1203,9 @@
   </connection>
   <connection>
    <sender>entitiesListWidget</sender>
-   <signal>sigEntityAdded(Entity*)</signal>
+   <signal>sigEntityAdded(EntityPtr)</signal>
    <receiver>mapView</receiver>
-   <slot>onObjectAdded(Entity*)</slot>
+   <slot>onObjectAdded(EntityPtr)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>932</x>
@@ -1246,6 +1214,38 @@
     <hint type="destinationlabel">
      <x>511</x>
      <y>376</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>entitiesListWidget</sender>
+   <signal>sigEntityDeleted(EntityPtr)</signal>
+   <receiver>mapView</receiver>
+   <slot>onEntityDeleted(EntityPtr)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>932</x>
+     <y>122</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>376</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>entitiesListWidget</sender>
+   <signal>sigEntityDeleted(EntityPtr)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onEntityDeleted(EntityPtr)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>932</x>
+     <y>122</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>932</x>
+     <y>122</y>
     </hint>
    </hints>
   </connection>

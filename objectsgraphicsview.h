@@ -27,7 +27,7 @@ private:
     void addObject(const QPointF &pos, const QSizeF &size, EntityTypes primaryType, int secondaryType);
     Entity *getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset);
 signals:
-    void sigEntityDeleted(Entity*);
+    void sigEntityDeleted(EntityPtr);
 public slots:
 };
 

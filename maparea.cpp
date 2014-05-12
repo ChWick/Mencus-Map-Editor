@@ -56,10 +56,10 @@ void MapArea::onUpdate(MapPtr map) {
         }
     }
 
-    for (Entity &ent : mMap->getEntities()) {
-        QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(ent.getEntityPicturePath()));
-        pItem->setPos(ent.mPos);
-        ent.mGraphicsItem = pItem;
+    for (EntityPtr ent : mMap->getEntities()) {
+        QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(ent->getEntityPicturePath()));
+        pItem->setPos(ent->mPos);
+        ent->mGraphicsItem = pItem;
     }
 
     onUpdateLineNumbers();
@@ -80,8 +80,8 @@ void MapArea::dropEvent(QDropEvent *event) {
         QByteArray data(event->mimeData()->data("object/move"));
         QDataStream stream(&data, QIODevice::ReadOnly);
         QPointF offset;
-        Entity *oe;
-        stream.readRawData(reinterpret_cast<char*>(&oe), sizeof(Entity*));
+        EntityPtr oe;
+        stream.readRawData(reinterpret_cast<char*>(&oe), sizeof(EntityPtr));
         stream >> offset;
 
         oe->mGraphicsItem->setOpacity(1);
@@ -103,23 +103,24 @@ void MapArea::dropEvent(QDropEvent *event) {
 
         QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(getEntityPicturePath(static_cast<EntityTypes>(entityType), secondaryType)));
         // add object to map
-        Entity ent(
+        EntityPtr ent(new Entity(
                        id,
                        static_cast<EntityTypes>(entityType),
                        secondaryType,
                        event->posF() - hotspot,
                        size
-                   );
-        ent.mGraphicsItem = pItem;
-        setPositionFromLocalPos(event->posF() - hotspot, &ent);
-        emit sigObjectAdded(&ent);
+                   ));
+        ent->mGraphicsItem = pItem;
+        setPositionFromLocalPos(event->posF() - hotspot, ent);
+        emit sigObjectAdded(ent);
     }
 
     event->acceptProposedAction();
 }
-void MapArea::onObjectAdded(Entity *ent) {
+void MapArea::onObjectAdded(EntityPtr ent) {
     if (ent->mPrimaryType == ENTITY_REGION) {
         ent->mGraphicsItem = mScene.addRect(QRectF(ent->mPos, ent->mSize), QPen(Qt::red), QBrush(Qt::red));
+        ent->mGraphicsItem->setOpacity(0.6);
     }
 }
 
@@ -150,14 +151,14 @@ void MapArea::mousePressEvent ( QMouseEvent * e ) {
 
         // get ObjectEntry
         QPointF offset;
-        Entity *oe = getObjectEntryAtLocalMousePos(e->pos(), offset);
+        EntityPtr oe = getObjectEntryAtLocalMousePos(e->pos(), offset);
         if (!oe) {return;}
         QDrag *drag = new QDrag(this);
         QMimeData *mimeData = new QMimeData;
 
         QByteArray data;
         QDataStream stream(&data, QIODevice::WriteOnly);
-        stream.writeRawData(reinterpret_cast<char*>(&oe), sizeof(Entity*));
+        stream.writeRawData(reinterpret_cast<char*>(&oe), sizeof(EntityPtr));
         stream << offset;
         mimeData->setData("object/move", data);
         drag->setMimeData(mimeData);
@@ -181,7 +182,7 @@ void MapArea::mouseMoveEvent ( QMouseEvent * e) {
     }
 }
 
-void MapArea::setPositionFromLocalPos(const QPointF &localPos, Entity *entity) {
+void MapArea::setPositionFromLocalPos(const QPointF &localPos, EntityPtr entity) {
     QPointF pos(localPos + scrollPos());
     if (mGridSize > 0) {
         pos = (pos / mGridSize).toPoint();
@@ -212,14 +213,14 @@ QPoint MapArea::scrollPos() {
     return QPoint(horizontalScrollBar()->value(), verticalScrollBar()->value());
 }
 
-Entity *MapArea::getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset) {
-    for (Entity &oe : mMap->getEntities()) {
-        if (QRectF(oe.mPos - scrollPos(), oe.mSize).contains(pos.x(), pos.y())) {
-            offset = pos - oe.mPos + scrollPos();
-            return &oe;
+EntityPtr MapArea::getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset) {
+    for (EntityPtr oe : mMap->getEntities()) {
+        if (QRectF(oe->mPos - scrollPos(), oe->mSize).contains(pos.x(), pos.y())) {
+            offset = pos - oe->mPos + scrollPos();
+            return oe;
         }
     }
-    return nullptr;
+    return EntityPtr();
 }
 
 QPoint MapArea::getTilePosFromRelativeMousePos(const QPoint &pos) {
@@ -227,7 +228,7 @@ QPoint MapArea::getTilePosFromRelativeMousePos(const QPoint &pos) {
                     (pos.y() + verticalScrollBar()->value()) / 64);
 }
 
-void MapArea::onEntityDeleted(Entity*ent) {
+void MapArea::onEntityDeleted(EntityPtr ent) {
     delete ent->mGraphicsItem;
     mScene.update();
 }

@@ -5,13 +5,13 @@
 EventsListWidget::EventsListWidget(QWidget *parent) :
     QListWidget(parent)
 {
-    m_pCurrentEntity = NULL;
+    m_pCurrentEntity = EntityPtr();
 }
 void EventsListWidget::onEntitySelectionChanged(QListWidgetItem *next, QListWidgetItem *) {
     clear();
     if (next == NULL) {return;}
 
-    Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(next->data(Qt::UserRole)));
+    EntityPtr pEnt = qvariant_cast<EntityPtr>(next->data(Qt::UserRole));
     m_pCurrentEntity = pEnt;
     for (auto &evt : pEnt->mEvents) {
         QListWidgetItem *pItem = new QListWidgetItem(this);

@@ -126,6 +126,9 @@ struct Entity {
     QString getEntityPicturePath() const {return ::getEntityPicturePath(mPrimaryType, mSecondaryType);}
 };
 
+typedef QSharedPointer<Entity> EntityPtr;
+Q_DECLARE_METATYPE( EntityPtr )
+
 enum LinkDirection {
     FIRST_TO_SECOND,
     SECOND_TO_FIRST,
@@ -154,7 +157,7 @@ private:
     int mInvert;
     grid2d<unsigned int> mTiles;
     QList<EndangeredTile> mEndangeredTiles;
-    QList<Entity> mEntities;
+    QList<EntityPtr> mEntities;
 
     QList<Event::Entry> *mCurrentEventList;
     link_entry_list mLinksList;
@@ -177,8 +180,8 @@ public:
     const grid2d<unsigned int> &getTiles() const {return mTiles;}
     grid2d<unsigned int> &getTiles() {return mTiles;}
 
-    const QList<Entity> &getEntities() const {return mEntities;}
-    QList<Entity> &getEntities() {return mEntities;}
+    const QList<EntityPtr> &getEntities() const {return mEntities;}
+    QList<EntityPtr> &getEntities() {return mEntities;}
 
     const QList<LinkEntry> &getLinksList() const {return mLinksList;}
     QList<LinkEntry> &getLinksList() {return mLinksList;}
@@ -193,7 +196,7 @@ public:
 private:
     void readEntity(const QXmlStreamReader &stream, EntityTypes type);
     void writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes outputType) const;
-    void writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, OutputTypes outputType) const;
+    void writeEntity(QXmlStreamWriter &stream, EntityTypes type, EntityPtr entity, OutputTypes outputType) const;
     void writeEventList(QXmlStreamWriter &stream, const EVENT_LIST &event, OutputTypes outputType) const;
     void writeEvent(QXmlStreamWriter &stream, const Event::Entry &event, OutputTypes outputTypes) const;
 

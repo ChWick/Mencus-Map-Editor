@@ -199,30 +199,30 @@ QPointF Map::mapToGui(const QPointF &pos) const {
 
 void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
     if (entType == ENTITY_REGION) {
-        mEntities.push_back(Entity(
+        mEntities.push_back(EntityPtr(new Entity(
                                 xml.attributes().value("id").toString(),
                                 entType,
                                 0,
                                 mapToGui(QPointF(xml.attributes().value("x").toFloat(),
                                 xml.attributes().value("y").toFloat())) * 64,
                                 QSizeF(xml.attributes().value("sizex").toFloat(), xml.attributes().value("sizey").toFloat()) * 64
-                            ));
+                            )));
     }
     else {
         int type = xml.attributes().value("type").toInt();
-        mEntities.push_back(Entity(
+        mEntities.push_back(EntityPtr(new Entity(
                                 xml.attributes().value("id").toString(),
                                 entType,
                                 type,
                                 mapToGui(QPointF(xml.attributes().value("x").toFloat(),
                                 xml.attributes().value("y").toFloat())) * 64,
                                 getEntitySize(entType, type)
-                            ));
-        mEntities.back().mHP = xml.attributes().value("hp").toFloat();
-        mEntities.back().mDirection = xml.attributes().value("direction").toInt();
-        mEntities.back().mPos.ry() -= mEntities.back().mSize.height();
+                            )));
+        mEntities.back()->mHP = xml.attributes().value("hp").toFloat();
+        mEntities.back()->mDirection = xml.attributes().value("direction").toInt();
+        mEntities.back()->mPos.ry() -= mEntities.back()->mSize.height();
     }
-    mCurrentEventList = &(mEntities.back().mEvents);
+    mCurrentEventList = &(mEntities.back()->mEvents);
 }
 
 void Map::writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes outputType) const {
@@ -230,8 +230,8 @@ void Map::writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes 
     case ENTITY_PLAYER:
     case ENTITY_REGION:
         // written directly
-        for (const Entity &entity : mEntities) {
-            if (entity.mPrimaryType == type)
+        for (EntityPtr entity : mEntities) {
+            if (entity->mPrimaryType == type)
                 writeEntity(stream, type, entity, outputType);
         }
         return;
@@ -243,15 +243,15 @@ void Map::writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes 
         break;
     }
 
-    for (const Entity &entity : mEntities) {
-        if (entity.mPrimaryType == type)
+    for (EntityPtr entity : mEntities) {
+        if (entity->mPrimaryType == type)
             writeEntity(stream, type, entity, outputType);
     }
 
     stream.writeEndElement();
 }
-void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &entity, OutputTypes outputType) const {
-    int entityOutput = entity.mEntityOutputFlags;
+void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, EntityPtr entity, OutputTypes outputType) const {
+    int entityOutput = entity->mEntityOutputFlags;
     if (outputType == OT_FULL) {
         entityOutput = ENT_OUT_FULL;
     }
@@ -259,40 +259,40 @@ void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, const Entity &
     switch (type) {
     case ENTITY_PLAYER:
         stream.writeStartElement("player");
-        additionalPosOffset = entity.mSize.height() / 64;
+        additionalPosOffset = entity->mSize.height() / 64;
         break;
     case ENTITY_ENEMY:
         stream.writeStartElement("enemy");
-        stream.writeAttribute("type", QString("%1").arg(entity.mSecondaryType));
-        additionalPosOffset = entity.mSize.height() / 64;
+        stream.writeAttribute("type", QString("%1").arg(entity->mSecondaryType));
+        additionalPosOffset = entity->mSize.height() / 64;
         break;
     case ENTITY_OBJECT:
         stream.writeStartElement("object");
-        additionalPosOffset = entity.mSize.height() / 64;
+        additionalPosOffset = entity->mSize.height() / 64;
         break;
     case ENTITY_REGION:
         stream.writeStartElement("region");
         break;
     }
 
-    if (entityOutput & ENT_OUT_TYPE) {stream.writeAttribute("type", QString("%1").arg(entity.mSecondaryType));}
-    if (entityOutput & ENT_OUT_ID) {stream.writeAttribute("id", entity.mId);}
+    if (entityOutput & ENT_OUT_TYPE) {stream.writeAttribute("type", QString("%1").arg(entity->mSecondaryType));}
+    if (entityOutput & ENT_OUT_ID) {stream.writeAttribute("id", entity->mId);}
     if (entityOutput & ENT_OUT_POSITION) {
-        stream.writeAttribute("x", QString("%1").arg(entity.mPos.x() / 64));
-        stream.writeAttribute("y", QString("%1").arg(mTiles.getSizeY() - entity.mPos.y() / 64 - additionalPosOffset));
+        stream.writeAttribute("x", QString("%1").arg(entity->mPos.x() / 64));
+        stream.writeAttribute("y", QString("%1").arg(mTiles.getSizeY() - entity->mPos.y() / 64 - additionalPosOffset));
     }
     if (entityOutput & ENT_OUT_SIZE) {
-        stream.writeAttribute("sizex", QString("%1").arg(entity.mSize.width() / 64));
-        stream.writeAttribute("sizey", QString("%1").arg(entity.mSize.height() / 64));
+        stream.writeAttribute("sizex", QString("%1").arg(entity->mSize.width() / 64));
+        stream.writeAttribute("sizey", QString("%1").arg(entity->mSize.height() / 64));
     }
     if (entityOutput & ENT_OUT_HP) {
-        stream.writeAttribute("hp", QString("%1").arg(entity.mHP));
+        stream.writeAttribute("hp", QString("%1").arg(entity->mHP));
     }
     if (entityOutput & ENT_OUT_DIRECTION) {
-        stream.writeAttribute("direction", QString("%1").arg(entity.mDirection));
+        stream.writeAttribute("direction", QString("%1").arg(entity->mDirection));
     }
 
-    writeEventList(stream, entity.mEvents, outputType);
+    writeEventList(stream, entity->mEvents, outputType);
 
     stream.writeEndElement();
 }
@@ -441,8 +441,8 @@ void Map::resize(int width, int height){
     }
     mTiles = newGrid;
 
-    for (Entity &ent : mEntities) {
-        ent.mPos.setY(ent.mPos.y() - (mSizeY - height) * 64);
+    for (EntityPtr ent : mEntities) {
+        ent->mPos.setY(ent->mPos.y() - (mSizeY - height) * 64);
     }
     mSizeX = width;
     mSizeY = height;

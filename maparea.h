@@ -40,19 +40,19 @@ protected:
     void mouseMoveEvent ( QMouseEvent *);
 private:
     QPoint getTilePosFromRelativeMousePos(const QPoint &);
-    Entity *getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset);
-    void setPositionFromLocalPos(const QPointF &localPos, Entity *entity);
+    EntityPtr getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset);
+    void setPositionFromLocalPos(const QPointF &localPos, EntityPtr entity);
     void placeTileAt(const QPoint &tilePos);
     QPoint scrollPos();
 signals:
-    void sigObjectAdded(Entity*);
-    void sigEntityDeleted(Entity*);
+    void sigObjectAdded(EntityPtr);
+    void sigEntityDeleted(EntityPtr);
 public slots:
-    void onObjectAdded(Entity*);
+    void onObjectAdded(EntityPtr);
     void onUpdate(MapPtr);
     void onChangeLeftTile(int t) {mLeftTile = t;}
     void onChangeRightTile(int t) {mRightTile = t;}
-    void onEntityDeleted(Entity*);
+    void onEntityDeleted(EntityPtr);
     void onToolChanged(Tools tool) {mTool = tool; mLeftPressed = mRightPressed = false;}
     void onSelectMove() {onToolChanged(TOOL_MOVE_OBJECT);}
     void onSelectPlaceTile() {onToolChanged(TOOL_PLACE_TILE);}

@@ -2,6 +2,7 @@
 #define EVENTSLISTWIDGET_H
 
 #include <QListWidget>
+#include "map.h"
 
 class Entity;
 
@@ -9,7 +10,7 @@ class EventsListWidget : public QListWidget
 {
     Q_OBJECT
 private:
-    Entity *m_pCurrentEntity;
+    EntityPtr m_pCurrentEntity;
 public:
     explicit EventsListWidget(QWidget *parent = 0);
 
