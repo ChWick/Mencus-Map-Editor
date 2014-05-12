@@ -13,7 +13,7 @@
 #include "quazip/quazip.h"
 #include "quazip/quazipfile.h"
 
-class QGraphicsPixmapItem;
+class QGraphicsItem;
 class QXmlStreamReader;
 class QXmlStreamWriter;
 
@@ -81,10 +81,10 @@ struct Entity {
     QPointF mPos;
     QSizeF mSize;
 
-    QGraphicsPixmapItem *mGraphicsItem;
+    QGraphicsItem *mGraphicsItem;
 
     Entity(QString id, EntityTypes primType, unsigned int secType, const QPointF &pos, const QSizeF &size)
-        : mId(id), mPrimaryType(primType), mSecondaryType(secType), mPos(pos), mSize(size),
+        : mId(id), mPrimaryType(primType), mSecondaryType(secType), mPos(pos), mSize(size), mGraphicsItem(nullptr),
     mEntityOutputFlags(0), mEvents(EVENT_LIST()), mHP(-1), mDirection(1) {
 
         switch (primType) {
@@ -107,6 +107,7 @@ struct Entity {
     }
     Entity() {
         mEntityOutputFlags = 0;
+        mGraphicsItem = nullptr;
     }
 
     /*Entity(const Entity &e)

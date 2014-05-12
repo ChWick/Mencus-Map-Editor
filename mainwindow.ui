@@ -62,29 +62,19 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QComboBox" name="comboBox">
+           <widget class="QComboBox" name="entitiesSelectionComboBox">
             <property name="currentIndex">
              <number>0</number>
             </property>
             <item>
              <property name="text">
-              <string>Enemy</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Object</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Switch</string>
+              <string>Region</string>
              </property>
             </item>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="entitiesAddButton">
             <property name="text">
              <string>Add</string>
             </property>
@@ -602,6 +592,7 @@
    <header>entitieslistwidget.h</header>
    <slots>
     <signal>sigEntityDeleted(Entity*)</signal>
+    <signal>sigEntityAdded(Entity*)</signal>
     <slot>onUpdate(MapPtr)</slot>
     <slot>onItemChanged(QListWidgetItem*)</slot>
     <slot>onEditSelectedItem()</slot>
@@ -613,6 +604,7 @@
     <slot>onYCoordChanged(double)</slot>
     <slot>onWidthChanged(double)</slot>
     <slot>onHeightChanged(double)</slot>
+    <slot>onAddEntityButtonPressed()</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -1206,6 +1198,54 @@
     <hint type="destinationlabel">
      <x>936</x>
      <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>entitiesAddButton</sender>
+   <signal>clicked()</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onAddEntityButtonPressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>900</x>
+     <y>182</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>932</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>entitiesListWidget</sender>
+   <signal>sigEntityAdded(Entity*)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onObjectAdded(Entity*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>932</x>
+     <y>122</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>932</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>entitiesListWidget</sender>
+   <signal>sigEntityAdded(Entity*)</signal>
+   <receiver>mapView</receiver>
+   <slot>onObjectAdded(Entity*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>932</x>
+     <y>122</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>376</y>
     </hint>
    </hints>
   </connection>

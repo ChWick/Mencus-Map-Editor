@@ -62,7 +62,7 @@ void ObjectsGraphicsView::mousePressEvent(QMouseEvent *e) {
     stream << oe->mId << static_cast<int>(oe->mPrimaryType) << oe->mSecondaryType << oe->mSize << offset;
     mimeData->setData("object", data);
     drag->setMimeData(mimeData);
-    drag->setPixmap(oe->mGraphicsItem->pixmap());
+    drag->setPixmap(dynamic_cast<QGraphicsPixmapItem*>(oe->mGraphicsItem)->pixmap());
     drag->setHotSpot(offset.toPoint());
     drag->exec();
 }

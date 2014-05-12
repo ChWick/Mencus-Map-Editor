@@ -118,6 +118,9 @@ void MapArea::dropEvent(QDropEvent *event) {
     event->acceptProposedAction();
 }
 void MapArea::onObjectAdded(Entity *ent) {
+    if (ent->mPrimaryType == ENTITY_REGION) {
+        ent->mGraphicsItem = mScene.addRect(QRectF(ent->mPos, ent->mSize), QPen(Qt::red), QBrush(Qt::red));
+    }
 }
 
 void MapArea::mouseReleaseEvent ( QMouseEvent * e ) {
@@ -158,7 +161,7 @@ void MapArea::mousePressEvent ( QMouseEvent * e ) {
         stream << offset;
         mimeData->setData("object/move", data);
         drag->setMimeData(mimeData);
-        drag->setPixmap(oe->mGraphicsItem->pixmap());
+        drag->setPixmap(dynamic_cast<QGraphicsPixmapItem*>(oe->mGraphicsItem)->pixmap());
         drag->setHotSpot(offset.toPoint());
 
         oe->mGraphicsItem->setOpacity(0.5);

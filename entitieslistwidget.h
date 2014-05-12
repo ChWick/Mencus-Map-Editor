@@ -13,6 +13,7 @@ public:
     explicit EntitiesListWidget(QWidget *parent = 0);
 
 signals:
+    void sigEntityAdded(Entity*);
     void sigEntityDeleted(Entity*);
 public slots:
     void onUpdate(MapPtr);
@@ -25,6 +26,7 @@ public slots:
     void onYCoordChanged(double);
     void onHeightChanged(double);
     void onWidthChanged(double);
+    void onAddEntityButtonPressed();
 
 private slots:
     void onItemChanged(QListWidgetItem *);

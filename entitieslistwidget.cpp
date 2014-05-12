@@ -3,6 +3,7 @@
 #include <QLayout>
 #include <QDoubleSpinBox>
 #include <QGraphicsPixmapItem>
+#include <QComboBox>
 
 EntitiesListWidget::EntitiesListWidget(QWidget *parent) :
     QListWidget(parent)
@@ -63,6 +64,15 @@ void EntitiesListWidget::onEntityDeleted(Entity *ent) {
         }
     }
 }
+
+void EntitiesListWidget::onAddEntityButtonPressed() {
+    int index = parent()->parent()->findChild<QComboBox*>("entitiesSelectionComboBox")->currentIndex();
+    if (index == 0) {
+        Entity ent("new region", ENTITY_REGION, 0, QPointF(0, 0), QSizeF(64, 64));
+        emit sigEntityAdded(&ent);
+    }
+}
+
 void EntitiesListWidget::onItemSelectionChanged(QListWidgetItem *next, QListWidgetItem *) {
     bool bHP = false;
     bool bPos = false;
@@ -75,8 +85,8 @@ void EntitiesListWidget::onItemSelectionChanged(QListWidgetItem *next, QListWidg
 
 
         parent()->parent()->findChild<QDoubleSpinBox*>("hitpointsSpinBox")->setValue(pEnt->mHP);
-        parent()->parent()->findChild<QDoubleSpinBox*>("xCoordSpinBox")->setValue(pEnt->mPos.x());
-        parent()->parent()->findChild<QDoubleSpinBox*>("yCoordSpinBox")->setValue(pEnt->mPos.y());
+        parent()->parent()->findChild<QDoubleSpinBox*>("xCoordSpinBox")->setValue(pEnt->mPos.x() / 64);
+        parent()->parent()->findChild<QDoubleSpinBox*>("yCoordSpinBox")->setValue(mMap->getTiles().getSizeY() - pEnt->mPos.y() / 64 - 1);
         parent()->parent()->findChild<QDoubleSpinBox*>("widthSpinBox")->setValue(pEnt->mSize.width());
         parent()->parent()->findChild<QDoubleSpinBox*>("heightSpinBox")->setValue(pEnt->mSize.height());
     }
@@ -98,7 +108,7 @@ void EntitiesListWidget::onHpChanged(double t) {
 void EntitiesListWidget::onXCoordChanged(double d) {
     if (currentItem() == nullptr) {return;}
     Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(currentItem()->data(Qt::UserRole)));
-    pEnt->mPos.setX(d);
+    pEnt->mPos.setX(d * 64);
     if (pEnt->mGraphicsItem) {
         pEnt->mGraphicsItem->setPos(pEnt->mPos);
     }
@@ -107,7 +117,7 @@ void EntitiesListWidget::onXCoordChanged(double d) {
 void EntitiesListWidget::onYCoordChanged(double d) {
     if (currentItem() == nullptr) {return;}
     Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(currentItem()->data(Qt::UserRole)));
-    pEnt->mPos.setY(d);
+    pEnt->mPos.setY((mMap->getTiles().getSizeY() - d - 1) * 64);
     if (pEnt->mGraphicsItem) {
         pEnt->mGraphicsItem->setPos(pEnt->mPos);
     }
