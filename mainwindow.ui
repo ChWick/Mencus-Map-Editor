@@ -195,7 +195,14 @@
            </widget>
           </item>
           <item>
-           <widget class="QDoubleSpinBox" name="widthSpinBox"/>
+           <widget class="QDoubleSpinBox" name="widthSpinBox">
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <double>999999.000000000000000</double>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="heightLabel">
@@ -205,7 +212,14 @@
            </widget>
           </item>
           <item>
-           <widget class="QDoubleSpinBox" name="heightSpinBox"/>
+           <widget class="QDoubleSpinBox" name="heightSpinBox">
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <double>999999.000000000000000</double>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -232,7 +246,14 @@
            </widget>
           </item>
           <item>
-           <widget class="QDoubleSpinBox" name="xCoordSpinBox"/>
+           <widget class="QDoubleSpinBox" name="xCoordSpinBox">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="maximum">
+             <double>99999.000000000000000</double>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="yCoordLabel">
@@ -242,7 +263,14 @@
            </widget>
           </item>
           <item>
-           <widget class="QDoubleSpinBox" name="yCoordSpinBox"/>
+           <widget class="QDoubleSpinBox" name="yCoordSpinBox">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="maximum">
+             <double>99999.000000000000000</double>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
