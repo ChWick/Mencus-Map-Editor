@@ -95,10 +95,10 @@ struct Entity {
             mEntityOutputFlags = ENT_OUT_REGION;
             break;
         case ENTITY_OBJECT:
-            mEntityOutputFlags = ENT_OUT_PLAYER;
+            mEntityOutputFlags = ENT_OUT_OBJECT;
             break;
         case ENTITY_ENEMY:
-            mEntityOutputFlags = ENT_OUT_OBJECT;
+            mEntityOutputFlags = ENT_OUT_ENEMY;
             break;
         default:
             mEntityOutputFlags = 0;
