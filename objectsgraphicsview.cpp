@@ -3,6 +3,7 @@
 #include <QDrag>
 #include <QMimeData>
 #include <QTextStream>
+#include <QScrollBar>
 
 ObjectsGraphicsView::ObjectsGraphicsView(QWidget *parent) :
     QGraphicsView(parent)
@@ -11,6 +12,17 @@ ObjectsGraphicsView::ObjectsGraphicsView(QWidget *parent) :
     setAcceptDrops(true);
 
     addObject(QPointF(0, 0), QSizeF(64, 128), ENTITY_PLAYER, 0);
+    addObject(QPointF(64, 64), QSizeF(64, 64), ENTITY_ENEMY, 0);
+    addObject(QPointF(128, 0), QSizeF(64, 128), ENTITY_ENEMY, 1);
+    addObject(QPointF(192, 0), QSizeF(256, 128), ENTITY_ENEMY, 2);
+    addObject(QPointF(64, 128), QSizeF(64, 128), ENTITY_ENEMY, 4);
+
+    addObject(QPointF(0, 256), QSizeF(32, 32), ENTITY_OBJECT, 0);
+    addObject(QPointF(32, 256), QSizeF(32, 32), ENTITY_OBJECT, 1);
+    addObject(QPointF(64, 256), QSizeF(32, 32), ENTITY_OBJECT, 2);
+    addObject(QPointF(0, 288), QSizeF(64, 32), ENTITY_OBJECT, 3);
+    addObject(QPointF(96, 256), QSizeF(64, 64), ENTITY_OBJECT, 4);
+    addObject(QPointF(160, 256), QSizeF(32, 64), ENTITY_OBJECT, 5);
 }
 
 void ObjectsGraphicsView::dragEnterEvent(QDragEnterEvent *e) {
@@ -70,8 +82,8 @@ void ObjectsGraphicsView::addObject(const QPointF &pos, const QSizeF &size, Enti
 }
 Entity *ObjectsGraphicsView::getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset) {
     for (Entity &oe : mObjects) {
-        if (QRectF(oe.mPos, oe.mSize).contains(pos.x(), pos.y())) {
-            offset = pos - oe.mPos;
+        if (QRectF(oe.mPos, oe.mSize).contains(pos.x() + horizontalScrollBar()->value(), pos.y() + verticalScrollBar()->value())) {
+            offset = pos - oe.mPos + QPointF(horizontalScrollBar()->value(), verticalScrollBar()->value());
             return &oe;
         }
     }
