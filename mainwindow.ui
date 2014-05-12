@@ -196,6 +196,9 @@
           </item>
           <item>
            <widget class="QDoubleSpinBox" name="widthSpinBox">
+            <property name="accelerated">
+             <bool>true</bool>
+            </property>
             <property name="decimals">
              <number>1</number>
             </property>
@@ -213,6 +216,9 @@
           </item>
           <item>
            <widget class="QDoubleSpinBox" name="heightSpinBox">
+            <property name="accelerated">
+             <bool>true</bool>
+            </property>
             <property name="decimals">
              <number>1</number>
             </property>
@@ -247,6 +253,9 @@
           </item>
           <item>
            <widget class="QDoubleSpinBox" name="xCoordSpinBox">
+            <property name="accelerated">
+             <bool>true</bool>
+            </property>
             <property name="decimals">
              <number>3</number>
             </property>
@@ -264,6 +273,9 @@
           </item>
           <item>
            <widget class="QDoubleSpinBox" name="yCoordSpinBox">
+            <property name="accelerated">
+             <bool>true</bool>
+            </property>
             <property name="decimals">
              <number>3</number>
             </property>
@@ -487,20 +499,36 @@
        <item row="0" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QSpinBox" name="linkFirstPosX"/>
+          <widget class="QSpinBox" name="linkFirstPosX">
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="linkFirstPosY"/>
+          <widget class="QSpinBox" name="linkFirstPosY">
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
        <item row="1" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QSpinBox" name="linkSecondPosX"/>
+          <widget class="QSpinBox" name="linkSecondPosX">
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="linkSecondPosY"/>
+          <widget class="QSpinBox" name="linkSecondPosY">
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
