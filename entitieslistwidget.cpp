@@ -87,8 +87,8 @@ void EntitiesListWidget::onItemSelectionChanged(QListWidgetItem *next, QListWidg
         parent()->parent()->findChild<QDoubleSpinBox*>("hitpointsSpinBox")->setValue(pEnt->mHP);
         parent()->parent()->findChild<QDoubleSpinBox*>("xCoordSpinBox")->setValue(pEnt->mPos.x() / 64);
         parent()->parent()->findChild<QDoubleSpinBox*>("yCoordSpinBox")->setValue(mMap->getTiles().getSizeY() - pEnt->mPos.y() / 64 - 1);
-        parent()->parent()->findChild<QDoubleSpinBox*>("widthSpinBox")->setValue(pEnt->mSize.width());
-        parent()->parent()->findChild<QDoubleSpinBox*>("heightSpinBox")->setValue(pEnt->mSize.height());
+        parent()->parent()->findChild<QDoubleSpinBox*>("widthSpinBox")->setValue(pEnt->mSize.width() / 64);
+        parent()->parent()->findChild<QDoubleSpinBox*>("heightSpinBox")->setValue(pEnt->mSize.height() / 64);
     }
     parent()->parent()->findChild<QWidget*>("hitpointsSpinBox")->setEnabled(bHP);
     parent()->parent()->findChild<QWidget*>("hitpointsLabel")->setEnabled(bHP);
@@ -126,11 +126,11 @@ void EntitiesListWidget::onYCoordChanged(double d) {
 void EntitiesListWidget::onHeightChanged(double d) {
     if (currentItem() == nullptr) {return;}
     Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(currentItem()->data(Qt::UserRole)));
-    pEnt->mSize.setHeight(d);
+    pEnt->mSize.setHeight(d * 64);
 }
 
 void EntitiesListWidget::onWidthChanged(double d) {
     if (currentItem() == nullptr) {return;}
     Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(currentItem()->data(Qt::UserRole)));
-    pEnt->mSize.setWidth(d);
+    pEnt->mSize.setWidth(d * 64);
 }
