@@ -2,6 +2,7 @@
 #include <QListWidgetItem>
 #include <QLayout>
 #include <QDoubleSpinBox>
+#include <QGraphicsPixmapItem>
 
 EntitiesListWidget::EntitiesListWidget(QWidget *parent) :
     QListWidget(parent)
@@ -98,12 +99,18 @@ void EntitiesListWidget::onXCoordChanged(double d) {
     if (currentItem() == nullptr) {return;}
     Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(currentItem()->data(Qt::UserRole)));
     pEnt->mPos.setX(d);
+    if (pEnt->mGraphicsItem) {
+        pEnt->mGraphicsItem->setPos(pEnt->mPos);
+    }
 }
 
 void EntitiesListWidget::onYCoordChanged(double d) {
     if (currentItem() == nullptr) {return;}
     Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(currentItem()->data(Qt::UserRole)));
     pEnt->mPos.setY(d);
+    if (pEnt->mGraphicsItem) {
+        pEnt->mGraphicsItem->setPos(pEnt->mPos);
+    }
 }
 
 void EntitiesListWidget::onHeightChanged(double d) {
