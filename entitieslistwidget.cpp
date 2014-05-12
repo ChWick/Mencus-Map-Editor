@@ -15,6 +15,7 @@ void EntitiesListWidget::onUpdate(MapPtr map) {
     clear();
 
     mMap = map;
+    if (!map) {return;}
     QListWidgetItem *pItem = new QListWidgetItem(this);
     pItem->setText("Map");
     pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);

@@ -22,12 +22,12 @@ private:
 
     Ui::MainWindow *ui;
 
-    std::shared_ptr<Map> mMap;
+    MapPtr mMap;
 
     void exportAsZip(const QString &filename);
 
 signals:
-    void sigLoadMap(std::shared_ptr<Map>);
+    void sigLoadMap(MapPtr);
     void sigUpdateMap(MapPtr);
 
 public slots:

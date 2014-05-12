@@ -42,6 +42,8 @@ void MapArea::onUpdate(MapPtr map) {
     mLinkTiles.clear();
     mLineNumbers.clear();
     mScene.clear();
+    if (!map) {return;}
+
     mScene.setSceneRect(QRect(0, 0, map->getTiles().getSizeX() * 64, map->getTiles().getSizeY() * 64));
     mTiles.resize(map->getTiles().getSizeX(), map->getTiles().getSizeY());
     //pLayout->setGeometry(QRect(0, 0, map->getTiles().getSizeX() * 64, map->getTiles().getSizeY() * 64));
@@ -81,7 +83,7 @@ void MapArea::dropEvent(QDropEvent *event) {
         QDataStream stream(&data, QIODevice::ReadOnly);
         QPointF offset;
         EntityPtr oe;
-        stream.readRawData(reinterpret_cast<char*>(&oe), sizeof(EntityPtr));
+        stream.readRawData(reinterpret_cast<char*>(&oe), sizeof(EntityPtr*));
         stream >> offset;
 
         oe->mGraphicsItem->setOpacity(1);
@@ -158,7 +160,7 @@ void MapArea::mousePressEvent ( QMouseEvent * e ) {
 
         QByteArray data;
         QDataStream stream(&data, QIODevice::WriteOnly);
-        stream.writeRawData(reinterpret_cast<char*>(&oe), sizeof(EntityPtr));
+        stream.writeRawData(reinterpret_cast<char*>(&oe), sizeof(EntityPtr*));
         stream << offset;
         mimeData->setData("object/move", data);
         drag->setMimeData(mimeData);

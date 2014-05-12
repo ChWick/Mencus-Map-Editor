@@ -63,6 +63,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    sigUpdateMap(MapPtr());
+    mMap.reset();
     delete ui;
 }
 
