@@ -202,5 +202,5 @@ private:
 
 };
 
-typedef std::shared_ptr<Map> MapPtr;
+typedef QSharedPointer<Map> MapPtr;
 #endif // MAP_H

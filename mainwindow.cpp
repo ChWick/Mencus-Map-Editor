@@ -83,14 +83,14 @@ void MainWindow::exportAsZip(const QString &filename) {
 }
 
 void MainWindow::onNewMap() {
-    mMap = std::shared_ptr<Map>(new Map());
+    mMap = MapPtr(new Map());
 
     sigUpdateMap(mMap);
 }
 
 void MainWindow::onOpenMap() {
     QString mapName = QFileDialog::getOpenFileName(this, tr("Map map"), "", tr("Maps (*.xml)"));
-    mMap = std::shared_ptr<Map>(new Map(mapName));
+    mMap = MapPtr(new Map(mapName));
 
     sigUpdateMap(mMap);
 }
