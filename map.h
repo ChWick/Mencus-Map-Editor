@@ -141,6 +141,7 @@ struct LinkEntry {
     unsigned int mFirstY;
     unsigned int mSecondX;
     unsigned int mSecondY;
+    bool mActivated;
     LinkDirection mLinkDirection;
 };
 

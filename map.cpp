@@ -411,6 +411,27 @@ QString Map::writeToString(OutputTypes outputType) {
     xmlWriter.writeEndElement();
 
     xmlWriter.writeStartElement("links");
+    for (const LinkEntry &ent : mLinksList) {
+        xmlWriter.writeStartElement("link");
+        xmlWriter.writeAttribute("fromx", QString("%1").arg(ent.mFirstX));
+        xmlWriter.writeAttribute("tox", QString("%1").arg(ent.mSecondX));
+        xmlWriter.writeAttribute("fromy", QString("%1").arg(ent.mFirstY));
+        xmlWriter.writeAttribute("toy", QString("%1").arg(ent.mSecondY));
+        xmlWriter.writeAttribute("activated", (ent.mActivated) ? "true" : "false");
+        switch (ent.mLinkDirection) {
+        case FIRST_TO_SECOND:
+            xmlWriter.writeAttribute("direction", "first_to_second");
+            break;
+        case SECOND_TO_FIRST:
+            xmlWriter.writeAttribute("direction", "second_to_first");
+            break;
+        case BOTH:
+            xmlWriter.writeAttribute("direction", "both");
+            break;
+        }
+
+        xmlWriter.writeEndElement();
+    }
     xmlWriter.writeEndElement();
 
     writeEntities(xmlWriter, ENTITY_ENEMY, outputType);
