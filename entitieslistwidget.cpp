@@ -19,7 +19,7 @@ void EntitiesListWidget::onUpdate(MapPtr map) {
     QListWidgetItem *pItem = new QListWidgetItem(this);
     pItem->setText("Map");
     pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    pItem->setData(Qt::UserRole, QVariant::fromValue(EntityPtr(map.get())));
+    pItem->setData(Qt::UserRole, QVariant::fromValue(map.dynamicCast<Entity>()));
 
     for (EntityPtr ent : mMap->getEntities()) {
         QListWidgetItem *pItem = new QListWidgetItem(this);
