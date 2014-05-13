@@ -57,12 +57,27 @@ void LinksListWidget::onCurrentItemChanged(QListWidgetItem *next, QListWidgetIte
 void LinksListWidget::onLinkValueChanged() {
     if (!currentItem()) {return;}
     LinksListWidgetItem *lwi = dynamic_cast<LinksListWidgetItem*>(currentItem());
-    lwi->getEntry().mFirstX = parentWidget()->findChild<QSpinBox*>("linkFirstPosX")->value();
-    lwi->getEntry().mFirstY = parentWidget()->findChild<QSpinBox*>("linkFirstPosY")->value();
-    lwi->getEntry().mSecondX = parentWidget()->findChild<QSpinBox*>("linkSecondPosX")->value();
-    lwi->getEntry().mSecondY = parentWidget()->findChild<QSpinBox*>("linkSecondPosY")->value();
-
-    lwi->getEntry().mLinkDirection = static_cast<LinkDirection>(parentWidget()->findChild<QComboBox*>("linkDirectionComboBox")->currentIndex());
+    QSpinBox *pSB = dynamic_cast<QSpinBox*>(sender());
+    QComboBox *pCB = dynamic_cast<QComboBox*>(sender());
+    if (pSB) {
+        if (pSB == parentWidget()->findChild<QSpinBox*>("linkFirstPosX")) {
+            lwi->getEntry().mFirstX = pSB->value();
+        }
+        else if (pSB == parentWidget()->findChild<QSpinBox*>("linkFirstPosY")) {
+            lwi->getEntry().mFirstY = pSB->value();
+        }
+        else if (pSB == parentWidget()->findChild<QSpinBox*>("linkSecondPosX")) {
+            lwi->getEntry().mSecondX = pSB->value();
+        }
+        else if (pSB == parentWidget()->findChild<QSpinBox*>("linkSecondPosY")) {
+            lwi->getEntry().mSecondY = pSB->value();
+        }
+    }
+    else if (pCB) {
+        if (pCB == parentWidget()->findChild<QComboBox*>("linkDirectionComboBox")) {
+            lwi->getEntry().mLinkDirection = static_cast<LinkDirection>(pCB->currentIndex());
+        }
+    }
 
     emit sigLinkValueCanged(currentItem());
 }

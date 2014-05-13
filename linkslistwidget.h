@@ -7,9 +7,9 @@
 
 class LinksListWidgetItem : public QListWidgetItem {
 private:
-    LinkEntry mEntry;
+    LinkEntry &mEntry;
 public:
-    LinksListWidgetItem(const QString &label, QListWidget *parent, const LinkEntry &entry)
+    LinksListWidgetItem(const QString &label, QListWidget *parent, LinkEntry &entry)
         : QListWidgetItem(label, parent),
           mEntry(entry) {
     }

@@ -281,6 +281,7 @@ void MapArea::onCurrentLinkSelectionChanged(QListWidgetItem *next, QListWidgetIt
 }
 
 void MapArea::onCurrentLinkValueChanged(QListWidgetItem *item) {
+    if (mLinkTiles.size() == 0) {return;}
     if (!item) {
         for (auto *p : mLinkTiles) {
             delete p;

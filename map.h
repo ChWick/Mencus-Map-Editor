@@ -143,6 +143,17 @@ struct LinkEntry {
     unsigned int mSecondY;
     bool mActivated;
     LinkDirection mLinkDirection;
+
+    LinkEntry() :
+        mId("link"),
+        mFirstX(0),
+        mFirstY(0),
+        mSecondX(0),
+        mSecondY(0),
+        mActivated(true),
+        mLinkDirection(BOTH) {
+
+    }
 };
 
 typedef QList<LinkEntry> link_entry_list;
