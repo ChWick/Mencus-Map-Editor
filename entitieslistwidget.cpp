@@ -54,13 +54,14 @@ void EntitiesListWidget::onDeleteSelection() {
 void EntitiesListWidget::onEntityDeleted(EntityPtr ent) {
     // start at 1 since map cant be deleted
     for (int i = 1; i < count(); i++) {
-        if (item(i)->text() == ent->mId) {
+        EntityPtr pEnt = qvariant_cast<EntityPtr>(item(i)->data(Qt::UserRole));
+        if (pEnt == ent) {
             delete item(i);
             break;
         }
     }
     for (auto it = mMap->getEntities().begin()++; it != mMap->getEntities().end(); it++) {
-        if ((*it)->mId == ent->mId) {
+        if ((*it) == ent) {
             mMap->getEntities().erase(it);
             break;
         }

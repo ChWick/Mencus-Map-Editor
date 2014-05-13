@@ -1249,6 +1249,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>entitiesDeleteButton</sender>
+   <signal>clicked()</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onDeleteSelection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1045</x>
+     <y>182</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>932</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>sigUpdateMap(MapPtr)</signal>

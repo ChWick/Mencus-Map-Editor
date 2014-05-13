@@ -39,7 +39,7 @@ void ObjectsGraphicsView::dropEvent(QDropEvent *event) {
         QDataStream stream(&data, QIODevice::ReadOnly);
         QPointF offset;
         EntityPtr oe;
-        stream.readRawData(reinterpret_cast<char*>(&oe), sizeof(EntityPtr));
+        stream.readRawData(reinterpret_cast<char*>(&oe), sizeof(EntityPtr*));
         stream >> offset;
 
         emit sigEntityDeleted(oe);
