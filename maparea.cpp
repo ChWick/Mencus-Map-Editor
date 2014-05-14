@@ -162,6 +162,7 @@ void MapArea::mousePressEvent ( QMouseEvent * e ) {
         // get ObjectEntry
         QPointF offset;
         EntityPtr oe = getObjectEntryAtLocalMousePos(e->pos(), offset);
+        emit sigSelectEntity(oe);
         if (!oe) {return;}
         QDrag *drag = new QDrag(this);
         QMimeData *mimeData = new QMimeData;
@@ -180,6 +181,14 @@ void MapArea::mousePressEvent ( QMouseEvent * e ) {
 
         if (Qt::IgnoreAction == drag->exec()) {
             oe->mGraphicsItem->setOpacity(1);
+        }
+    }
+    else if (mTool == TOOL_EDIT) {
+        if (mLeftPressed) {
+            QPointF offset;
+            EntityPtr oe = getObjectEntryAtLocalMousePos(e->pos(), offset);
+            emit sigSelectEntity(oe);
+
         }
     }
 }

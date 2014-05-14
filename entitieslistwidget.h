@@ -21,6 +21,7 @@ public slots:
     void onObjectAdded(EntityPtr);
     void onDeleteSelection();
     void onEntityDeleted(EntityPtr);
+    void onSelectEntity(EntityPtr);
     void onHpChanged(double);
     void onXCoordChanged(double);
     void onYCoordChanged(double);

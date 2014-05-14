@@ -51,6 +51,7 @@ private:
 signals:
     void sigObjectAdded(EntityPtr);
     void sigEntityDeleted(EntityPtr);
+    void sigSelectEntity(EntityPtr);
 public slots:
     void onObjectAdded(EntityPtr);
     void onUpdate(MapPtr);

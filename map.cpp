@@ -137,7 +137,7 @@ Map::Map(const QString &sFileName)
                 QStringList splitted = row.split(" ", QString::SplitBehavior::SkipEmptyParts);
                 assert(splitted.size() == (int)mSizeX);
                 for (unsigned int x = 0; x < mSizeX; x++) {
-                    if (mInvert) {
+                    if (!mInvert) {
                         mTiles(x, iCurrentRow) = splitted[x].toUInt();
                     }
                     else {

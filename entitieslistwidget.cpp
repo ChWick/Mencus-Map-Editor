@@ -68,6 +68,19 @@ void EntitiesListWidget::onEntityDeleted(EntityPtr ent) {
     }
 }
 
+void EntitiesListWidget::onSelectEntity(EntityPtr ent) {
+    if (!ent) {
+        setCurrentRow(0);
+        return;
+    }
+    for (int i = 0; i < count(); i++) {
+        if (qvariant_cast<EntityPtr>(item(i)->data(Qt::UserRole)) == ent) {
+            setCurrentRow(i);
+            return;
+        }
+    }
+}
+
 void EntitiesListWidget::onAddEntityButtonPressed() {
     int index = parent()->parent()->findChild<QComboBox*>("entitiesSelectionComboBox")->currentIndex();
     if (index == 0) {

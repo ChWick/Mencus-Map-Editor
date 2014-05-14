@@ -7,8 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>1107</width>
-    <height>750</height>
+    <height>782</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -36,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>1107</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>
@@ -160,133 +166,176 @@
        <property name="title">
         <string>Properties</string>
        </property>
-       <layout class="QFormLayout" name="formLayout_2">
-        <item row="2" column="0">
-         <widget class="QLabel" name="hitpointsLabel">
-          <property name="text">
-           <string>Hitpoints</string>
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QScrollArea" name="scrollArea">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="sizeLabel">
-          <property name="text">
-           <string>Size</string>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
           </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <layout class="QHBoxLayout" name="sizeLayout" stretch="0,1,0,1">
-          <item>
-           <widget class="QLabel" name="widthLabel">
-            <property name="text">
-             <string>w</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QDoubleSpinBox" name="widthSpinBox">
-            <property name="accelerated">
-             <bool>true</bool>
-            </property>
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <double>999999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="heightLabel">
-            <property name="text">
-             <string>h</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QDoubleSpinBox" name="heightSpinBox">
-            <property name="accelerated">
-             <bool>true</bool>
-            </property>
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <double>999999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="positionLabel">
-          <property name="text">
-           <string>Position</string>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <layout class="QHBoxLayout" name="positionLayout" stretch="0,1,0,1">
-          <item>
-           <widget class="QLabel" name="xCoordLabel">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>x</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QDoubleSpinBox" name="xCoordSpinBox">
-            <property name="accelerated">
-             <bool>true</bool>
-            </property>
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="maximum">
-             <double>99999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="yCoordLabel">
-            <property name="text">
-             <string>y</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QDoubleSpinBox" name="yCoordSpinBox">
-            <property name="accelerated">
-             <bool>true</bool>
-            </property>
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="maximum">
-             <double>99999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="2" column="1">
-         <widget class="QDoubleSpinBox" name="hitpointsSpinBox">
-          <property name="accelerated">
+          <property name="widgetResizable">
            <bool>true</bool>
           </property>
-          <property name="decimals">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <double>10000.000000000000000</double>
-          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>-67</y>
+             <width>333</width>
+             <height>145</height>
+            </rect>
+           </property>
+           <layout class="QFormLayout" name="formLayout_3">
+            <item row="1" column="0">
+             <widget class="QLabel" name="positionLabel">
+              <property name="text">
+               <string>Position</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <layout class="QHBoxLayout" name="positionLayout" stretch="0,1,0,1">
+              <item>
+               <widget class="QLabel" name="xCoordLabel">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>x</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="xCoordSpinBox">
+                <property name="accelerated">
+                 <bool>true</bool>
+                </property>
+                <property name="decimals">
+                 <number>3</number>
+                </property>
+                <property name="maximum">
+                 <double>9999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="yCoordLabel">
+                <property name="text">
+                 <string>y</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="yCoordSpinBox">
+                <property name="accelerated">
+                 <bool>true</bool>
+                </property>
+                <property name="decimals">
+                 <number>3</number>
+                </property>
+                <property name="maximum">
+                 <double>9999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="3" column="1">
+             <layout class="QHBoxLayout" name="sizeLayout" stretch="0,1,0,1">
+              <item>
+               <widget class="QLabel" name="widthLabel">
+                <property name="text">
+                 <string>w</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="widthSpinBox">
+                <property name="accelerated">
+                 <bool>true</bool>
+                </property>
+                <property name="decimals">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <double>999999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="heightLabel">
+                <property name="text">
+                 <string>h</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="heightSpinBox">
+                <property name="accelerated">
+                 <bool>true</bool>
+                </property>
+                <property name="decimals">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <double>999999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="sizeLabel">
+              <property name="text">
+               <string>Size</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="hitpointsLabel">
+              <property name="text">
+               <string>Hitpoints</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QDoubleSpinBox" name="hitpointsSpinBox">
+              <property name="accelerated">
+               <bool>true</bool>
+              </property>
+              <property name="decimals">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <double>10000.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -559,6 +608,7 @@
    <slots>
     <signal>sigObjectAdded(EntityPtr)</signal>
     <signal>sigEntityDeleted(EntityPtr)</signal>
+    <signal>sigSelectEntity(EntityPtr)</signal>
     <slot>onUpdate(MapPtr)</slot>
     <slot>onChangeLeftTile(int)</slot>
     <slot>onChangeRightTile(int)</slot>
@@ -606,6 +656,7 @@
     <slot>onWidthChanged(double)</slot>
     <slot>onHeightChanged(double)</slot>
     <slot>onAddEntityButtonPressed()</slot>
+    <slot>onSelectEntity(EntityPtr)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -996,86 +1047,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>hitpointsSpinBox</sender>
-   <signal>valueChanged(double)</signal>
-   <receiver>entitiesListWidget</receiver>
-   <slot>onHpChanged(double)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>971</x>
-     <y>459</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>936</x>
-     <y>122</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>xCoordSpinBox</sender>
-   <signal>valueChanged(double)</signal>
-   <receiver>entitiesListWidget</receiver>
-   <slot>onXCoordChanged(double)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>918</x>
-     <y>390</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>936</x>
-     <y>122</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>yCoordSpinBox</sender>
-   <signal>valueChanged(double)</signal>
-   <receiver>entitiesListWidget</receiver>
-   <slot>onYCoordChanged(double)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1038</x>
-     <y>390</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>936</x>
-     <y>122</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>heightSpinBox</sender>
-   <signal>valueChanged(double)</signal>
-   <receiver>entitiesListWidget</receiver>
-   <slot>onHeightChanged(double)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1039</x>
-     <y>425</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>936</x>
-     <y>122</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>widthSpinBox</sender>
-   <signal>valueChanged(double)</signal>
-   <receiver>entitiesListWidget</receiver>
-   <slot>onWidthChanged(double)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>921</x>
-     <y>425</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>936</x>
-     <y>122</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>entitiesAddButton</sender>
    <signal>clicked()</signal>
    <receiver>entitiesListWidget</receiver>
@@ -1280,6 +1251,70 @@
     <hint type="destinationlabel">
      <x>511</x>
      <y>376</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mapView</sender>
+   <signal>sigSelectEntity(EntityPtr)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onSelectEntity(EntityPtr)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>504</x>
+     <y>391</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>925</x>
+     <y>123</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>hitpointsSpinBox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onHpChanged(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>971</x>
+     <y>459</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>936</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>heightSpinBox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onHeightChanged(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1039</x>
+     <y>425</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>936</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widthSpinBox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>entitiesListWidget</receiver>
+   <slot>onWidthChanged(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>921</x>
+     <y>425</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>936</x>
+     <y>122</y>
     </hint>
    </hints>
   </connection>
