@@ -413,6 +413,7 @@ QString Map::writeToString(OutputTypes outputType) {
     xmlWriter.writeStartElement("links");
     for (const LinkEntry &ent : mLinksList) {
         xmlWriter.writeStartElement("link");
+        xmlWriter.writeAttribute("id", ent.mId);
         xmlWriter.writeAttribute("fromx", QString("%1").arg(ent.mFirstX));
         xmlWriter.writeAttribute("tox", QString("%1").arg(ent.mSecondX));
         xmlWriter.writeAttribute("fromy", QString("%1").arg(ent.mFirstY));
