@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     languageresources.cpp \
     editexecutabledialog.cpp \
     editmapsizedialog.cpp \
-    editendangeredtiledialog.cpp
+    editendangeredtiledialog.cpp \
+    selecttiledialog.cpp
 
 HEADERS  += mainwindow.h \
     map.h \
@@ -53,11 +54,13 @@ HEADERS  += mainwindow.h \
     languageresources.h \
     editexecutabledialog.h \
     editmapsizedialog.h \
-    editendangeredtiledialog.h
+    editendangeredtiledialog.h \
+    selecttiledialog.h
 
 FORMS    += mainwindow.ui \
     editeventdialog.ui \
     edittextdialog.ui \
     editexecutabledialog.ui \
     editmapsizedialog.ui \
-    editendangeredtiledialog.ui
+    editendangeredtiledialog.ui \
+    selecttiledialog.ui

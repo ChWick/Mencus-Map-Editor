@@ -22,6 +22,8 @@ private:
 
 public slots:
     void accept();
+private slots:
+    void on_tileButton_clicked();
 };
 
 #endif // EDITENDANGEREDTILEDIALOG_H
