@@ -48,6 +48,7 @@ void MapArea::onUpdate(MapPtr map) {
     mLineNumbers.clear();
     mScene.clear();
     mEntitySpecificItems.clear();
+    mEndangeredTilesItems.clear();
     if (!map) {return;}
 
     mScene.setSceneRect(QRect(0, 0, map->getTiles().getSizeX() * 64, map->getTiles().getSizeY() * 64));
@@ -71,6 +72,7 @@ void MapArea::onUpdate(MapPtr map) {
     }
 
     onUpdateLineNumbers();
+    onUpdateEndageredTiles();
 
     update();
     show();
@@ -351,5 +353,18 @@ void MapArea::onEditEndangeredTile() {
         else {
             mMap->getEndangeredTilesList().push_back(tileToEdit);
         }
+        onUpdateEndageredTiles();
+    }
+}
+void MapArea::onUpdateEndageredTiles() {
+    while (mEndangeredTilesItems.size() > 0) {
+        delete mEndangeredTilesItems.front();
+        mEndangeredTilesItems.pop_front();
+    }
+
+    for (EndangeredTile &tile : mMap->getEndangeredTilesList()) {
+        QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(QString("gfx/tiles/Tile%1.png").arg(tile.mTileType, 3, 10, QLatin1Char('0'))));
+        pItem->setPos(tile.mPosX * 64, (mMap->getTiles().getSizeY() - tile.mPosY - 1) * 64);
+        pItem->setOpacity(0.5);
     }
 }

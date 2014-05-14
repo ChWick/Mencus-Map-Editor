@@ -72,13 +72,16 @@
         </size>
        </property>
        <property name="text">
-        <string>tile</string>
+        <string/>
        </property>
        <property name="iconSize">
         <size>
          <width>60</width>
          <height>60</height>
         </size>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonIconOnly</enum>
        </property>
       </widget>
      </item>

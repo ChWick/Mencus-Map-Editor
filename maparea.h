@@ -28,6 +28,7 @@ private:
     QList<QGraphicsTextItem*> mLineNumbers;
     QVector<QGraphicsPixmapItem*> mLinkTiles;
     QList<QGraphicsItem*> mEntitySpecificItems;
+    QList<QGraphicsItem*> mEndangeredTilesItems;
     QPoint mGridMouseClickPos;
 public:
     explicit MapArea(QWidget *parent = 0);
@@ -67,6 +68,7 @@ public slots:
 private slots:
     void onShowContextMenu(const QPoint &);
     void onEditEndangeredTile();
+    void onUpdateEndageredTiles();
 };
 
 #endif // MAPAREA_H
