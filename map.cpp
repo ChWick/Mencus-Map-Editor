@@ -433,6 +433,13 @@ QString Map::writeToString(OutputTypes outputType) {
     writeEntities(xmlWriter, ENTITY_SWITCH, outputType);
 
     xmlWriter.writeStartElement("endangeredTiles");
+    for (const EndangeredTile &tile : mEndangeredTiles) {
+        xmlWriter.writeStartElement("tile");
+        xmlWriter.writeAttribute("targetTile", QString("%1").arg(tile.mTileType));
+        xmlWriter.writeAttribute("x", QString("%1").arg(tile.mPosX));
+        xmlWriter.writeAttribute("y", QString("%1").arg(tile.mPosY));
+        xmlWriter.writeEndElement();
+    }
     xmlWriter.writeEndElement();
 
     xmlWriter.writeStartElement("links");
