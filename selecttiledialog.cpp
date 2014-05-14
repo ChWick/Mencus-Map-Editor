@@ -38,6 +38,7 @@ void SelectTileDialog::mouseReleaseEvent ( QMouseEvent * ) {
 }
 
 void SelectTileDialog::mousePressEvent ( QMouseEvent *e ) {
+    if (ui->gridTiles->contentsRect().contains(ui->gridTiles->mapFromGlobal(this->mapToGlobal(e->pos()))) == false) {return;}
     int tt = getTileTypeAtMousePos(e->pos());
 
     setPreviewTile(tt);
