@@ -4,6 +4,7 @@
 enum Tools {
     TOOL_PLACE_TILE,
     TOOL_MOVE_OBJECT,
+    TOOL_EDIT,
 };
 
 #endif // TOOLSDEFINITION_H

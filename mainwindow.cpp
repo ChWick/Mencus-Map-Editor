@@ -50,6 +50,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *pMoveAction = brushesToolBar->addAction("Move", ui->mapView, SLOT(onSelectMove()));
     pMoveAction->setActionGroup(pBrushesActionGroup);
     pMoveAction->setCheckable(true);
+    QAction *pEditAction = brushesToolBar->addAction("Edit", ui->mapView, SLOT(onSelectEdit()));
+    pEditAction->setActionGroup(pBrushesActionGroup);
+    pEditAction->setCheckable(true);
 
 
     pPlaceTileAction->setChecked(true);

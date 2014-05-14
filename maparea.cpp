@@ -10,6 +10,8 @@
 #include <QDataStream>
 #include <QDrag>
 #include "linkslistwidget.h"
+#include <QMenu>
+#include <editendangeredtiledialog.h>
 
 MapArea::MapArea(QWidget *parent) :
     QGraphicsView(parent)
@@ -20,8 +22,11 @@ MapArea::MapArea(QWidget *parent) :
     mLeftPressed = mRightPressed = false;
     this->setScene(&mScene);
 
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
     QObject::connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onUpdateLineNumbers()));
     QObject::connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onUpdateLineNumbers()));
+    QObject::connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onShowContextMenu(const QPoint &)));
 }
 
 MapArea::~MapArea() {
@@ -54,7 +59,7 @@ void MapArea::onUpdate(MapPtr map) {
             //pGV->setStyleSheet(QString("background-image: url(gfx/tiles/Tile%1.png);").arg(map->getTiles()(x, y), 3, 10, QLatin1Char('0')));
             //pGV->setFixedSize(64, 64);
             QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(QString("gfx/tiles/Tile%1.png").arg(map->getTiles()(x, y), 3, 10, QLatin1Char('0'))));
-            pItem->setPos(x * 64, y * 64);
+            pItem->setPos(x * 64, (mMap->getTiles().getSizeY() - y - 1) * 64);
             mTiles(x, y) = pItem;
         }
     }
@@ -228,7 +233,7 @@ EntityPtr MapArea::getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &off
 
 QPoint MapArea::getTilePosFromRelativeMousePos(const QPoint &pos) {
     return QPoint((pos.x() + horizontalScrollBar()->value()) / 64,
-                    (pos.y() + verticalScrollBar()->value()) / 64);
+                    mMap->getTiles().getSizeY() - (pos.y() + verticalScrollBar()->value()) / 64 - 1);
 }
 
 void MapArea::onEntityDeleted(EntityPtr ent) {
@@ -310,6 +315,41 @@ void MapArea::onSelectedEntityEventsUpdate(EntityPtr ent) {
             pItem->setPos(evt.mData["x"].toFloat() * 64, (mMap->getTiles().getSizeY() - evt.mData["y"].toFloat() - 1) * 64);
             pItem->setOpacity(0.6);
             mEntitySpecificItems << (pItem);
+        }
+    }
+}
+
+
+void MapArea::onShowContextMenu(const QPoint &pos) {
+    mGridMouseClickPos = getTilePosFromRelativeMousePos(pos);
+    if (mTool == TOOL_EDIT) {
+        QMenu menu(this);
+        menu.addAction(tr("Edit endangered tile"), this, SLOT(onEditEndangeredTile()));
+        menu.exec(this->mapToGlobal(pos));
+    }
+}
+
+void MapArea::onEditEndangeredTile() {
+    EndangeredTile *tileFromMap = NULL;
+    EndangeredTile tileToEdit;
+    tileToEdit.mPosX = mGridMouseClickPos.x();
+    tileToEdit.mPosY = mGridMouseClickPos.y();
+    for (EndangeredTile &tile : mMap->getEndangeredTilesList()) {
+        if (tile.mPosX == mGridMouseClickPos.x() && tile.mPosY == mGridMouseClickPos.y()) {
+            tileFromMap = &tile;
+            tileToEdit = tile;
+            break;
+        }
+    }
+
+    EditEndangeredTileDialog dialog(tileToEdit, this);
+    dialog.exec();
+    if (dialog.result() == QDialog::Accepted) {
+        if (tileFromMap) {
+            *tileFromMap = tileToEdit;
+        }
+        else {
+            mMap->getEndangeredTilesList().push_back(tileToEdit);
         }
     }
 }

@@ -203,6 +203,8 @@ public:
     const QList<LinkEntry> &getLinksList() const {return mLinksList;}
     QList<LinkEntry> &getLinksList() {return mLinksList;}
 
+    QList<EndangeredTile> &getEndangeredTilesList() {return mEndangeredTiles;}
+
     QPointF guiToMap(const QPointF &pos) const;
     QPointF mapToGui(const QPointF &pos) const;
 

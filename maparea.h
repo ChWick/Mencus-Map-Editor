@@ -28,6 +28,7 @@ private:
     QList<QGraphicsTextItem*> mLineNumbers;
     QVector<QGraphicsPixmapItem*> mLinkTiles;
     QList<QGraphicsItem*> mEntitySpecificItems;
+    QPoint mGridMouseClickPos;
 public:
     explicit MapArea(QWidget *parent = 0);
     ~MapArea();
@@ -58,10 +59,14 @@ public slots:
     void onToolChanged(Tools tool) {mTool = tool; mLeftPressed = mRightPressed = false;}
     void onSelectMove() {onToolChanged(TOOL_MOVE_OBJECT);}
     void onSelectPlaceTile() {onToolChanged(TOOL_PLACE_TILE);}
+    void onSelectEdit() {onToolChanged(TOOL_EDIT);}
     void onUpdateLineNumbers();
     void onCurrentLinkSelectionChanged(QListWidgetItem*,QListWidgetItem*);
     void onCurrentLinkValueChanged(QListWidgetItem*);
     void onSelectedEntityEventsUpdate(EntityPtr);
+private slots:
+    void onShowContextMenu(const QPoint &);
+    void onEditEndangeredTile();
 };
 
 #endif // MAPAREA_H
