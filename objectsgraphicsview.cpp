@@ -23,6 +23,9 @@ ObjectsGraphicsView::ObjectsGraphicsView(QWidget *parent) :
     addObject(QPointF(0, 288), QSizeF(64, 32), ENTITY_OBJECT, 3);
     addObject(QPointF(96, 256), QSizeF(64, 64), ENTITY_OBJECT, 4);
     addObject(QPointF(160, 256), QSizeF(32, 64), ENTITY_OBJECT, 5);
+
+    addObject(QPointF(0, 320), QSizeF(16, 16), ENTITY_SWITCH, 0);
+    addObject(QPointF(16, 320),QSizeF(64, 64), ENTITY_SWITCH, 1);
 }
 
 void ObjectsGraphicsView::dragEnterEvent(QDragEnterEvent *e) {

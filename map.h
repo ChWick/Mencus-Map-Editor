@@ -44,6 +44,7 @@ enum EntityTypes {
     ENTITY_ENEMY        = 2,
     ENTITY_OBJECT       = 4,
     ENTITY_REGION       = 8,
+    ENTITY_SWITCH       = 16,
 };
 
 enum EntityOutput {
@@ -58,6 +59,7 @@ enum EntityOutput {
     ENT_OUT_REGION      = ENT_OUT_ID | ENT_OUT_POSITION | ENT_OUT_SIZE,
     ENT_OUT_OBJECT      = ENT_OUT_ID | ENT_OUT_TYPE | ENT_OUT_POSITION,
     ENT_OUT_ENEMY       = ENT_OUT_OBJECT | ENT_OUT_HP | ENT_OUT_DIRECTION,
+    ENT_OUT_SWITCH      = ENT_OUT_OBJECT,
     ENT_OUT_FULL        = 2047,
 
 };
@@ -99,6 +101,9 @@ struct Entity {
             break;
         case ENTITY_ENEMY:
             mEntityOutputFlags = ENT_OUT_ENEMY;
+            break;
+        case ENTITY_SWITCH:
+            mEntityOutputFlags = ENT_OUT_SWITCH;
             break;
         default:
             mEntityOutputFlags = 0;

@@ -29,6 +29,11 @@ QString getEntityPicturePath(EntityTypes primaryType, unsigned int secondaryType
             return "gfx/objects/flag.png";
         }
         break;
+    case ENTITY_SWITCH:
+        return QString("gfx/objects/switch_%1.png").arg(secondaryType);
+    case ENTITY_REGION:
+        qWarning("Entity region has no pixmap, its implemented via a transparent brush and a rectangle");
+        break;
     }
     return "";
 }
@@ -68,7 +73,19 @@ QSizeF getEntitySize(EntityTypes primaryType, unsigned int secondaryType) {
         default:
             return QSizeF(0, 0);
         }
+    case ENTITY_SWITCH:
+        switch (secondaryType) {
+        case 0:
+            return QSizeF(16, 16);
+        case 1:
+            return QSizeF(64, 64);
+        }
+        break;
+    case ENTITY_REGION:
+        qWarning("A region has a undefined size");
+        break;
     }
+    return QSizeF();
 }
 
 Map::Map()
@@ -145,6 +162,9 @@ Map::Map(const QString &sFileName)
             }
             else if (xml.name() == "player") {
                 readEntity(xml, ENTITY_PLAYER);
+            }
+            else if (xml.name() == "switch") {
+                readEntity(xml, ENTITY_SWITCH);
             }
             else if (xml.name() == "event") {
                 Event::Entry entry;
@@ -241,6 +261,9 @@ void Map::writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes 
     case ENTITY_OBJECT:
         stream.writeStartElement("objects");
         break;
+    case ENTITY_SWITCH:
+        stream.writeStartElement("switches");
+        break;
     }
 
     for (EntityPtr entity : mEntities) {
@@ -263,7 +286,6 @@ void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, EntityPtr enti
         break;
     case ENTITY_ENEMY:
         stream.writeStartElement("enemy");
-        stream.writeAttribute("type", QString("%1").arg(entity->mSecondaryType));
         additionalPosOffset = entity->mSize.height() / 64;
         break;
     case ENTITY_OBJECT:
@@ -272,6 +294,10 @@ void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, EntityPtr enti
         break;
     case ENTITY_REGION:
         stream.writeStartElement("region");
+        break;
+    case ENTITY_SWITCH:
+        stream.writeStartElement("switch");
+        additionalPosOffset = entity->mSize.height() / 64;
         break;
     }
 
@@ -404,8 +430,7 @@ QString Map::writeToString(OutputTypes outputType) {
 
     writeEntities(xmlWriter, ENTITY_PLAYER, outputType);
 
-    xmlWriter.writeStartElement("switches");
-    xmlWriter.writeEndElement();
+    writeEntities(xmlWriter, ENTITY_SWITCH, outputType);
 
     xmlWriter.writeStartElement("endangeredTiles");
     xmlWriter.writeEndElement();
