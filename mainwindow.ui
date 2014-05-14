@@ -567,6 +567,7 @@
     <slot>onToolChanged(Tools)</slot>
     <slot>onCurrentLinkSelectionChanged(QListWidgetItem*,QListWidgetItem*)</slot>
     <slot>onCurrentLinkValueChanged(QListWidgetItem*)</slot>
+    <slot>onSelectedEntityEventsUpdate(EntityPtr)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -620,6 +621,7 @@
    <extends>QListWidget</extends>
    <header>eventslistwidget.h</header>
    <slots>
+    <signal>sigSelectedEntityEventsUpdate(EntityPtr)</signal>
     <slot>onEntitySelectionChanged(QListWidgetItem*,QListWidgetItem*)</slot>
     <slot>onEditCurrent()</slot>
     <slot>onAddEvent()</slot>
@@ -1262,6 +1264,22 @@
     <hint type="destinationlabel">
      <x>932</x>
      <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>eventsListWidget</sender>
+   <signal>sigSelectedEntityEventsUpdate(EntityPtr)</signal>
+   <receiver>mapView</receiver>
+   <slot>onSelectedEntityEventsUpdate(EntityPtr)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>917</x>
+     <y>286</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>376</y>
     </hint>
    </hints>
   </connection>

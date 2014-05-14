@@ -15,7 +15,7 @@ public:
     explicit EventsListWidget(QWidget *parent = 0);
 
 signals:
-
+    void sigSelectedEntityEventsUpdate(EntityPtr);
 public slots:
     void onEditCurrent();
     void onAddEvent();

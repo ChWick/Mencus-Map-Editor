@@ -42,6 +42,7 @@ void MapArea::onUpdate(MapPtr map) {
     mLinkTiles.clear();
     mLineNumbers.clear();
     mScene.clear();
+    mEntitySpecificItems.clear();
     if (!map) {return;}
 
     mScene.setSceneRect(QRect(0, 0, map->getTiles().getSizeX() * 64, map->getTiles().getSizeY() * 64));
@@ -295,4 +296,20 @@ void MapArea::onCurrentLinkValueChanged(QListWidgetItem *item) {
     mLinkTiles[0]->setPos(entry.mFirstX * 64, (mMap->getTiles().getSizeY() - entry.mFirstY - 1) * 64);
     mLinkTiles[1]->setPos(entry.mSecondX * 64, (mMap->getTiles().getSizeY() - entry.mSecondY - 1) * 64);
     mScene.update();
+}
+
+void MapArea::onSelectedEntityEventsUpdate(EntityPtr ent) {
+    while (mEntitySpecificItems.size() > 0) {
+        delete mEntitySpecificItems.first();
+        mEntitySpecificItems.pop_front();
+    }
+
+    for (Event::Entry &evt : ent->mEvents) {
+        if (evt.mData["type"] == "change_tile") {
+            QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(QString("gfx/tiles/Tile%1.png").arg(evt.mData["id"].toInt(), 3, 10, QLatin1Char('0'))));
+            pItem->setPos(evt.mData["x"].toFloat() * 64, (mMap->getTiles().getSizeY() - evt.mData["y"].toFloat() - 1) * 64);
+            pItem->setOpacity(0.6);
+            mEntitySpecificItems << (pItem);
+        }
+    }
 }

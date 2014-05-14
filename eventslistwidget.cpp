@@ -18,6 +18,7 @@ void EventsListWidget::onEntitySelectionChanged(QListWidgetItem *next, QListWidg
         pItem->setText(evt.mData["type"] + ": " + evt.mData["id"]);
         pItem->setData(Qt::UserRole, QVariant::fromValue(static_cast<void*>(&evt)));
     }
+    emit sigSelectedEntityEventsUpdate(m_pCurrentEntity);
 }
 
 void EventsListWidget::onEditCurrent() {
@@ -29,6 +30,7 @@ void EventsListWidget::onEditCurrent() {
     diag.exec();
 
     selectedItems().first()->setText(event->mData["type"] + ": " + event->mData["id"]);
+    emit sigSelectedEntityEventsUpdate(m_pCurrentEntity);
 }
 
 void EventsListWidget::onAddEvent() {

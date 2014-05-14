@@ -10,6 +10,7 @@
 #include <QGraphicsTextItem>
 #include "toolsdefinition.h"
 #include <QListWidgetItem>
+#include <QGraphicsItemGroup>
 
 class MapArea : public QGraphicsView
 {
@@ -26,6 +27,7 @@ private:
     unsigned int mGridSize;
     QList<QGraphicsTextItem*> mLineNumbers;
     QVector<QGraphicsPixmapItem*> mLinkTiles;
+    QList<QGraphicsItem*> mEntitySpecificItems;
 public:
     explicit MapArea(QWidget *parent = 0);
     ~MapArea();
@@ -59,6 +61,7 @@ public slots:
     void onUpdateLineNumbers();
     void onCurrentLinkSelectionChanged(QListWidgetItem*,QListWidgetItem*);
     void onCurrentLinkValueChanged(QListWidgetItem*);
+    void onSelectedEntityEventsUpdate(EntityPtr);
 };
 
 #endif // MAPAREA_H
