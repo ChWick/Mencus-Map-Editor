@@ -416,7 +416,8 @@ QString Map::writeToString(OutputTypes outputType) {
     xmlWriter.writeStartElement("tiles");
     xmlWriter.writeAttribute("invert", "0");
 
-    for (int r = mSizeY - 1; r >= 0; --r) {
+    //for (int r = mSizeY - 1; r >= 0; --r) {
+    for (int r = 0; r < mSizeY; r++) {
         xmlWriter.writeStartElement("row");
         QString tiles;
         for (unsigned int c = 0; c < mSizeX; c++) {
