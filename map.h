@@ -199,7 +199,7 @@ public:
     QString getMapName() const {
         QString s(mFile.fileName());
         s = s.left(s.lastIndexOf("."));
-        s = s.right(s.length() - s.lastIndexOf("/"));
+        s = s.right(s.length() - s.lastIndexOf("/") - 1);
         return s;
     }
     void writeToFile(OutputTypes outputType);
