@@ -40,36 +40,36 @@ QString getEntityPicturePath(EntityTypes primaryType, unsigned int secondaryType
 QSizeF getEntitySize(EntityTypes primaryType, unsigned int secondaryType) {
     switch (primaryType) {
     case ENTITY_PLAYER:
-        return QSizeF(64, 128);
+        return QSizeF(1, 2);
     case ENTITY_ENEMY:
         switch (secondaryType) {
         case 0:
-            return QSizeF(64, 64);
+            return QSizeF(1, 1);
         case 1:
-            return QSizeF(64, 128);
+            return QSizeF(1, 2);
         case 2:
-            return QSizeF(128, 256);
+            return QSizeF(2, 4);
         case 4:
-            return QSizeF(64, 128);
+            return QSizeF(1, 2);
         default:
             return QSizeF(0, 0);
         }
     case ENTITY_OBJECT:
         switch (secondaryType) {
         case OBJECT_BOMB:
-            return QSizeF(32, 32);
+            return QSizeF(0.5f, 0.5f);
         case OBJECT_HEALTH_POTION:
-            return QSizeF(32, 32);
+            return QSizeF(0.5f, 0.5f);
         case OBJECT_MANA_POTION:
-            return QSizeF(32, 32);
+            return QSizeF(0.5f, 0.5f);
         case OBJECT_KEY:
-            return QSizeF(64, 32);
+            return QSizeF(1, 0.5f);
         case OBJECT_SCRATCH:
-            return QSizeF(64, 64);
+            return QSizeF(1, 1);
         case OBJECT_TORCH:
-            return QSizeF(32, 64);
+            return QSizeF(0.5f, 1);
         case OBJECT_FLAG:
-            return QSizeF(64, 128);
+            return QSizeF(1, 128);
         default:
             return QSizeF(0, 0);
         }
@@ -78,7 +78,7 @@ QSizeF getEntitySize(EntityTypes primaryType, unsigned int secondaryType) {
         case 0:
             return QSizeF(16, 16);
         case 1:
-            return QSizeF(64, 64);
+            return QSizeF(1, 1);
         }
         break;
     case ENTITY_REGION:
@@ -207,13 +207,20 @@ Map::Map(const QString &sFileName)
     mLanguageResources.loadFromFileSystem(mFile.fileName().left(mFile.fileName().lastIndexOf("/")));
 }
 
+QPoint Map::guiToMap(const QPoint &pos, int tileSize) const {
+    QPoint out(pos);
+    out.setY((mSizeY - out.y() / tileSize - 1));
+    out.setX(out.x() / tileSize);
+    return out;
+}
 QPointF Map::guiToMap(const QPointF &pos) const {
     QPointF out(pos);
+    out.setY(mSizeY - out.y() - 1);
     return out;
 }
 QPointF Map::mapToGui(const QPointF &pos) const {
     QPointF out(pos);
-    out.setY(mSizeY - out.y());
+    out.setY(mSizeY - out.y() - 1);
     return out;
 }
 
@@ -223,9 +230,9 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
                                 xml.attributes().value("id").toString(),
                                 entType,
                                 0,
-                                mapToGui(QPointF(xml.attributes().value("x").toFloat(),
-                                xml.attributes().value("y").toFloat())) * 64,
-                                QSizeF(xml.attributes().value("sizex").toFloat(), xml.attributes().value("sizey").toFloat()) * 64
+                                QPointF(xml.attributes().value("x").toFloat(),
+                                xml.attributes().value("y").toFloat()),
+                                QSizeF(xml.attributes().value("sizex").toFloat(), xml.attributes().value("sizey").toFloat())
                             )));
     }
     else {
@@ -234,8 +241,8 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
                                 xml.attributes().value("id").toString(),
                                 entType,
                                 type,
-                                mapToGui(QPointF(xml.attributes().value("x").toFloat(),
-                                xml.attributes().value("y").toFloat())) * 64,
+                                QPointF(xml.attributes().value("x").toFloat(),
+                                xml.attributes().value("y").toFloat()),
                                 getEntitySize(entType, type)
                             )));
         mEntities.back()->mHP = xml.attributes().value("hp").toFloat();
@@ -282,26 +289,21 @@ void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, EntityPtr enti
     if (outputType == OT_FULL) {
         entityOutput = ENT_OUT_FULL;
     }
-    float additionalPosOffset = 0;
     switch (type) {
     case ENTITY_PLAYER:
         stream.writeStartElement("player");
-        additionalPosOffset = entity->mSize.height() / 64;
         break;
     case ENTITY_ENEMY:
         stream.writeStartElement("enemy");
-        additionalPosOffset = entity->mSize.height() / 64;
         break;
     case ENTITY_OBJECT:
         stream.writeStartElement("object");
-        additionalPosOffset = entity->mSize.height() / 64;
         break;
     case ENTITY_REGION:
         stream.writeStartElement("region");
         break;
     case ENTITY_SWITCH:
         stream.writeStartElement("switch");
-        additionalPosOffset = entity->mSize.height() / 64;
         if (mFlags & SF_TIMED) {
             stream.writeAttribute("activeTime", QString("%1").arg(entity->mTime));
         }
@@ -311,12 +313,12 @@ void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, EntityPtr enti
     if (entityOutput & ENT_OUT_TYPE) {stream.writeAttribute("type", QString("%1").arg(entity->mSecondaryType));}
     if (entityOutput & ENT_OUT_ID) {stream.writeAttribute("id", entity->mId);}
     if (entityOutput & ENT_OUT_POSITION) {
-        stream.writeAttribute("x", QString("%1").arg(entity->mPos.x() / 64));
-        stream.writeAttribute("y", QString("%1").arg(mTiles.getSizeY() - entity->mPos.y() / 64 - additionalPosOffset));
+        stream.writeAttribute("x", QString("%1").arg(entity->mPos.x()));
+        stream.writeAttribute("y", QString("%1").arg(entity->mPos.y()));
     }
     if (entityOutput & ENT_OUT_SIZE) {
-        stream.writeAttribute("sizex", QString("%1").arg(entity->mSize.width() / 64));
-        stream.writeAttribute("sizey", QString("%1").arg(entity->mSize.height() / 64));
+        stream.writeAttribute("sizex", QString("%1").arg(entity->mSize.width()));
+        stream.writeAttribute("sizey", QString("%1").arg(entity->mSize.height()));
     }
     if (entityOutput & ENT_OUT_HP) {
         stream.writeAttribute("hp", QString("%1").arg(entity->mHP));
@@ -505,7 +507,7 @@ void Map::resize(int width, int height){
     mTiles = newGrid;
 
     for (EntityPtr ent : mEntities) {
-        ent->mPos.setY(ent->mPos.y() - (mSizeY - height) * 64);
+        ent->mPos.setY(ent->mPos.y() - (mSizeY - height));
     }
     mSizeX = width;
     mSizeY = height;

@@ -217,6 +217,7 @@ public:
 
     QList<EndangeredTile> &getEndangeredTilesList() {return mEndangeredTiles;}
 
+    QPoint guiToMap(const QPoint &pos, int tileSize) const;
     QPointF guiToMap(const QPointF &pos) const;
     QPointF mapToGui(const QPointF &pos) const;
 

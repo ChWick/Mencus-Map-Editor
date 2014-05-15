@@ -78,14 +78,14 @@ void ObjectsGraphicsView::addObject(const QPointF &pos, const QSizeF &size, Enti
         primaryType,
         secondaryType,
         pos,
-        size
+        size / 64
     );
     oe.mGraphicsItem = pItem;
     mObjects.push_back(oe);
 }
 Entity *ObjectsGraphicsView::getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset) {
     for (Entity &oe : mObjects) {
-        if (QRectF(oe.mPos, oe.mSize).contains(pos.x() + horizontalScrollBar()->value(), pos.y() + verticalScrollBar()->value())) {
+        if (QRectF(oe.mPos, oe.mSize * 64).contains(pos.x() + horizontalScrollBar()->value(), pos.y() + verticalScrollBar()->value())) {
             offset = pos - oe.mPos + QPointF(horizontalScrollBar()->value(), verticalScrollBar()->value());
             return &oe;
         }

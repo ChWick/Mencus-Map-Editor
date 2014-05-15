@@ -30,6 +30,8 @@ private:
     QList<QGraphicsItem*> mEntitySpecificItems;
     QList<QGraphicsItem*> mEndangeredTilesItems;
     QPoint mGridMouseClickPos;
+    float mMapScale;
+    float mTileSize;
 public:
     explicit MapArea(QWidget *parent = 0);
     ~MapArea();
