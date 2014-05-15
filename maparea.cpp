@@ -82,8 +82,16 @@ void MapArea::dragEnterEvent(QDragEnterEvent *e) {
          e->acceptProposedAction();
 }
 void MapArea::dragMoveEvent(QDragMoveEvent *e) {
-    if (e->mimeData()->hasFormat("object") || e->mimeData()->hasFormat("object/move"))
+    if (e->mimeData()->hasFormat("object") || e->mimeData()->hasFormat("object/move")) {
+
+        if (e->keyboardModifiers() & Qt::ControlModifier) {
+            e->setDropAction(Qt::CopyAction);
+        }
+        else {
+            e->setDropAction(Qt::MoveAction);
+        }
         e->acceptProposedAction();
+    }
 }
 void MapArea::dropEvent(QDropEvent *event) {
     if (event->mimeData()->hasFormat("object/move")) {
@@ -94,8 +102,19 @@ void MapArea::dropEvent(QDropEvent *event) {
         stream.readRawData(reinterpret_cast<char*>(&oe), sizeof(EntityPtr*));
         stream >> offset;
 
-        oe->mGraphicsItem->setOpacity(1);
-        setPositionFromLocalPos(event->posF() - offset, oe);
+
+        if (event->proposedAction() == Qt::MoveAction) {
+            oe->mGraphicsItem->setOpacity(1);
+            setPositionFromLocalPos(event->posF() - offset, oe);
+        }
+        else if (event->proposedAction() == Qt::CopyAction) {
+            QGraphicsPixmapItem *pItem = mScene.addPixmap(dynamic_cast<QGraphicsPixmapItem*>(oe->mGraphicsItem)->pixmap());
+            // add object to map
+            EntityPtr ent(new Entity(*oe));
+            ent->mGraphicsItem = pItem;
+            setPositionFromLocalPos(event->posF() - offset, ent);
+            emit sigObjectAdded(ent);
+        }
     }
     else {
         QByteArray data(event->mimeData()->data("object"));
@@ -179,7 +198,7 @@ void MapArea::mousePressEvent ( QMouseEvent * e ) {
         oe->mGraphicsItem->setOpacity(0.5);
         mScene.update();
 
-        if (Qt::IgnoreAction == drag->exec()) {
+        if (Qt::MoveAction != drag->exec(Qt::MoveAction | Qt::CopyAction)) {
             oe->mGraphicsItem->setOpacity(1);
         }
     }
