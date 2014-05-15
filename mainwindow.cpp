@@ -61,6 +61,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->tilesGraphicsView->init();
 
+    QObject::connect(ui->flagBlocksCheckBox, SIGNAL(toggled(bool)), ui->entitiesListWidget, SLOT(onChangeBlocksToggled(bool)));
+    QObject::connect(ui->flagDeactivableCheckBox, SIGNAL(toggled(bool)), ui->entitiesListWidget, SLOT(onDeactivateableToggled(bool)));
+    QObject::connect(ui->flagTimedCheckBox, SIGNAL(toggled(bool)), ui->entitiesListWidget, SLOT(onTimedToggled(bool)));
+    QObject::connect(ui->timeSpinBox, SIGNAL(valueChanged(double)), ui->entitiesListWidget, SLOT(onTimeChanged(double)));
+
     onNewMap();
 }
 

@@ -28,6 +28,10 @@ public slots:
     void onHeightChanged(double);
     void onWidthChanged(double);
     void onAddEntityButtonPressed();
+    void onTimedToggled(bool);
+    void onDeactivateableToggled(bool);
+    void onChangeBlocksToggled(bool);
+    void onTimeChanged(double);
 
 private slots:
     void onItemChanged(QListWidgetItem *);

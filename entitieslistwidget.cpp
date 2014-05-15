@@ -5,6 +5,7 @@
 #include <QGraphicsPixmapItem>
 #include <QComboBox>
 #include <QGraphicsRectItem>
+#include <QCheckBox>
 
 EntitiesListWidget::EntitiesListWidget(QWidget *parent) :
     QListWidget(parent)
@@ -93,18 +94,36 @@ void EntitiesListWidget::onItemSelectionChanged(QListWidgetItem *next, QListWidg
     bool bHP = false;
     bool bPos = false;
     bool bSize = false;
+    bool bSwitchFlags = false;
+    bool bDeactivableFlag = false;
+    bool bTimedFlag = false;
+    bool bChangeBlocks = false;
+
     if (next) {
         EntityPtr pEnt = qvariant_cast<EntityPtr>(next->data(Qt::UserRole));
         bHP = (pEnt->mEntityOutputFlags & ENT_OUT_HP) > 0;
         bPos = (pEnt->mEntityOutputFlags & ENT_OUT_POSITION) > 0;
         bSize = (pEnt->mEntityOutputFlags & ENT_OUT_SIZE) > 0;
 
-
         parent()->parent()->findChild<QDoubleSpinBox*>("hitpointsSpinBox")->setValue(pEnt->mHP);
         parent()->parent()->findChild<QDoubleSpinBox*>("xCoordSpinBox")->setValue(pEnt->mPos.x() / 64);
         parent()->parent()->findChild<QDoubleSpinBox*>("yCoordSpinBox")->setValue(mMap->getTiles().getSizeY() - pEnt->mPos.y() / 64 - 1);
         parent()->parent()->findChild<QDoubleSpinBox*>("widthSpinBox")->setValue(pEnt->mSize.width() / 64);
         parent()->parent()->findChild<QDoubleSpinBox*>("heightSpinBox")->setValue(pEnt->mSize.height() / 64);
+
+        // flags for switches
+        if (pEnt->mPrimaryType == ENTITY_SWITCH) {
+            bSwitchFlags = true;
+            bDeactivableFlag = (pEnt->mFlags & SF_DEACTIVATABLE) > 0;
+            bTimedFlag = (pEnt->mFlags & SF_TIMED) > 0;
+            bChangeBlocks = (pEnt->mFlags & SF_CHANGE_BLOCKS) > 0;
+
+
+            parent()->parent()->findChild<QCheckBox*>("flagDeactivableCheckBox")->setChecked(bDeactivableFlag);
+            parent()->parent()->findChild<QCheckBox*>("flagBlocksCheckBox")->setChecked(bChangeBlocks);
+            parent()->parent()->findChild<QCheckBox*>("flagTimedCheckBox")->setChecked(bTimedFlag);
+            parent()->parent()->findChild<QDoubleSpinBox*>("timeSpinBox")->setValue(pEnt->mTime);
+        }
     }
     parent()->parent()->findChild<QWidget*>("hitpointsSpinBox")->setEnabled(bHP);
     parent()->parent()->findChild<QWidget*>("hitpointsLabel")->setEnabled(bHP);
@@ -114,6 +133,17 @@ void EntitiesListWidget::onItemSelectionChanged(QListWidgetItem *next, QListWidg
     parent()->parent()->findChild<QWidget*>("sizeLabel")->setEnabled(bSize);
     parent()->parent()->findChild<QWidget*>("widthSpinBox")->setEnabled(bSize);
     parent()->parent()->findChild<QWidget*>("heightSpinBox")->setEnabled(bSize);
+
+    // switch specific
+    parent()->parent()->findChild<QWidget*>("flagDeactivableCheckBox")->setVisible(bSwitchFlags);
+    parent()->parent()->findChild<QWidget*>("flagDeactivableLabel")->setVisible(bSwitchFlags);
+    parent()->parent()->findChild<QWidget*>("flagBlocksCheckBox")->setVisible(bSwitchFlags);
+    parent()->parent()->findChild<QWidget*>("flagBlocksLabel")->setVisible(bSwitchFlags);
+    parent()->parent()->findChild<QWidget*>("flagTimedCheckBox")->setVisible(bSwitchFlags);
+    parent()->parent()->findChild<QWidget*>("flagTimedLabel")->setVisible(bSwitchFlags);
+    parent()->parent()->findChild<QWidget*>("timeSpinBox")->setVisible(bSwitchFlags);
+    parent()->parent()->findChild<QWidget*>("timeLabel")->setVisible(bSwitchFlags);
+
 }
 void EntitiesListWidget::onHpChanged(double t) {
     if (currentItem() == nullptr) {return;}
@@ -167,4 +197,37 @@ void EntitiesListWidget::onWidthChanged(double d) {
             pRect->setRect(QRectF(pEnt->mPos, pEnt->mSize));
         }
     }
+}
+
+void EntitiesListWidget::onTimedToggled(bool b) {
+    if (currentItem() == nullptr) {return;}
+    EntityPtr pEnt = qvariant_cast<EntityPtr>(currentItem()->data(Qt::UserRole));
+    if (pEnt->mPrimaryType == ENTITY_SWITCH) {
+        if (b) pEnt->mFlags |= SF_TIMED;
+        else if (pEnt->mFlags & SF_TIMED) pEnt->mFlags -= SF_TIMED;
+    }
+}
+
+void EntitiesListWidget::onDeactivateableToggled(bool b) {
+    if (currentItem() == nullptr) {return;}
+    EntityPtr pEnt = qvariant_cast<EntityPtr>(currentItem()->data(Qt::UserRole));
+    if (pEnt->mPrimaryType == ENTITY_SWITCH) {
+        if (b) pEnt->mFlags |= SF_DEACTIVATABLE;
+        else if (pEnt->mFlags & SF_DEACTIVATABLE) pEnt->mFlags -= SF_DEACTIVATABLE;
+    }
+}
+
+void EntitiesListWidget::onChangeBlocksToggled(bool b) {
+    if (currentItem() == nullptr) {return;}
+    EntityPtr pEnt = qvariant_cast<EntityPtr>(currentItem()->data(Qt::UserRole));
+    if (pEnt->mPrimaryType == ENTITY_SWITCH) {
+        if (b) pEnt->mFlags |= SF_CHANGE_BLOCKS;
+        else if (pEnt->mFlags & SF_CHANGE_BLOCKS) pEnt->mFlags -= SF_CHANGE_BLOCKS;
+    }
+}
+
+void EntitiesListWidget::onTimeChanged(double v) {
+    if (currentItem() == nullptr) {return;}
+    EntityPtr pEnt = qvariant_cast<EntityPtr>(currentItem()->data(Qt::UserRole));
+    pEnt->mTime = v;
 }

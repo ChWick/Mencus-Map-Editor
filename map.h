@@ -54,12 +54,13 @@ enum EntityOutput {
     ENT_OUT_SIZE        = 8,
     ENT_OUT_HP          = 16,
     ENT_OUT_DIRECTION   = 32,
+    ENT_OUT_FLAGS       = 64,
 
     ENT_OUT_PLAYER      = 4 | ENT_OUT_HP | ENT_OUT_DIRECTION,
     ENT_OUT_REGION      = ENT_OUT_ID | ENT_OUT_POSITION | ENT_OUT_SIZE,
     ENT_OUT_OBJECT      = ENT_OUT_ID | ENT_OUT_TYPE | ENT_OUT_POSITION,
     ENT_OUT_ENEMY       = ENT_OUT_OBJECT | ENT_OUT_HP | ENT_OUT_DIRECTION,
-    ENT_OUT_SWITCH      = ENT_OUT_OBJECT,
+    ENT_OUT_SWITCH      = ENT_OUT_OBJECT | ENT_OUT_FLAGS,
     ENT_OUT_FULL        = 2047,
 
 };
@@ -74,6 +75,14 @@ enum ObjectTypes {
     OBJECT_FLAG,
 };
 
+// definition for flags
+enum SwitchFlags {
+    SF_SIMPLE            = 0,  //!< simple switch that can only be used once, and that will keep its state
+    SF_DEACTIVATABLE     = 1,  //!< can an activated switch be deactivated
+    SF_TIMED             = 2,  //!< will this switch go back to the deactivated state after m_fActiveTime
+    SF_CHANGE_BLOCKS     = 4,  //!< will this switch change blocks
+};
+
 QString getEntityPicturePath(EntityTypes primaryType, unsigned int scondaryType);
 typedef QList<Event::Entry> EVENT_LIST;
 struct Entity {
@@ -82,11 +91,12 @@ struct Entity {
     unsigned int mSecondaryType;
     QPointF mPos;
     QSizeF mSize;
+    unsigned int mFlags;
 
     QGraphicsItem *mGraphicsItem;
 
     Entity(QString id, EntityTypes primType, unsigned int secType, const QPointF &pos, const QSizeF &size)
-        : mId(id), mPrimaryType(primType), mSecondaryType(secType), mPos(pos), mSize(size), mGraphicsItem(nullptr),
+        : mId(id), mPrimaryType(primType), mSecondaryType(secType), mPos(pos), mSize(size), mFlags(0), mGraphicsItem(nullptr),
     mEntityOutputFlags(0), mEvents(EVENT_LIST()), mHP(-1), mDirection(1) {
 
         switch (primType) {
@@ -111,6 +121,7 @@ struct Entity {
         }
     }
     Entity() {
+        mFlags = 0;
         mEntityOutputFlags = 0;
         mGraphicsItem = nullptr;
     }
@@ -126,6 +137,7 @@ struct Entity {
     EVENT_LIST mEvents;
     float mHP;
     int mDirection;
+    float mTime;
 
 
     QString getEntityPicturePath() const {return ::getEntityPicturePath(mPrimaryType, mSecondaryType);}

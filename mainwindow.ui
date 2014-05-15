@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1107</width>
-    <height>782</height>
+    <height>1098</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>1107</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -200,12 +200,24 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-67</y>
-             <width>333</width>
-             <height>145</height>
+             <y>-102</y>
+             <width>305</width>
+             <height>235</height>
             </rect>
            </property>
            <layout class="QFormLayout" name="formLayout_3">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
             <item row="1" column="0">
              <widget class="QLabel" name="positionLabel">
               <property name="text">
@@ -237,7 +249,7 @@
                  <number>3</number>
                 </property>
                 <property name="maximum">
-                 <double>9999.000000000000000</double>
+                 <double>999.000000000000000</double>
                 </property>
                </widget>
               </item>
@@ -257,7 +269,7 @@
                  <number>3</number>
                 </property>
                 <property name="maximum">
-                 <double>9999.000000000000000</double>
+                 <double>999.000000000000000</double>
                 </property>
                </widget>
               </item>
@@ -281,7 +293,7 @@
                  <number>1</number>
                 </property>
                 <property name="maximum">
-                 <double>999999.000000000000000</double>
+                 <double>999.000000000000000</double>
                 </property>
                </widget>
               </item>
@@ -301,7 +313,7 @@
                  <number>1</number>
                 </property>
                 <property name="maximum">
-                 <double>999999.000000000000000</double>
+                 <double>999.000000000000000</double>
                 </property>
                </widget>
               </item>
@@ -331,6 +343,62 @@
               </property>
               <property name="maximum">
                <double>10000.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QCheckBox" name="flagTimedCheckBox">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0">
+             <widget class="QLabel" name="flagTimedLabel">
+              <property name="text">
+               <string>Timed</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="flagDeactivableLabel">
+              <property name="text">
+               <string>Deactivable</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QCheckBox" name="flagDeactivableCheckBox">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="0">
+             <widget class="QLabel" name="timeLabel">
+              <property name="text">
+               <string>Time</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="1">
+             <widget class="QDoubleSpinBox" name="timeSpinBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="1">
+             <widget class="QCheckBox" name="flagBlocksCheckBox">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="0">
+             <widget class="QLabel" name="flagBlocksLabel">
+              <property name="text">
+               <string>Blocks</string>
               </property>
              </widget>
             </item>
@@ -1315,6 +1383,38 @@
     <hint type="destinationlabel">
      <x>936</x>
      <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>flagTimedCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>flagDeactivableCheckBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>971</x>
+     <y>677</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>971</x>
+     <y>650</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>flagTimedCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>timeSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>971</x>
+     <y>677</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>971</x>
+     <y>707</y>
     </hint>
    </hints>
   </connection>

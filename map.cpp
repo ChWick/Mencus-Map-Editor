@@ -241,6 +241,10 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
         mEntities.back()->mHP = xml.attributes().value("hp").toFloat();
         mEntities.back()->mDirection = xml.attributes().value("direction").toInt();
         mEntities.back()->mPos.ry() -= mEntities.back()->mSize.height();
+        if (entType == ENTITY_SWITCH) {
+            mEntities.back()->mFlags = xml.attributes().value("flags").toUInt();
+            mEntities.back()->mTime = xml.attributes().value("activeTime").toFloat();
+        }
     }
     mCurrentEventList = &(mEntities.back()->mEvents);
 }
@@ -298,6 +302,9 @@ void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, EntityPtr enti
     case ENTITY_SWITCH:
         stream.writeStartElement("switch");
         additionalPosOffset = entity->mSize.height() / 64;
+        if (mFlags & SF_TIMED) {
+            stream.writeAttribute("activeTime", QString("%1").arg(entity->mTime));
+        }
         break;
     }
 
@@ -317,6 +324,7 @@ void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, EntityPtr enti
     if (entityOutput & ENT_OUT_DIRECTION) {
         stream.writeAttribute("direction", QString("%1").arg(entity->mDirection));
     }
+    if (entityOutput & ENT_OUT_FLAGS) {stream.writeAttribute("flags", QString("%1").arg(entity->mFlags));}
 
     writeEventList(stream, entity->mEvents, outputType);
 
