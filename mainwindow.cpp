@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mainToolBar->addAction("New", this, SLOT(onNewMap()));
     mainToolBar->addAction("Open", this, SLOT(onOpenMap()));
     mainToolBar->addAction("Safe", this, SLOT(onSaveAs()));
-    mainToolBar->addAction("Play", this, SLOT(onPlay()));
+    mainToolBar->addAction("Play", this, SLOT(onPlay()))->setShortcut(QKeySequence(Qt::Key_F5));
 
     QToolBar *brushesToolBar = new QToolBar(this);
     this->addToolBar(Qt::TopToolBarArea, brushesToolBar);
@@ -48,12 +48,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *pPlaceTileAction = brushesToolBar->addAction("Place tile", ui->mapView, SLOT(onSelectPlaceTile()));
     pPlaceTileAction->setActionGroup(pBrushesActionGroup);
     pPlaceTileAction->setCheckable(true);
+    pPlaceTileAction->setShortcut(QKeySequence(Qt::Key_P));
     QAction *pMoveAction = brushesToolBar->addAction("Move", ui->mapView, SLOT(onSelectMove()));
     pMoveAction->setActionGroup(pBrushesActionGroup);
     pMoveAction->setCheckable(true);
+    pMoveAction->setShortcut(QKeySequence(Qt::Key_M));
     QAction *pEditAction = brushesToolBar->addAction("Edit", ui->mapView, SLOT(onSelectEdit()));
     pEditAction->setActionGroup(pBrushesActionGroup);
     pEditAction->setCheckable(true);
+    pEditAction->setShortcut(QKeySequence(Qt::Key_E));
 
 
     pPlaceTileAction->setChecked(true);
