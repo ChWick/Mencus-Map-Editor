@@ -45,7 +45,7 @@ protected:
     void mouseReleaseEvent ( QMouseEvent *);
     void mousePressEvent ( QMouseEvent *);
     void mouseMoveEvent ( QMouseEvent *);
-    bool event(QEvent * e);
+    void wheelEvent(QWheelEvent *e);
 private:
     QPoint getTilePosFromRelativeMousePos(const QPoint &);
     EntityPtr getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset);

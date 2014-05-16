@@ -231,17 +231,16 @@ void MapArea::mouseMoveEvent ( QMouseEvent * e) {
     }
 }
 
-bool MapArea::event(QEvent * e) {
-    if (e->type() == QEvent::Wheel) {
-        QWheelEvent *we = dynamic_cast<QWheelEvent*>(e);
-        if (we->phase() == Qt::ScrollUpdate && (we->modifiers() & Qt::ControlModifier) > 0) {
-            float deltaAngle = we->angleDelta().y();
-            mMapScale = std::pow(mMapScale, deltaAngle);
-            onUpdate(mMap);
-            return true;
-        }
+void MapArea::wheelEvent(QWheelEvent *e) {
+    if (e->phase() == Qt::ScrollUpdate && (e->modifiers() & Qt::ControlModifier) > 0) {
+        float deltaAngle = e->angleDelta().y();
+        mMapScale *= (deltaAngle > 0) ? 2 : 0.5;
+        mMapScale = std::min<float>(mMapScale, 16);
+        mMapScale = std::max<float>(mMapScale, 0.125);
+        onUpdate(mMap);
+        return;
     }
-    return QGraphicsView::event(e);
+    QGraphicsView::wheelEvent(e);
 }
 
 void MapArea::setPositionFromLocalPos(const QPointF &localPos, EntityPtr entity) {
