@@ -22,6 +22,7 @@ void LinksListWidget::onAddLink() {
 void LinksListWidget::onDeleteLink() {
     if (currentItem() == nullptr) {return;}
     LinksListWidgetItem *pItem = dynamic_cast<LinksListWidgetItem*>(currentItem());
+    setCurrentItem(nullptr);
     for (link_entry_list::iterator it = mMap->getLinksList().begin(); it != mMap->getLinksList().end(); it++) {
         if (&(*it) == &pItem->getEntry()) {
             mMap->getLinksList().erase(it);

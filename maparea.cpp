@@ -325,7 +325,7 @@ void MapArea::onCurrentLinkSelectionChanged(QListWidgetItem *next, QListWidgetIt
     for (auto *p : mLinkTiles) {
         delete p;
     }
-    if (!next) {mLinkTiles.resize(0);}
+    if (!next) {mLinkTiles.resize(0); return;}
     mLinkTiles.resize(2);
 
     LinksListWidgetItem *pItem = dynamic_cast<LinksListWidgetItem*>(next);
