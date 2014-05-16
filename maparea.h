@@ -32,6 +32,7 @@ private:
     QPoint mGridMouseClickPos;
     float mMapScale;
     float mTileSize;
+    float mGridScale;
 public:
     explicit MapArea(QWidget *parent = 0);
     ~MapArea();
@@ -44,6 +45,7 @@ protected:
     void mouseReleaseEvent ( QMouseEvent *);
     void mousePressEvent ( QMouseEvent *);
     void mouseMoveEvent ( QMouseEvent *);
+    bool event(QEvent * e);
 private:
     QPoint getTilePosFromRelativeMousePos(const QPoint &);
     EntityPtr getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset);
@@ -68,6 +70,7 @@ public slots:
     void onCurrentLinkSelectionChanged(QListWidgetItem*,QListWidgetItem*);
     void onCurrentLinkValueChanged(QListWidgetItem*);
     void onSelectedEntityEventsUpdate(EntityPtr);
+    void onEditMapScale();
 private slots:
     void onShowContextMenu(const QPoint &);
     void onEditEndangeredTile();

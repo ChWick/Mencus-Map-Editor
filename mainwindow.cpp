@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     pEditMenu->addAction(tr("Edit &texts"), this, SLOT(onEditTexts()));
     pEditMenu->addAction(tr("Edit exeutable &path"), this, SLOT(onEditExecutablePath()));
     pEditMenu->addAction(tr("Edit map &size"), this, SLOT(onEditMapSize()));
+    pEditMenu->addAction(tr("Edit map scale"), ui->mapView, SLOT(onEditMapScale()));
 
     QToolBar *mainToolBar = new QToolBar(this);
     this->addToolBar(Qt::TopToolBarArea, mainToolBar);

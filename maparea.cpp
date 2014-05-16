@@ -12,6 +12,7 @@
 #include "linkslistwidget.h"
 #include <QMenu>
 #include <editendangeredtiledialog.h>
+#include <editmapscaledialog.h>
 
 MapArea::MapArea(QWidget *parent) :
     QGraphicsView(parent)
@@ -43,6 +44,9 @@ MapArea::~MapArea() {
 }
 
 void MapArea::onUpdate(MapPtr map) {
+    mTileSize = mMapScale * 64;
+    mGridSize = mTileSize * mGridScale;
+
     mMap = map;
     this->setScene(&mScene);
 
@@ -53,7 +57,7 @@ void MapArea::onUpdate(MapPtr map) {
     mEndangeredTilesItems.clear();
     if (!map) {return;}
 
-    mScene.setSceneRect(QRect(0, 0, map->getTiles().getSizeX() * 64, map->getTiles().getSizeY() * 64));
+    mScene.setSceneRect(QRect(0, 0, map->getTiles().getSizeX() * mTileSize, map->getTiles().getSizeY() * mTileSize));
     mTiles.resize(map->getTiles().getSizeX(), map->getTiles().getSizeY());
     //pLayout->setGeometry(QRect(0, 0, map->getTiles().getSizeX() * 64, map->getTiles().getSizeY() * 64));
     for (unsigned int x = 0; x < map->getTiles().getSizeX(); x++) {
@@ -70,7 +74,8 @@ void MapArea::onUpdate(MapPtr map) {
 
     for (EntityPtr ent : mMap->getEntities()) {
         QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(ent->getEntityPicturePath()));
-        pItem->setPos(mMap->mapToGui(ent->mPos) * mTileSize);
+        pItem->setPos(mMap->mapToGui(ent->mPos + QPointF(0, ent->mSize.height())) * mTileSize);
+        pItem->setScale(mMapScale);
         ent->mGraphicsItem = pItem;
     }
 
@@ -226,6 +231,19 @@ void MapArea::mouseMoveEvent ( QMouseEvent * e) {
     }
 }
 
+bool MapArea::event(QEvent * e) {
+    if (e->type() == QEvent::Wheel) {
+        QWheelEvent *we = dynamic_cast<QWheelEvent*>(e);
+        if (we->phase() == Qt::ScrollUpdate && (we->modifiers() & Qt::ControlModifier) > 0) {
+            float deltaAngle = we->angleDelta().y();
+            mMapScale = std::pow(mMapScale, deltaAngle);
+            onUpdate(mMap);
+            return true;
+        }
+    }
+    return QGraphicsView::event(e);
+}
+
 void MapArea::setPositionFromLocalPos(const QPointF &localPos, EntityPtr entity) {
     QPointF pos(localPos + scrollPos());
     if (mGridSize > 0) {
@@ -365,6 +383,7 @@ void MapArea::onShowContextMenu(const QPoint &pos) {
     if (mTool == TOOL_EDIT) {
         QMenu menu(this);
         menu.addAction(tr("Edit endangered tile"), this, SLOT(onEditEndangeredTile()));
+        menu.addAction(tr("Edit map scale"), this, SLOT(onEditMapScale()));
         menu.exec(this->mapToGlobal(pos));
     }
 }
@@ -402,7 +421,18 @@ void MapArea::onUpdateEndageredTiles() {
 
     for (EndangeredTile &tile : mMap->getEndangeredTilesList()) {
         QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(QString("gfx/tiles/Tile%1.png").arg(tile.mTileType, 3, 10, QLatin1Char('0'))));
-        pItem->setPos(tile.mPosX * 64, (mMap->getTiles().getSizeY() - tile.mPosY - 1) * 64);
+        pItem->setPos(tile.mPosX * mTileSize, (mMap->getTiles().getSizeY() - tile.mPosY - 1) * mTileSize);
         pItem->setOpacity(0.5);
+    }
+}
+
+
+void MapArea::onEditMapScale() {
+    EditMapScaleDialog dialog(mMapScale, static_cast<double>(mGridSize) / mTileSize, this);
+    dialog.exec();
+    if (dialog.result() == QDialog::Accepted) {
+        mMapScale = dialog.scale();
+        mGridScale = dialog.gridScale();
+        onUpdate(mMap);
     }
 }
