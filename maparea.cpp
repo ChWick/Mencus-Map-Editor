@@ -266,14 +266,14 @@ void MapArea::setPositionFromLocalPos(const QPointF &localPos, EntityPtr entity)
     }
     entity->mGraphicsItem->setPos(pos);
     entity->mPos = mMap->guiToMap(pos / mTileSize);
-    entity->mPos.ry() -= entity->mSize.height() * mMapScale;
+    entity->mPos.ry() -= entity->mSize.height();
 }
 
 void MapArea::setPositionFromMapPos(const QPointF &mapPos, EntityPtr entity) {
     if (!entity->mGraphicsItem) {return;}
     entity->mPos = mapPos;
     QPointF gpos = mMap->mapToGui(mapPos);
-    gpos.ry() -= (entity->mSize.height() - 1);
+    gpos.ry() -= (entity->mSize.height());
     gpos *= mTileSize;
     entity->mGraphicsItem->setPos(gpos);
 }
