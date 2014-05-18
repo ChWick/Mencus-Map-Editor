@@ -226,6 +226,9 @@ public:
 
     void resize(int width, int height);
 
+    const QString &getBackground() const {return mBackground;}
+    void setBackground(const QString &bg) {mBackground = bg;}
+
 private:
     void readEntity(const QXmlStreamReader &stream, EntityTypes type);
     void writeEntities(QXmlStreamWriter &stream, EntityTypes type, OutputTypes outputType) const;

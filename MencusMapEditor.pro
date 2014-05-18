@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     editmapsizedialog.cpp \
     editendangeredtiledialog.cpp \
     selecttiledialog.cpp \
-    editmapscaledialog.cpp
+    editmapscaledialog.cpp \
+    editbackgroundtypedialog.cpp
 
 HEADERS  += mainwindow.h \
     map.h \
@@ -57,7 +58,8 @@ HEADERS  += mainwindow.h \
     editmapsizedialog.h \
     editendangeredtiledialog.h \
     selecttiledialog.h \
-    editmapscaledialog.h
+    editmapscaledialog.h \
+    editbackgroundtypedialog.h
 
 FORMS    += mainwindow.ui \
     editeventdialog.ui \
@@ -66,4 +68,5 @@ FORMS    += mainwindow.ui \
     editmapsizedialog.ui \
     editendangeredtiledialog.ui \
     selecttiledialog.ui \
-    editmapscaledialog.ui
+    editmapscaledialog.ui \
+    editbackgroundtypedialog.ui

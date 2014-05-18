@@ -16,6 +16,7 @@
 #include <QScrollBar>
 #include "editmapsizedialog.h"
 #include <QFileInfo>
+#include "editbackgroundtypedialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -36,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     pEditMenu->addAction(tr("Edit exeutable &path"), this, SLOT(onEditExecutablePath()));
     pEditMenu->addAction(tr("Edit map &size"), this, SLOT(onEditMapSize()));
     pEditMenu->addAction(tr("Edit map scale"), ui->mapView, SLOT(onEditMapScale()));
+    pEditMenu->addAction(tr("Edit map background"), this, SLOT(onEditMapBackground()));
 
     QToolBar *mainToolBar = new QToolBar(this);
     this->addToolBar(Qt::TopToolBarArea, mainToolBar);
@@ -200,5 +202,13 @@ void MainWindow::onEditMapSize() {
     dialog.exec();
     if (dialog.result() == QDialog::Accepted) {
         sigUpdateMap(mMap);
+    }
+}
+
+void MainWindow::onEditMapBackground() {
+    EditBackgroundTypeDialog dialog(mMap->getBackground(), this);
+    dialog.exec();
+    if (dialog.result() == QDialog::Accepted) {
+        mMap->setBackground(dialog.background());
     }
 }
