@@ -209,18 +209,18 @@ Map::Map(const QString &sFileName)
 
 QPoint Map::guiToMap(const QPoint &pos, int tileSize) const {
     QPoint out(pos);
-    out.setY((mSizeY - out.y() / tileSize - 1));
+    out.setY((mSizeY - out.y() / tileSize));
     out.setX(out.x() / tileSize);
     return out;
 }
 QPointF Map::guiToMap(const QPointF &pos) const {
     QPointF out(pos);
-    out.setY(mSizeY - out.y() - 1);
+    out.setY(mSizeY - out.y());
     return out;
 }
 QPointF Map::mapToGui(const QPointF &pos) const {
     QPointF out(pos);
-    out.setY(mSizeY - out.y() - 1);
+    out.setY(mSizeY - out.y());
     return out;
 }
 

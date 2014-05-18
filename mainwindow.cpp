@@ -15,6 +15,7 @@
 #include <QSettings>
 #include <QScrollBar>
 #include "editmapsizedialog.h"
+#include <QFileInfo>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -24,10 +25,11 @@ MainWindow::MainWindow(QWidget *parent) :
     showMaximized();
 
     QMenu *pFileMenu = ui->menuBar->addMenu(tr("&File"));
-    pFileMenu->addAction(tr("&New map"), this, SLOT(onNewMap()));
-    pFileMenu->addAction(tr("&Open map"), this, SLOT(onOpenMap()));
-    pFileMenu->addAction(tr("Save &as"), this, SLOT(onSaveAs()));
-    pFileMenu->addAction(tr("E&xit"), this, SLOT(close()));
+    pFileMenu->addAction(tr("&New map"), this, SLOT(onNewMap()))->setShortcut(QKeySequence::New);
+    pFileMenu->addAction(tr("&Open map"), this, SLOT(onOpenMap()))->setShortcut(QKeySequence::Open);
+    pFileMenu->addAction(tr("Save"), this, SLOT(onSave()))->setShortcut(QKeySequence::Save);
+    pFileMenu->addAction(tr("Save &as"), this, SLOT(onSaveAs()))->setShortcut(QKeySequence::SaveAs);
+    pFileMenu->addAction(tr("E&xit"), this, SLOT(close()))->setShortcut(QKeySequence::Quit);
 
     QMenu *pEditMenu = ui->menuBar->addMenu(tr("&Edit"));
     pEditMenu->addAction(tr("Edit &texts"), this, SLOT(onEditTexts()));
@@ -39,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->addToolBar(Qt::TopToolBarArea, mainToolBar);
     mainToolBar->addAction("New", this, SLOT(onNewMap()));
     mainToolBar->addAction("Open", this, SLOT(onOpenMap()));
-    mainToolBar->addAction("Safe", this, SLOT(onSaveAs()));
+    mainToolBar->addAction("Safe", this, SLOT(onSave()));
     mainToolBar->addAction("Play", this, SLOT(onPlay()))->setShortcut(QKeySequence(Qt::Key_F5));
 
     QToolBar *brushesToolBar = new QToolBar(this);
@@ -108,13 +110,27 @@ void MainWindow::onNewMap() {
 
 void MainWindow::onOpenMap() {
     QString mapName = QFileDialog::getOpenFileName(this, tr("Map map"), "", tr("Maps (*.xml)"));
+    if (mapName.isEmpty()) {return;}
     mMap = MapPtr(new Map(mapName));
 
     sigUpdateMap(mMap);
 }
 
+void MainWindow::onSave() {
+    if (QFileInfo(mMap->getFile()).isFile()) {
+        mMap->writeToFile(OT_MINIMAL);
+    }
+    else {
+        onSaveAs();
+    }
+}
+
 void MainWindow::onSaveAs() {
     QString mapName = QFileDialog::getSaveFileName(this, tr("Map map"), "", tr("Maps (*.xml)"));
+    if (mapName.isEmpty()) {
+        return;
+    }
+
     if (!mapName.endsWith(".xml")) {
         mapName += ".xml";
     }

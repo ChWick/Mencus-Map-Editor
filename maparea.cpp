@@ -13,6 +13,7 @@
 #include <QMenu>
 #include <editendangeredtiledialog.h>
 #include <editmapscaledialog.h>
+#include <QGraphicsDropShadowEffect>
 
 MapArea::MapArea(QWidget *parent) :
     QGraphicsView(parent)
@@ -24,6 +25,7 @@ MapArea::MapArea(QWidget *parent) :
     setAcceptDrops(true);
     mLeftPressed = mRightPressed = false;
     this->setScene(&mScene);
+    mScene.setBackgroundBrush(QBrush(Qt::black));
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -66,7 +68,7 @@ void MapArea::onUpdate(MapPtr map) {
             //pGV->setStyleSheet(QString("background-image: url(gfx/tiles/Tile%1.png);").arg(map->getTiles()(x, y), 3, 10, QLatin1Char('0')));
             //pGV->setFixedSize(64, 64);
             QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(QString("gfx/tiles/Tile%1.png").arg(map->getTiles()(x, y), 3, 10, QLatin1Char('0'))));
-            pItem->setPos(mMap->mapToGui(QPointF(x, y)) * mTileSize);
+            pItem->setPos((mMap->mapToGui(QPointF(x, y)) - QPointF(0, 1)) * mTileSize);
             pItem->setScale(mMapScale);
             mTiles(x, y) = pItem;
         }
@@ -311,7 +313,7 @@ EntityPtr MapArea::getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &off
 
 QPoint MapArea::getTilePosFromRelativeMousePos(const QPoint &pos) {
     return mMap->guiToMap(QPoint((pos.x() + horizontalScrollBar()->value()),
-                    pos.y() + verticalScrollBar()->value()), mTileSize);
+                    pos.y() + verticalScrollBar()->value()), mTileSize) - QPoint(0, 1);
 }
 
 void MapArea::onEntityDeleted(EntityPtr ent) {
@@ -330,16 +332,21 @@ void MapArea::onUpdateLineNumbers() {
 
     int countX = width() / mTileSize;
     int countY = height() / mTileSize;
-    for (unsigned int x = 0; x < countX + 1; x++) {
+    for (int x = 0; x < countX + 1; x++) {
         QGraphicsTextItem *text = mScene.addText(QString("%1").arg(x + startX));
         text->setPos(x * mTileSize + static_cast<int>(horizontalScrollBar()->value() / mTileSize) * mTileSize, verticalScrollBar()->value());
         text->setDefaultTextColor(Qt::white);
         mLineNumbers.push_back(text);
     }
-    for (unsigned int y = 0; y < countY + 1; y++) {
-        QGraphicsTextItem *text = mScene.addText(QString("%1").arg(mMap->getTiles().getSizeY() - y - startY - 1));
+    for (int y = 0; y < countY + 1; y++) {
+        QGraphicsTextItem *text = mScene.addText(QString("%1").arg(static_cast<int>(mMap->getTiles().getSizeY()) - y - startY - 1));
         text->setPos(horizontalScrollBar()->value(), y * mTileSize + static_cast<int>(verticalScrollBar()->value() / mTileSize) * mTileSize);
         text->setDefaultTextColor(Qt::white);
+        QGraphicsDropShadowEffect *pEffect = new QGraphicsDropShadowEffect(text);
+        pEffect->setColor(Qt::black);
+        pEffect->setBlurRadius(3);
+        pEffect->setOffset(QPointF(0, 0));
+        text->setGraphicsEffect(pEffect);
         mLineNumbers.push_back(text);
     }
     mScene.update();
@@ -445,6 +452,7 @@ void MapArea::onUpdateEndageredTiles() {
     for (EndangeredTile &tile : mMap->getEndangeredTilesList()) {
         QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(QString("gfx/tiles/Tile%1.png").arg(tile.mTileType, 3, 10, QLatin1Char('0'))));
         pItem->setPos(tile.mPosX * mTileSize, (mMap->getTiles().getSizeY() - tile.mPosY - 1) * mTileSize);
+        pItem->setScale(mMapScale);
         pItem->setOpacity(0.5);
     }
 }

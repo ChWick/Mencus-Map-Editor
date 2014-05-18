@@ -31,6 +31,7 @@ signals:
     void sigUpdateMap(MapPtr);
 
 public slots:
+    void onSave();
     void onSaveAs();
     void onNewMap();
     void onOpenMap();

@@ -196,6 +196,7 @@ public:
     Map(const QString &sFileName);
 
     void setFilename(const QString &filename) {mFile.setFileName(filename);}
+    const QFile &getFile() const {return mFile;}
     QString getMapName() const {
         QString s(mFile.fileName());
         s = s.left(s.lastIndexOf("."));
