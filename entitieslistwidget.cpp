@@ -85,7 +85,7 @@ void EntitiesListWidget::onSelectEntity(EntityPtr ent) {
 void EntitiesListWidget::onAddEntityButtonPressed() {
     int index = parent()->parent()->findChild<QComboBox*>("entitiesSelectionComboBox")->currentIndex();
     if (index == 0) {
-        EntityPtr ent(new Entity("new region", ENTITY_REGION, 0, QPointF(0, 0), QSizeF(64, 64)));
+        EntityPtr ent(new Entity("new region", ENTITY_REGION, 0, QPointF(0, 0), QSizeF(1, 1)));
         emit sigEntityAdded(ent);
     }
 }
@@ -106,10 +106,10 @@ void EntitiesListWidget::onItemSelectionChanged(QListWidgetItem *next, QListWidg
         bSize = (pEnt->mEntityOutputFlags & ENT_OUT_SIZE) > 0;
 
         parent()->parent()->findChild<QDoubleSpinBox*>("hitpointsSpinBox")->setValue(pEnt->mHP);
-        parent()->parent()->findChild<QDoubleSpinBox*>("xCoordSpinBox")->setValue(pEnt->mPos.x() / 64);
-        parent()->parent()->findChild<QDoubleSpinBox*>("yCoordSpinBox")->setValue(mMap->getTiles().getSizeY() - pEnt->mPos.y() / 64 - 1);
-        parent()->parent()->findChild<QDoubleSpinBox*>("widthSpinBox")->setValue(pEnt->mSize.width() / 64);
-        parent()->parent()->findChild<QDoubleSpinBox*>("heightSpinBox")->setValue(pEnt->mSize.height() / 64);
+        parent()->parent()->findChild<QDoubleSpinBox*>("xCoordSpinBox")->setValue(pEnt->mPos.x());
+        parent()->parent()->findChild<QDoubleSpinBox*>("yCoordSpinBox")->setValue(pEnt->mPos.y());
+        parent()->parent()->findChild<QDoubleSpinBox*>("widthSpinBox")->setValue(pEnt->mSize.width());
+        parent()->parent()->findChild<QDoubleSpinBox*>("heightSpinBox")->setValue(pEnt->mSize.height());
 
         // flags for switches
         if (pEnt->mPrimaryType == ENTITY_SWITCH) {
@@ -154,49 +154,29 @@ void EntitiesListWidget::onHpChanged(double t) {
 void EntitiesListWidget::onXCoordChanged(double d) {
     if (currentItem() == nullptr) {return;}
     EntityPtr pEnt = qvariant_cast<EntityPtr>(currentItem()->data(Qt::UserRole));
-    pEnt->mPos.setX(d * 64);
-    if (pEnt->mGraphicsItem) {
-        pEnt->mGraphicsItem->setPos(pEnt->mPos);
-    }
+    pEnt->mPos.setX(d);
+    emit sigEntityPosOrSizeChanged(pEnt);
 }
 
 void EntitiesListWidget::onYCoordChanged(double d) {
     if (currentItem() == nullptr) {return;}
     EntityPtr pEnt = qvariant_cast<EntityPtr>(currentItem()->data(Qt::UserRole));
-    pEnt->mPos.setY((mMap->getTiles().getSizeY() - d - 1) * 64);
-    if (pEnt->mGraphicsItem) {
-        pEnt->mGraphicsItem->setPos(pEnt->mPos);
-    }
+    pEnt->mPos.setY(d);
+    emit sigEntityPosOrSizeChanged(pEnt);
 }
 
 void EntitiesListWidget::onHeightChanged(double d) {
     if (currentItem() == nullptr) {return;}
     EntityPtr pEnt = qvariant_cast<EntityPtr>(currentItem()->data(Qt::UserRole));
-    pEnt->mSize.setHeight(d * 64);
-
-    if (pEnt->mGraphicsItem == nullptr) {return;}
-
-    if (pEnt->mEntityOutputFlags & ENT_OUT_SIZE) {
-        if (pEnt->mGraphicsItem->type() == QGraphicsRectItem::Type) {
-            QGraphicsRectItem *pRect = dynamic_cast<QGraphicsRectItem*>(pEnt->mGraphicsItem);
-            pRect->setRect(QRectF(pEnt->mPos, pEnt->mSize));
-        }
-    }
+    pEnt->mSize.setHeight(d);
+    emit sigEntityPosOrSizeChanged(pEnt);
 }
 
 void EntitiesListWidget::onWidthChanged(double d) {
     if (currentItem() == nullptr) {return;}
     EntityPtr pEnt = qvariant_cast<EntityPtr>(currentItem()->data(Qt::UserRole));
-    pEnt->mSize.setWidth(d * 64);
-
-    if (pEnt->mGraphicsItem == nullptr) {return;}
-
-    if (pEnt->mEntityOutputFlags & ENT_OUT_SIZE) {
-        if (pEnt->mGraphicsItem->type() == QGraphicsRectItem::Type) {
-            QGraphicsRectItem *pRect = dynamic_cast<QGraphicsRectItem*>(pEnt->mGraphicsItem);
-            pRect->setRect(QRectF(pEnt->mPos, pEnt->mSize));
-        }
-    }
+    pEnt->mSize.setWidth(d);
+    emit sigEntityPosOrSizeChanged(pEnt);
 }
 
 void EntitiesListWidget::onTimedToggled(bool b) {

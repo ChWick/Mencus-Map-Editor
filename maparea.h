@@ -50,6 +50,7 @@ private:
     QPoint getTilePosFromRelativeMousePos(const QPoint &);
     EntityPtr getObjectEntryAtLocalMousePos(const QPoint &pos, QPointF &offset);
     void setPositionFromLocalPos(const QPointF &localPos, EntityPtr entity);
+    void setPositionFromMapPos(const QPointF &mapPos, EntityPtr entity);
     void placeTileAt(const QPoint &tilePos);
     QPoint scrollPos();
 signals:
@@ -71,6 +72,7 @@ public slots:
     void onCurrentLinkValueChanged(QListWidgetItem*);
     void onSelectedEntityEventsUpdate(EntityPtr);
     void onEditMapScale();
+    void onEntityPosOrSizeChanged(EntityPtr);
 private slots:
     void onShowContextMenu(const QPoint &);
     void onEditEndangeredTile();

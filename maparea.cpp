@@ -66,17 +66,30 @@ void MapArea::onUpdate(MapPtr map) {
             //pGV->setStyleSheet(QString("background-image: url(gfx/tiles/Tile%1.png);").arg(map->getTiles()(x, y), 3, 10, QLatin1Char('0')));
             //pGV->setFixedSize(64, 64);
             QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(QString("gfx/tiles/Tile%1.png").arg(map->getTiles()(x, y), 3, 10, QLatin1Char('0'))));
-            pItem->setPos(x * mTileSize, (mMap->getTiles().getSizeY() - y - 1) * mTileSize);
+            pItem->setPos(mMap->mapToGui(QPointF(x, y)) * mTileSize);
             pItem->setScale(mMapScale);
             mTiles(x, y) = pItem;
         }
     }
 
     for (EntityPtr ent : mMap->getEntities()) {
-        QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(ent->getEntityPicturePath()));
-        pItem->setPos(mMap->mapToGui(ent->mPos + QPointF(0, ent->mSize.height())) * mTileSize);
-        pItem->setScale(mMapScale);
-        ent->mGraphicsItem = pItem;
+        if (ent->mPrimaryType == ENTITY_REGION) {
+            QGraphicsRectItem *pItem = mScene.addRect(QRectF(QPointF(), ent->mSize));
+            pItem->setOpacity(0.6);
+            pItem->setBrush(QBrush(Qt::red));
+            pItem->setPen(QPen(Qt::transparent));
+            pItem->setScale(mTileSize);
+            pItem->setPos(mMap->mapToGui(ent->mPos) * mTileSize);
+            pItem->setPos(pItem->pos().x(), pItem->pos().y() - (ent->mSize.height() - 1) * mTileSize);
+            ent->mGraphicsItem = pItem;
+        }
+        else {
+            QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(ent->getEntityPicturePath()));
+            pItem->setPos(mMap->mapToGui(ent->mPos + QPointF(0, ent->mSize.height())) * mTileSize);
+            pItem->setScale(mMapScale);
+            ent->mGraphicsItem = pItem;
+        }
+        setPositionFromMapPos(ent->mPos, ent);
     }
 
     onUpdateLineNumbers();
@@ -158,8 +171,10 @@ void MapArea::dropEvent(QDropEvent *event) {
 }
 void MapArea::onObjectAdded(EntityPtr ent) {
     if (ent->mPrimaryType == ENTITY_REGION) {
-        ent->mGraphicsItem = mScene.addRect(QRectF(ent->mPos, ent->mSize), QPen(Qt::red), QBrush(Qt::red));
+        ent->mGraphicsItem = mScene.addRect(QRectF(ent->mPos, ent->mSize), QPen(Qt::transparent), QBrush(Qt::red));
         ent->mGraphicsItem->setOpacity(0.6);
+        ent->mGraphicsItem->setScale(mTileSize);
+        setPositionFromMapPos(ent->mPos, ent);
     }
 }
 
@@ -252,6 +267,15 @@ void MapArea::setPositionFromLocalPos(const QPointF &localPos, EntityPtr entity)
     entity->mGraphicsItem->setPos(pos);
     entity->mPos = mMap->guiToMap(pos / mTileSize);
     entity->mPos.ry() -= entity->mSize.height() * mMapScale;
+}
+
+void MapArea::setPositionFromMapPos(const QPointF &mapPos, EntityPtr entity) {
+    if (!entity->mGraphicsItem) {return;}
+    entity->mPos = mapPos;
+    QPointF gpos = mMap->mapToGui(mapPos);
+    gpos.ry() -= (entity->mSize.height() - 1);
+    gpos *= mTileSize;
+    entity->mGraphicsItem->setPos(gpos);
 }
 
 void MapArea::placeTileAt(const QPoint &tilePos) {
@@ -433,5 +457,17 @@ void MapArea::onEditMapScale() {
         mMapScale = dialog.scale();
         mGridScale = dialog.gridScale();
         onUpdate(mMap);
+    }
+}
+
+void MapArea::onEntityPosOrSizeChanged(EntityPtr ent) {
+    if (!ent) {return;}
+    setPositionFromMapPos(ent->mPos, ent);
+    if (ent->mPrimaryType == ENTITY_REGION) {
+        QGraphicsRectItem *item = dynamic_cast<QGraphicsRectItem*>(ent->mGraphicsItem);
+        QRectF r(item->rect());
+        r.setSize(ent->mSize);
+        item->setRect(r);
+
     }
 }

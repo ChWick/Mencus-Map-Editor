@@ -15,6 +15,7 @@ public:
 signals:
     void sigEntityAdded(EntityPtr);
     void sigEntityDeleted(EntityPtr);
+    void sigEntityPosOrSizeChanged(EntityPtr);
 public slots:
     void onUpdate(MapPtr);
     void onEditSelectedItem();

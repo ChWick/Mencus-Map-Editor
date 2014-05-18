@@ -70,6 +70,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->flagTimedCheckBox, SIGNAL(toggled(bool)), ui->entitiesListWidget, SLOT(onTimedToggled(bool)));
     QObject::connect(ui->timeSpinBox, SIGNAL(valueChanged(double)), ui->entitiesListWidget, SLOT(onTimeChanged(double)));
 
+    QObject::connect(ui->entitiesListWidget, SIGNAL(sigEntityPosOrSizeChanged(EntityPtr)), ui->mapView, SLOT(onEntityPosOrSizeChanged(EntityPtr)));
+    QObject::connect(ui->xCoordSpinBox, SIGNAL(valueChanged(double)), ui->entitiesListWidget, SLOT(onXCoordChanged(double)));
+    QObject::connect(ui->yCoordSpinBox, SIGNAL(valueChanged(double)), ui->entitiesListWidget, SLOT(onYCoordChanged(double)));
+    QObject::connect(ui->widthSpinBox, SIGNAL(valueChanged(double)), ui->entitiesListWidget, SLOT(onWidthChanged(double)));
+    QObject::connect(ui->heightSpinBox, SIGNAL(valueChanged(double)), ui->entitiesListWidget, SLOT(onHeightChanged(double)));
+
     onNewMap();
 }
 
