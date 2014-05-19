@@ -193,6 +193,9 @@ Map::Map(const QString &sFileName)
                 le.mActivated = xml.attributes().value("activated").toString() == "true";
                 mLinksList.push_back(le);
             }
+            else if (xml.name() == "restriction") {
+                mCameraRestrictions.push_back(CameraRestrictionPtr(new CameraRestriction(xml)));
+            }
         }
         else if (token == QXmlStreamReader::EndElement) {
             if (xml.name() == "enemy"
@@ -495,6 +498,9 @@ QString Map::writeToString(OutputTypes outputType) {
     writeEntities(xmlWriter, ENTITY_OBJECT, outputType);
 
     xmlWriter.writeStartElement("camera");
+    for (const CameraRestrictionPtr &r : mCameraRestrictions) {
+        r->writeToXML(xmlWriter);
+    }
     xmlWriter.writeEndElement();
 
     writeEntities(xmlWriter, ENTITY_REGION, outputType);

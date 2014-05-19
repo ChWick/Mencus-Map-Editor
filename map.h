@@ -12,6 +12,7 @@
 #include "languageresources.h"
 #include "quazip/quazip.h"
 #include "quazip/quazipfile.h"
+#include <camerarestriction.h>
 
 class QGraphicsItem;
 class QXmlStreamReader;
@@ -203,6 +204,8 @@ private:
     QList<Event::Entry> *mCurrentEventList;
     link_entry_list mLinksList;
     language::LanguageResources mLanguageResources;
+
+    camera_restriction_list mCameraRestrictions;
 public:
     Map();
     Map(const QString &sFileName);
