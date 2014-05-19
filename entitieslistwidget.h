@@ -33,6 +33,7 @@ public slots:
     void onDeactivateableToggled(bool);
     void onChangeBlocksToggled(bool);
     void onTimeChanged(double);
+    void onJumpsToggled(bool);
 
 private slots:
     void onItemChanged(QListWidgetItem *);

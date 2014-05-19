@@ -79,6 +79,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->yCoordSpinBox, SIGNAL(valueChanged(double)), ui->entitiesListWidget, SLOT(onYCoordChanged(double)));
     QObject::connect(ui->widthSpinBox, SIGNAL(valueChanged(double)), ui->entitiesListWidget, SLOT(onWidthChanged(double)));
     QObject::connect(ui->heightSpinBox, SIGNAL(valueChanged(double)), ui->entitiesListWidget, SLOT(onHeightChanged(double)));
+    QObject::connect(ui->jumpsCheckBox, SIGNAL(toggled(bool)), ui->entitiesListWidget, SLOT(onJumpsToggled(bool)));
+    QObject::connect(ui->flagBlocksCheckBox, SIGNAL(toggled(bool)), ui->entitiesListWidget, SLOT(onChangeBlocksToggled(bool)));
+    QObject::connect(ui->flagDeactivableCheckBox, SIGNAL(toggled(bool)), ui->entitiesListWidget, SLOT(onDeactivateableToggled(bool)));
+    QObject::connect(ui->flagTimedCheckBox, SIGNAL(toggled(bool)), ui->entitiesListWidget, SLOT(onTimedToggled(bool)));
 
     onNewMap();
 }

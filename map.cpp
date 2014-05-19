@@ -258,6 +258,7 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
                             )));
         mEntities.back()->mHP = xml.attributes().value("hp").toFloat();
         mEntities.back()->mDirection = xml.attributes().value("direction").toInt();
+        mEntities.back()->mJumps = xml.attributes().value("jumps").toString() == "jumps";
         //mEntities.back()->mPos.ry() -= mEntities.back()->mSize.height();
         if (entType == ENTITY_SWITCH) {
             mEntities.back()->mFlags = xml.attributes().value("flags").toUInt();
@@ -338,6 +339,7 @@ void Map::writeEntity(QXmlStreamWriter &stream, EntityTypes type, EntityPtr enti
         stream.writeAttribute("direction", QString("%1").arg(entity->mDirection));
     }
     if (entityOutput & ENT_OUT_FLAGS) {stream.writeAttribute("flags", QString("%1").arg(entity->mFlags));}
+    if (entityOutput & ENT_OUT_JUMPS) {stream.writeAttribute("jumps", entity->mJumps ? "true" : "false");}
 
     writeEventList(stream, entity->mEvents, outputType);
 

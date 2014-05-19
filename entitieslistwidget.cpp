@@ -98,18 +98,21 @@ void EntitiesListWidget::onItemSelectionChanged(QListWidgetItem *next, QListWidg
     bool bDeactivableFlag = false;
     bool bTimedFlag = false;
     bool bChangeBlocks = false;
+    bool bJumps = false;
 
     if (next) {
         EntityPtr pEnt = qvariant_cast<EntityPtr>(next->data(Qt::UserRole));
         bHP = (pEnt->mEntityOutputFlags & ENT_OUT_HP) > 0;
         bPos = (pEnt->mEntityOutputFlags & ENT_OUT_POSITION) > 0;
         bSize = (pEnt->mEntityOutputFlags & ENT_OUT_SIZE) > 0;
+        bJumps = (pEnt->mEntityOutputFlags & ENT_OUT_JUMPS) > 0;
 
         parent()->parent()->findChild<QDoubleSpinBox*>("hitpointsSpinBox")->setValue(pEnt->mHP);
         parent()->parent()->findChild<QDoubleSpinBox*>("xCoordSpinBox")->setValue(pEnt->mPos.x());
         parent()->parent()->findChild<QDoubleSpinBox*>("yCoordSpinBox")->setValue(pEnt->mPos.y());
         parent()->parent()->findChild<QDoubleSpinBox*>("widthSpinBox")->setValue(pEnt->mSize.width());
         parent()->parent()->findChild<QDoubleSpinBox*>("heightSpinBox")->setValue(pEnt->mSize.height());
+        parent()->parent()->findChild<QCheckBox*>("jumpsCheckBox")->setChecked(pEnt->mJumps);
 
         // flags for switches
         if (pEnt->mPrimaryType == ENTITY_SWITCH) {
@@ -133,6 +136,9 @@ void EntitiesListWidget::onItemSelectionChanged(QListWidgetItem *next, QListWidg
     parent()->parent()->findChild<QWidget*>("sizeLabel")->setEnabled(bSize);
     parent()->parent()->findChild<QWidget*>("widthSpinBox")->setEnabled(bSize);
     parent()->parent()->findChild<QWidget*>("heightSpinBox")->setEnabled(bSize);
+    parent()->parent()->findChild<QWidget*>("jumpsCheckBox")->setVisible(bJumps);
+    parent()->parent()->findChild<QWidget*>("jumpsLabel")->setVisible(bJumps);
+
 
     // switch specific
     parent()->parent()->findChild<QWidget*>("flagDeactivableCheckBox")->setVisible(bSwitchFlags);
@@ -210,4 +216,10 @@ void EntitiesListWidget::onTimeChanged(double v) {
     if (currentItem() == nullptr) {return;}
     EntityPtr pEnt = qvariant_cast<EntityPtr>(currentItem()->data(Qt::UserRole));
     pEnt->mTime = v;
+}
+
+void EntitiesListWidget::onJumpsToggled(bool j) {
+    if (currentItem() == nullptr) {return;}
+    EntityPtr pEnt = qvariant_cast<EntityPtr>(currentItem()->data(Qt::UserRole));
+    pEnt->mJumps = j;
 }

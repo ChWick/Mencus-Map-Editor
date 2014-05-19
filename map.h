@@ -55,11 +55,12 @@ enum EntityOutput {
     ENT_OUT_HP          = 16,
     ENT_OUT_DIRECTION   = 32,
     ENT_OUT_FLAGS       = 64,
+    ENT_OUT_JUMPS       = 128,
 
     ENT_OUT_PLAYER      = 4 | ENT_OUT_HP | ENT_OUT_DIRECTION,
     ENT_OUT_REGION      = ENT_OUT_ID | ENT_OUT_POSITION | ENT_OUT_SIZE,
     ENT_OUT_OBJECT      = ENT_OUT_ID | ENT_OUT_TYPE | ENT_OUT_POSITION,
-    ENT_OUT_ENEMY       = ENT_OUT_OBJECT | ENT_OUT_HP | ENT_OUT_DIRECTION,
+    ENT_OUT_ENEMY       = ENT_OUT_OBJECT | ENT_OUT_HP | ENT_OUT_DIRECTION | ENT_OUT_JUMPS,
     ENT_OUT_SWITCH      = ENT_OUT_OBJECT | ENT_OUT_FLAGS,
     ENT_OUT_FULL        = 2047,
 
@@ -97,7 +98,7 @@ struct Entity {
 
     Entity(QString id, EntityTypes primType, unsigned int secType, const QPointF &pos, const QSizeF &size)
         : mId(id), mPrimaryType(primType), mSecondaryType(secType), mPos(pos), mSize(size), mFlags(0), mGraphicsItem(nullptr),
-    mEntityOutputFlags(0), mEvents(EVENT_LIST()), mHP(-1), mDirection(1) {
+    mEntityOutputFlags(0), mEvents(EVENT_LIST()), mHP(-1), mDirection(1), mJumps(0) {
 
         switch (primType) {
         case ENTITY_PLAYER:
@@ -124,6 +125,7 @@ struct Entity {
         mFlags = 0;
         mEntityOutputFlags = 0;
         mGraphicsItem = nullptr;
+        mJumps = false;
     }
 
     /*Entity(const Entity &e)
@@ -138,6 +140,7 @@ struct Entity {
     float mHP;
     int mDirection;
     float mTime;
+    bool mJumps;
 
 
     QString getEntityPicturePath() const {return ::getEntityPicturePath(mPrimaryType, mSecondaryType);}
