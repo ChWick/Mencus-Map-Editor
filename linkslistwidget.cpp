@@ -11,6 +11,11 @@ LinksListWidget::LinksListWidget(QWidget *parent) :
 
 void LinksListWidget::onUpdate(MapPtr map) {
     mMap = map;
+    clear();
+    for (LinkEntry &ent : map->getLinksList()) {
+        LinksListWidgetItem *pItem = new LinksListWidgetItem(ent.mId, this, ent);
+        pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
+    }
 }
 
 void LinksListWidget::onAddLink() {

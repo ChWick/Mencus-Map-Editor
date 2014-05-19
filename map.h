@@ -171,6 +171,15 @@ struct LinkEntry {
         mLinkDirection(BOTH) {
 
     }
+    static LinkDirection linkDirectionFromString(const QString &s) {
+        if (s == "first_to_second") {
+            return FIRST_TO_SECOND;
+        }
+        else if (s == "second_to_first") {
+            return SECOND_TO_FIRST;
+        }
+        return BOTH;
+    }
 };
 
 typedef QList<LinkEntry> link_entry_list;

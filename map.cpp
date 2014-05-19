@@ -182,6 +182,17 @@ Map::Map(const QString &sFileName)
             else if (xml.name() == "region") {
                 readEntity(xml, ENTITY_REGION);
             }
+            else if (xml.name() == "link") {
+                LinkEntry le;
+                le.mId = xml.attributes().value("id").toString();
+                le.mFirstX = xml.attributes().value("fromx").toUInt();
+                le.mFirstY = xml.attributes().value("fromy").toUInt();
+                le.mSecondX = xml.attributes().value("tox").toUInt();
+                le.mSecondY = xml.attributes().value("toy").toUInt();
+                le.mLinkDirection = LinkEntry::linkDirectionFromString(xml.attributes().value("direction").toString());
+                le.mActivated = xml.attributes().value("activated").toString() == "true";
+                mLinksList.push_back(le);
+            }
         }
         else if (token == QXmlStreamReader::EndElement) {
             if (xml.name() == "enemy"
