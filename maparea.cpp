@@ -281,7 +281,7 @@ void MapArea::setPositionFromMapPos(const QPointF &mapPos, EntityPtr entity) {
 }
 
 void MapArea::placeTileAt(const QPoint &tilePos) {
-    if (tilePos.x() < 0 || tilePos.y() < 0 || tilePos.x() >= mMap->getTiles().getSizeX() || tilePos.y() >= mMap->getTiles().getSizeY()) {
+    if (tilePos.x() < 0 || tilePos.y() < 0 || tilePos.x() >= static_cast<int>(mMap->getTiles().getSizeX()) || tilePos.y() >= static_cast<int>(mMap->getTiles().getSizeY())) {
         return;
     }
     int tile = -1;

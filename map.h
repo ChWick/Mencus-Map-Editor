@@ -206,6 +206,7 @@ private:
     language::LanguageResources mLanguageResources;
 
     camera_restriction_list mCameraRestrictions;
+    bool mTutorial;
 public:
     Map();
     Map(const QString &sFileName);
@@ -243,6 +244,12 @@ public:
 
     const QString &getBackground() const {return mBackground;}
     void setBackground(const QString &bg) {mBackground = bg;}
+
+    const QString &getDifficulty() const {return mDifficulty;}
+    void setDifficulty(const QString &dif) {mDifficulty = dif;}
+
+    bool isTutorial() const {return mTutorial;}
+    void setTutorial(bool tut) {mTutorial = tut;}
 
 private:
     void readEntity(const QXmlStreamReader &stream, EntityTypes type);

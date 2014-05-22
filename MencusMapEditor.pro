@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     selecttiledialog.cpp \
     editmapscaledialog.cpp \
     editbackgroundtypedialog.cpp \
-    camerarestriction.cpp
+    camerarestriction.cpp \
+    mappropertiesdialog.cpp
 
 HEADERS  += mainwindow.h \
     map.h \
@@ -61,7 +62,8 @@ HEADERS  += mainwindow.h \
     selecttiledialog.h \
     editmapscaledialog.h \
     editbackgroundtypedialog.h \
-    camerarestriction.h
+    camerarestriction.h \
+    mappropertiesdialog.h
 
 FORMS    += mainwindow.ui \
     editeventdialog.ui \
@@ -71,4 +73,5 @@ FORMS    += mainwindow.ui \
     editendangeredtiledialog.ui \
     selecttiledialog.ui \
     editmapscaledialog.ui \
-    editbackgroundtypedialog.ui
+    editbackgroundtypedialog.ui \
+    mappropertiesdialog.ui

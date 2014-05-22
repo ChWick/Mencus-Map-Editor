@@ -43,6 +43,7 @@ private slots:
     void onEditExecutablePath();
     void onEditMapSize();
     void onEditMapBackground();
+    void onEditMapProperties();
 };
 
 #endif // MAINWINDOW_H

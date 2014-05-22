@@ -17,6 +17,7 @@
 #include "editmapsizedialog.h"
 #include <QFileInfo>
 #include "editbackgroundtypedialog.h"
+#include "mappropertiesdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -38,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     pEditMenu->addAction(tr("Edit map &size"), this, SLOT(onEditMapSize()));
     pEditMenu->addAction(tr("Edit map scale"), ui->mapView, SLOT(onEditMapScale()));
     pEditMenu->addAction(tr("Edit map background"), this, SLOT(onEditMapBackground()));
+    pEditMenu->addAction(tr("Map properties"), this, SLOT(onEditMapProperties()));
 
     QToolBar *mainToolBar = new QToolBar(this);
     this->addToolBar(Qt::TopToolBarArea, mainToolBar);
@@ -215,4 +217,14 @@ void MainWindow::onEditMapBackground() {
     if (dialog.result() == QDialog::Accepted) {
         mMap->setBackground(dialog.background());
     }
+}
+
+void MainWindow::onEditMapProperties() {
+    MapPropertiesDialog dialog(mMap->getDifficulty(), mMap->isTutorial(), this);
+    dialog.exec();
+    if (dialog.result() == QDialog::Accepted) {
+        mMap->setDifficulty(dialog.difficulty());
+        mMap->setTutorial(dialog.tutorial());
+    }
+
 }
