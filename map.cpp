@@ -124,6 +124,7 @@ Map::Map(const QString &sFileName)
             if(xml.name() == "map") {
                 mDifficulty = xml.attributes().value("difficulty").toString();
                 mBackground = xml.attributes().value("background").toString();
+                mTutorial = xml.attributes().value("tutorial").toString() == "true";
                 mSizeX = xml.attributes().value("sizex").toUInt();
                 mSizeY = xml.attributes().value("sizey").toUInt();
                 mTiles.resize(mSizeX, mSizeY);
@@ -435,6 +436,7 @@ QString Map::writeToString(OutputTypes outputType) {
 
     xmlWriter.writeStartElement("map");
     xmlWriter.writeAttribute("difficulty", mDifficulty);
+    //xmlWriter.writeAttribute("tutorial", mTutorial ? "true" : "false");
     xmlWriter.writeAttribute("background", mBackground);
     xmlWriter.writeAttribute("sizex", QString("%1").arg(mSizeX));
     xmlWriter.writeAttribute("sizey", QString("%1").arg(mSizeY));
