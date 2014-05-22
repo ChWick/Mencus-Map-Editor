@@ -46,27 +46,32 @@ void AutoGenerateTransitionDialog::generate() {
     grid2d<unsigned int> &tiles(mMap->getTiles());
     grid2d<unsigned int> flagsGrid(tiles.getSizeX(), tiles.getSizeY(), 0);
     // scan all tiles
-    for (unsigned int x = 1; x < mMap->getTiles().getSizeX() - 1; x++) {
-        for (unsigned int y = 1; y < mMap->getTiles().getSizeY() - 1; y++) {
+    for (unsigned int x = 0; x < mMap->getTiles().getSizeX(); x++) {
+        for (unsigned int y = 0; y < mMap->getTiles().getSizeY(); y++) {
             // only change default bricks
             if (mMap->getTiles()(x, y) != 1) {continue;}
             unsigned int flags = 0;
-            if (tiles(x - 1, y) == 2) {flags |= TF_LEFT;}
-            if (tiles(x - 1, y + 1) == 2) {flags |= TF_TOP_LEFT;}
-            if (tiles(x, y + 1) == 2) {flags |= TF_TOP;}
-            if (tiles(x + 1, y + 1) == 2) {flags |= TF_TOP_RIGHT;}
-            if (tiles(x + 1, y) == 2) {flags |= TF_RIGHT;}
-            if (tiles(x + 1, y - 1) == 2) {flags |= TF_BOTTOM_RIGHT;}
-            if (tiles(x, y - 1) == 2) {flags |= TF_BOTTOM;}
-            if (tiles(x - 1, y - 1) == 2) {flags |= TF_BOTTOM_LEFT;}
+
+            if (x > 0) {
+                if (y > 0 && tiles(x - 1, y - 1) == 2) {flags |= TF_BOTTOM_LEFT;}
+                if (tiles(x - 1, y) == 2) {flags |= TF_LEFT;}
+                if (y < tiles.getSizeY() - 1 && tiles(x - 1, y + 1) == 2) {flags |= TF_TOP_LEFT;}
+            }
+            if (y < tiles.getSizeY() - 1 && tiles(x, y + 1) == 2) {flags |= TF_TOP;}
+            if (x < tiles.getSizeX() - 1) {
+                if (y < tiles.getSizeY() - 1 && tiles(x + 1, y + 1) == 2) {flags |= TF_TOP_RIGHT;}
+                if (tiles(x + 1, y) == 2) {flags |= TF_RIGHT;}
+                if (y > 0 && tiles(x + 1, y - 1) == 2) {flags |= TF_BOTTOM_RIGHT;}
+            }
+            if (y > 0 && tiles(x, y - 1) == 2) {flags |= TF_BOTTOM;}
 
             flagsGrid(x, y) = flags;
         }
     }
 
     // place
-    for (unsigned int x = 1; x < mMap->getTiles().getSizeX() - 1; x++) {
-        for (unsigned int y = 1; y < mMap->getTiles().getSizeY() - 1; y++) {
+    for (unsigned int x = 0; x < mMap->getTiles().getSizeX(); x++) {
+        for (unsigned int y = 0; y < mMap->getTiles().getSizeY(); y++) {
             unsigned int flags = flagsGrid(x, y);
             if (flags == 0) {continue;}
 
@@ -115,52 +120,67 @@ void AutoGenerateTransitionDialog::generate() {
             else if (flags == TF_COMPLETE) {
                 tiles(x, y) = 16;
             }
-            else if (flags == TF_BOTTOM_LEFT_CORNER
-                     || flags == (TF_BOTTOM_LEFT_CORNER | TF_TOP_LEFT)
-                     || flags == (TF_BOTTOM_LEFT_CORNER | TF_TOP_LEFT | TF_BOTTOM_RIGHT)
-                     || flags == (TF_BOTTOM_LEFT_CORNER | TF_BOTTOM_RIGHT)) {
-                tiles(x, y) = 13;
+            else if ((flags & (TF_BOTTOM | TF_LEFT)) == (TF_BOTTOM | TF_LEFT) ) {
+                if (flags & TF_TOP) {
+                    tiles(x, y) = 18;
+                }
+                else if (flags & TF_RIGHT) {
+                    tiles(x, y) = 15;
+                }
+                else {
+                    tiles(x, y) = 13;
+                }
             }
-            else if (flags == TF_BOTTOM_RIGHT_CORNER
-                     || flags == (TF_BOTTOM_RIGHT_CORNER | TF_TOP_RIGHT)
-                     || flags == (TF_BOTTOM_RIGHT_CORNER | TF_TOP_RIGHT | TF_BOTTOM_LEFT)
-                     || flags == (TF_BOTTOM_RIGHT_CORNER | TF_BOTTOM_LEFT)) {
-                tiles(x, y) = 14;
+            else if ((flags & (TF_BOTTOM | TF_RIGHT)) == (TF_BOTTOM | TF_RIGHT) ) {
+                if (flags & TF_TOP) {
+                    tiles(x, y) = 19;
+                }
+                else {
+                    tiles(x, y) = 14;
+                }
             }
-            else if (flags == TF_BOTTOM_LEFT) {
-                tiles(x, y) = 11;
+            else if ((flags & (TF_TOP | TF_LEFT)) == (TF_TOP | TF_LEFT) ) {
+                if (flags & TF_RIGHT) {
+                    tiles(x, y) = 9;
+                }
+                else {
+                    tiles(x, y) = 7;
+                }
             }
-            else if (flags == TF_BOTTOM_RIGHT) {
-                tiles(x, y) = 12;
-            }
-            else if (flags == TF_TOP_LEFT_CORNER
-                     || flags == (TF_TOP_LEFT_CORNER | TF_TOP_RIGHT)
-                     || flags == (TF_TOP_LEFT_CORNER | TF_TOP_RIGHT | TF_BOTTOM_LEFT)
-                     || flags == (TF_TOP_LEFT_CORNER | TF_BOTTOM_LEFT)) {
-                tiles(x, y) = 7;
-            }
-            else if (flags == TF_TOP_RIGHT_CORNER
-                     || flags == (TF_TOP_RIGHT_CORNER | TF_TOP_LEFT)
-                     || flags == (TF_TOP_RIGHT_CORNER | TF_TOP_LEFT | TF_BOTTOM_RIGHT)
-                     || flags == (TF_TOP_RIGHT_CORNER | TF_BOTTOM_RIGHT) ) {
+            else if ((flags & (TF_TOP | TF_RIGHT)) == (TF_TOP | TF_RIGHT) ) {
                 tiles(x, y) = 8;
             }
             else if (flags == (TF_BOTTOM_LEFT | TF_BOTTOM_RIGHT)) {
                 tiles(x, y) = 20;
             }
-            else if (flags == (TF_COMPLETE_BOTTOM | TF_LEFT | TF_RIGHT)
-                     || flags == (TF_COMPLETE_BOTTOM | TF_COMPLETE_LEFT | TF_RIGHT)
-                     || flags == (TF_COMPLETE_BOTTOM | TF_LEFT | TF_COMPLETE_RIGHT)
-                     || flags == (TF_COMPLETE_BOTTOM | TF_COMPLETE_LEFT | TF_COMPLETE_RIGHT)) {
-                tiles(x, y) = 15;
-            }
-            else if ((flags & (TF_LEFT | TF_RIGHT)) == (TF_LEFT | TF_RIGHT)) {
+            else if ((flags & (TF_LEFT | TF_RIGHT)) == (TF_LEFT | TF_RIGHT) ) {
                 if (flags & TF_TOP) {
                     tiles(x, y) = 9;
+                }
+                else if (flags & TF_BOTTOM) {
+                    tiles(x, y) = 15;
                 }
                 else {
                     tiles(x, y) = 10;
                 }
+            }
+            else if (flags & TF_TOP) {
+                tiles(x, y) = 5;
+            }
+            else if (flags & TF_BOTTOM) {
+                tiles(x, y) = 6;
+            }
+            else if (flags & TF_LEFT) {
+                tiles(x, y) = 3;
+            }
+            else if (flags & TF_RIGHT) {
+                tiles(x, y) = 4;
+            }
+            else if (flags & TF_BOTTOM_LEFT) {
+                tiles(x, y) = 11;
+            }
+            else if (flags & TF_BOTTOM_RIGHT) {
+                tiles(x, y) = 12;
             }
         }
     }
