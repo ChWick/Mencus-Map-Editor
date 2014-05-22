@@ -244,7 +244,17 @@ void MapArea::mouseMoveEvent ( QMouseEvent * e) {
     if (!mLeftPressed && !mRightPressed) {return;}
 
     if (mTool == TOOL_PLACE_TILE) {
-        placeTileAt(getTilePosFromRelativeMousePos(e->pos()));
+        if (e->modifiers() & Qt::ShiftModifier) {
+            QPoint pos(getTilePosFromRelativeMousePos(e->pos()));
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    placeTileAt(pos + QPoint(x, y));
+                }
+            }
+        }
+        else {
+            placeTileAt(getTilePosFromRelativeMousePos(e->pos()));
+        }
     }
 }
 

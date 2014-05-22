@@ -44,6 +44,8 @@ private slots:
     void onEditMapSize();
     void onEditMapBackground();
     void onEditMapProperties();
+
+    void onToolsAutoGenerateTransitions();
 };
 
 #endif // MAINWINDOW_H

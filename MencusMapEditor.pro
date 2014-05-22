@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     editmapscaledialog.cpp \
     editbackgroundtypedialog.cpp \
     camerarestriction.cpp \
-    mappropertiesdialog.cpp
+    mappropertiesdialog.cpp \
+    autogeneratetransitiondialog.cpp
 
 HEADERS  += mainwindow.h \
     map.h \
@@ -63,7 +64,8 @@ HEADERS  += mainwindow.h \
     editmapscaledialog.h \
     editbackgroundtypedialog.h \
     camerarestriction.h \
-    mappropertiesdialog.h
+    mappropertiesdialog.h \
+    autogeneratetransitiondialog.h
 
 FORMS    += mainwindow.ui \
     editeventdialog.ui \
@@ -74,4 +76,5 @@ FORMS    += mainwindow.ui \
     selecttiledialog.ui \
     editmapscaledialog.ui \
     editbackgroundtypedialog.ui \
-    mappropertiesdialog.ui
+    mappropertiesdialog.ui \
+    autogeneratetransitiondialog.ui

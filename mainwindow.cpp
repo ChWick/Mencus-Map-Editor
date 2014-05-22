@@ -18,6 +18,7 @@
 #include <QFileInfo>
 #include "editbackgroundtypedialog.h"
 #include "mappropertiesdialog.h"
+#include "autogeneratetransitiondialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -40,6 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
     pEditMenu->addAction(tr("Edit map scale"), ui->mapView, SLOT(onEditMapScale()));
     pEditMenu->addAction(tr("Edit map background"), this, SLOT(onEditMapBackground()));
     pEditMenu->addAction(tr("Map properties"), this, SLOT(onEditMapProperties()));
+
+    QMenu *pToolsMenu = ui->menuBar->addMenu(tr("&Tools"));
+    pToolsMenu->addAction(tr("Auto generate transitions"), this, SLOT(onToolsAutoGenerateTransitions()));
 
     QToolBar *mainToolBar = new QToolBar(this);
     this->addToolBar(Qt::TopToolBarArea, mainToolBar);
@@ -227,4 +231,12 @@ void MainWindow::onEditMapProperties() {
         mMap->setTutorial(dialog.tutorial());
     }
 
+}
+
+void MainWindow::onToolsAutoGenerateTransitions() {
+    AutoGenerateTransitionDialog dialog(mMap, this);
+    dialog.exec();
+    if (dialog.result() == QDialog::Accepted) {
+        sigUpdateMap(mMap);
+    }
 }
