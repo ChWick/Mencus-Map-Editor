@@ -212,7 +212,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-1</y>
+             <y>0</y>
              <width>305</width>
              <height>262</height>
             </rect>
@@ -448,7 +448,11 @@
    <widget class="QWidget" name="tilesDockWidgetLayout">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="TilesGraphicsView" name="tilesGraphicsView"/>
+      <widget class="TilesGraphicsView" name="tilesGraphicsView">
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+      </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="tilesSelectedLayout">
