@@ -28,7 +28,7 @@ EventDataMask::EventDataMask()
     addEventAttribute("y", "y", POSITION_TYPE, LAYOUT_EVENT)
             .addAttributeCondition("type", "change_tile");
 
-    addEventAttribute("emitter", "Emitter", SELECT_TYPE, LAYOUT_EMITTER, QStringList() << "create" << "delete" << "collision" << "message_page_changed" << "user");
+    addEventAttribute("emitter", "Emitter", SELECT_TYPE, LAYOUT_EMITTER, QStringList() << "create" << "destroy" << "collision" << "message_page_changed" << "user");
     addEventAttribute("repeat", "Repeat", SELECT_TYPE, LAYOUT_EMITTER, QStringList() << "none" << "infinite");
     addEventAttribute("src_id", "Source id", STRING_TYPE, LAYOUT_EMITTER)
             .setAttributeConditionList(CONDITION_LIST()
