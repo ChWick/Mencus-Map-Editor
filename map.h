@@ -58,7 +58,7 @@ enum EntityOutput {
     ENT_OUT_FLAGS       = 64,
     ENT_OUT_JUMPS       = 128,
 
-    ENT_OUT_PLAYER      = 4 | ENT_OUT_HP | ENT_OUT_DIRECTION,
+    ENT_OUT_PLAYER      = ENT_OUT_POSITION | ENT_OUT_HP | ENT_OUT_DIRECTION,
     ENT_OUT_REGION      = ENT_OUT_ID | ENT_OUT_POSITION | ENT_OUT_SIZE,
     ENT_OUT_OBJECT      = ENT_OUT_ID | ENT_OUT_TYPE | ENT_OUT_POSITION,
     ENT_OUT_ENEMY       = ENT_OUT_OBJECT | ENT_OUT_HP | ENT_OUT_DIRECTION | ENT_OUT_JUMPS,
@@ -104,18 +104,23 @@ struct Entity {
         switch (primType) {
         case ENTITY_PLAYER:
             mEntityOutputFlags = ENT_OUT_PLAYER;
+            mId = "Player";
             break;
         case ENTITY_REGION:
             mEntityOutputFlags = ENT_OUT_REGION;
+            if (mId.isEmpty()) {mId = "region";}
             break;
         case ENTITY_OBJECT:
             mEntityOutputFlags = ENT_OUT_OBJECT;
+            if (mId.isEmpty()) {mId = "object";}
             break;
         case ENTITY_ENEMY:
             mEntityOutputFlags = ENT_OUT_ENEMY;
+            if (mId.isEmpty()) {mId = "enemy";}
             break;
         case ENTITY_SWITCH:
             mEntityOutputFlags = ENT_OUT_SWITCH;
+            if (mId.isEmpty()) {mId = "switch";}
             break;
         default:
             mEntityOutputFlags = 0;

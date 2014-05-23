@@ -74,7 +74,7 @@ void ObjectsGraphicsView::addObject(const QPointF &pos, const QSizeF &size, Enti
     QGraphicsPixmapItem *pItem = mScene.addPixmap(QPixmap(getEntityPicturePath(primaryType, secondaryType)));
     pItem->setPos(pos);
     Entity oe(
-        "New entity",
+        "",                // empty to use default id
         primaryType,
         secondaryType,
         pos,

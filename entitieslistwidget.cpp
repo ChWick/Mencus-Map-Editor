@@ -25,13 +25,18 @@ void EntitiesListWidget::onUpdate(MapPtr map) {
     for (EntityPtr ent : mMap->getEntities()) {
         QListWidgetItem *pItem = new QListWidgetItem(this);
         pItem->setText(ent->mId);
-        pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
+        if (ent->mEntityOutputFlags & ENT_OUT_ID) {
+            pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
+        }
+        else {
+            pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        }
         pItem->setData(Qt::UserRole, QVariant::fromValue(ent));
     }
 }
 
 void EntitiesListWidget::onItemChanged(QListWidgetItem *pItem) {
-    Entity *pEnt = static_cast<Entity*>(qvariant_cast<void*>(pItem->data(Qt::UserRole)));
+    EntityPtr pEnt = qvariant_cast<EntityPtr>(pItem->data(Qt::UserRole));
     if (!pEnt) {return;} // initializing
     pEnt->mId = pItem->text();
 }
@@ -43,7 +48,12 @@ void EntitiesListWidget::onObjectAdded(EntityPtr ent) {
     mMap->getEntities().push_back(ent);
     QListWidgetItem *pItem = new QListWidgetItem(this);
     pItem->setText(ent->mId);
-    pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
+    if (ent->mEntityOutputFlags & ENT_OUT_ID) {
+        pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
+    }
+    else {
+        pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    }
     pItem->setData(Qt::UserRole, QVariant::fromValue(mMap->getEntities().back()));
 }
 void EntitiesListWidget::onDeleteSelection() {
