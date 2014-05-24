@@ -522,14 +522,14 @@ void Map::resize(int width, int height){
 
     for (int x = 0; x < std::min<int>(width, mSizeX); x++) {
         for (int y = 0; y < std::min<int>(height, mSizeY); y++) {
-            newGrid(x, height - y - 1) = mTiles(x, mSizeY - y - 1);
+            newGrid(x, y) = mTiles(x, y);
         }
     }
     mTiles = newGrid;
 
-    for (EntityPtr ent : mEntities) {
-        ent->mPos.setY(ent->mPos.y() - (mSizeY - height));
-    }
+    //for (EntityPtr ent : mEntities) {
+    //    ent->mPos.setY(ent->mPos.y() + (static_cast<int>(mSizeY) - height));
+    //}
     mSizeX = width;
     mSizeY = height;
 }
