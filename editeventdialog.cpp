@@ -77,6 +77,7 @@ void EditEventDialog::addProperty(const EventAttribute &attribute) {
     }
     else if (attribute.mPropertyType == POSITION_TYPE) {
         QSpinBox *pSB = new QSpinBox(this);
+        pSB->setMaximum(10000);
         pSB->setValue(defaultValue.toInt());
         pDataWidget = pSB;
 
