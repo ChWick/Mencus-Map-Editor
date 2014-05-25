@@ -262,7 +262,7 @@ void Map::readEntity(const QXmlStreamReader &xml, EntityTypes entType) {
                             )));
         mEntities.back()->mHP = xml.attributes().value("hp").toFloat();
         mEntities.back()->mDirection = xml.attributes().value("direction").toInt();
-        mEntities.back()->mJumps = xml.attributes().value("jumps").toString() == "jumps";
+        mEntities.back()->mJumps = xml.attributes().value("jumps").toString() == "true";
         //mEntities.back()->mPos.ry() -= mEntities.back()->mSize.height();
         if (entType == ENTITY_SWITCH) {
             mEntities.back()->mFlags = xml.attributes().value("flags").toUInt();
