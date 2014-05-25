@@ -69,14 +69,14 @@ QSizeF getEntitySize(EntityTypes primaryType, unsigned int secondaryType) {
         case OBJECT_TORCH:
             return QSizeF(0.5f, 1);
         case OBJECT_FLAG:
-            return QSizeF(1, 128);
+            return QSizeF(1, 2);
         default:
             return QSizeF(0, 0);
         }
     case ENTITY_SWITCH:
         switch (secondaryType) {
         case 0:
-            return QSizeF(16, 16);
+            return QSizeF(0.25, 0.25);
         case 1:
             return QSizeF(1, 1);
         }
